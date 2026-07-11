@@ -37,6 +37,7 @@ services:
       - ZALO_API_TOKEN=${ZALO_API_TOKEN}
       - SERVER_DOMAIN=${SERVER_DOMAIN}
       - ADMIN_PHONE_NUMBERS=${ADMIN_PHONE_NUMBERS}
+      - PYTHONUNBUFFERED=1
     volumes:
       - ./taovanban_khoidang/output:/app/taovanban_khoidang/output
       - ./taovanban_khoidang/references:/app/taovanban_khoidang/references
