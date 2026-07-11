@@ -265,6 +265,55 @@ def download_gdrive_file(url, output_path):
         return True
     return False
 
+def save_file_mapping(file_id, filename):
+    """Lưu mapping giữa mã file ngắn và tên tệp tin thực tế vào Database"""
+    from database import SessionLocal
+    import models
+    db = SessionLocal()
+    try:
+        # Xóa các mapping cũ của cùng file đó nếu có
+        db.query(models.FileMapping).filter(models.FileMapping.filename == filename).delete()
+        mapping = models.FileMapping(file_id=file_id, filename=filename)
+        db.add(mapping)
+        db.commit()
+        print(f"[Zalo Bot] Đã lưu mapping file vào CSDL: {file_id} -> {filename}")
+    except Exception as e:
+        print(f"[Zalo Bot] Lỗi khi ghi file_map vào CSDL: {e}")
+    finally:
+        db.close()
+
+MAX_HISTORY_LEN = 10  # 10 tin nhắn gần nhất (5 lượt hội thoại)
+
+def get_chat_history(chat_id):
+    """Lấy lịch sử hội thoại từ CSDL"""
+    from database import SessionLocal
+    import models
+    db = SessionLocal()
+    try:
+        rows = db.query(models.ChatHistory).filter(models.ChatHistory.chat_id == str(chat_id))\
+                 .order_by(models.ChatHistory.created_at.desc()).limit(MAX_HISTORY_LEN).all()
+        history = [{"role": r.role, "content": r.content} for r in reversed(rows)]
+        return history
+    except Exception as e:
+        print(f"[Zalo Bot Error] Lỗi đọc chat history từ DB: {e}")
+        return []
+    finally:
+        db.close()
+
+def add_chat_message(chat_id, role, content):
+    """Lưu tin nhắn hội thoại mới vào CSDL"""
+    from database import SessionLocal
+    import models
+    db = SessionLocal()
+    try:
+        msg = models.ChatHistory(chat_id=str(chat_id), role=role, content=content)
+        db.add(msg)
+        db.commit()
+    except Exception as e:
+        print(f"[Zalo Bot Error] Lỗi ghi chat history vào DB: {e}")
+    finally:
+        db.close()
+
 def download_file_from_url(url, output_path):
     """Tải tệp từ một URL bất kỳ (dùng cho ảnh trên server Zalo)"""
     try:
@@ -331,19 +380,32 @@ def search_duckduckgo_free(query, max_results=3):
         print(f"[Search Error] {e}")
     return []
 
-def ask_dhtn_qa(chat_id, question):
+def ask_dhtn_qa(chat_id, question, db=None):
     """Trả lời thắc mắc của người dùng dựa trên bộ tri thức ĐHTN kết hợp RAG HDSD và giữ ngữ cảnh hội thoại, chỉ dùng DeepSeek làm mô hình chính"""
-    if not KIENTHUC_CONTENT and not CHUNKS_DATA:
+    if not KIENTHUC_CONTENT:
         return None, None, []
         
     history = get_chat_history(chat_id)
     best_score = 0
     relevant_results = []
     
-    if CHUNKS_DATA:
-        relevant_results = retrieve_chunks(question, CHUNKS_DATA, CHUNKS_IDFS, top_n=3)
+    # Sử dụng database hybrid search để tìm kiếm tri thức
+    should_close_db = False
+    if db is None:
+        from database import SessionLocal
+        db = SessionLocal()
+        should_close_db = True
+        
+    try:
+        from rag_engine import hybrid_search
+        relevant_results = hybrid_search(db, question, top_n=3)
         if relevant_results:
             best_score = relevant_results[0][0]
+    except Exception as e:
+        print(f"[Zalo Bot Error] Lỗi thực hiện Hybrid Search: {e}")
+    finally:
+        if should_close_db:
+            db.close()
             
     # Lấy thông tin ngữ cảnh (Nội bộ hoặc Tìm kiếm Web)
     relevant_context = ""
@@ -879,53 +941,78 @@ def process_zalo_message(message):
             sources_with_images = set()  # Theo dõi sources đã có ảnh
             
             # Bước 1: Quét "Hình N" trong CÂU TRẢ LỜI AI (nếu AI giữ nhãn)
-            for match in re.finditer(r'Hình\s+(\d+)', reply_text, re.IGNORECASE):
-                hinh_num = match.group(1)
-                hinh_key = f"Hình {hinh_num}"
-                for score, chunk in relevant_results:
-                    source = chunk.get('source', '')
-                    if source in IMAGE_MAP_DATA and hinh_key in IMAGE_MAP_DATA[source]:
-                        img_rel_path = IMAGE_MAP_DATA[source][hinh_key]
-                        img_local_path = os.path.join(OUTPUT_DIR, img_rel_path)
-                        if os.path.exists(img_local_path) and img_rel_path not in seen_images:
-                            matched_images.append((hinh_key, img_rel_path))
-                            seen_images.add(img_rel_path)
-                            sources_with_images.add(source)
-                            break
+            from database import SessionLocal
+            import models
             
-            # Bước 2: Quét "Hình N" trong NỘI DUNG RAG chunks (bổ sung thêm nếu chưa đủ)
-            if len(matched_images) < 5:
-                for score, chunk in relevant_results:
-                    source = chunk.get('source', '')
-                    if source not in IMAGE_MAP_DATA:
-                        continue
-                    for match in re.finditer(r'Hình\s+(\d+)', chunk.get('text', '')):
-                        hinh_num = match.group(1)
-                        hinh_key = f"Hình {hinh_num}"
-                        if hinh_key in IMAGE_MAP_DATA[source]:
-                            img_rel_path = IMAGE_MAP_DATA[source][hinh_key]
+            db = SessionLocal()
+            try:
+                for match in re.finditer(r'Hình\s+(\d+)', reply_text, re.IGNORECASE):
+                    hinh_num = match.group(1)
+                    hinh_key = f"Hình {hinh_num}"
+                    for score, chunk in relevant_results:
+                        source = chunk.get('source', '')
+                        
+                        # Tra cứu ảnh trong CSDL
+                        img_map = db.query(models.ImageMapping).join(models.Document).filter(
+                            models.Document.source == source,
+                            models.ImageMapping.hinh_key == hinh_key
+                        ).first()
+                        
+                        if img_map:
+                            img_rel_path = img_map.img_rel_path
                             img_local_path = os.path.join(OUTPUT_DIR, img_rel_path)
                             if os.path.exists(img_local_path) and img_rel_path not in seen_images:
                                 matched_images.append((hinh_key, img_rel_path))
                                 seen_images.add(img_rel_path)
                                 sources_with_images.add(source)
-                    if len(matched_images) >= 5:
-                        break
-            
-            # Bước 3: Fallback - nếu chưa tìm thấy ảnh nào, gửi Hình 1 từ mỗi source liên quan
-            if not matched_images:
-                for score, chunk in relevant_results:
-                    source = chunk.get('source', '')
-                    if source in IMAGE_MAP_DATA and source not in sources_with_images:
-                        if "Hình 1" in IMAGE_MAP_DATA[source]:
-                            img_rel_path = IMAGE_MAP_DATA[source]["Hình 1"]
-                            img_local_path = os.path.join(OUTPUT_DIR, img_rel_path)
-                            if os.path.exists(img_local_path) and img_rel_path not in seen_images:
-                                matched_images.append(("Hình 1", img_rel_path))
-                                seen_images.add(img_rel_path)
-                                sources_with_images.add(source)
-                    if len(matched_images) >= 3:  # Giới hạn fallback 3 ảnh
-                        break
+                                break
+                
+                # Bước 2: Quét "Hình N" trong NỘI DUNG RAG chunks (bổ sung thêm nếu chưa đủ)
+                if len(matched_images) < 5:
+                    for score, chunk in relevant_results:
+                        source = chunk.get('source', '')
+                        for match in re.finditer(r'Hình\s+(\d+)', chunk.get('text', '')):
+                            hinh_num = match.group(1)
+                            hinh_key = f"Hình {hinh_num}"
+                            
+                            img_map = db.query(models.ImageMapping).join(models.Document).filter(
+                                models.Document.source == source,
+                                models.ImageMapping.hinh_key == hinh_key
+                            ).first()
+                            
+                            if img_map:
+                                img_rel_path = img_map.img_rel_path
+                                img_local_path = os.path.join(OUTPUT_DIR, img_rel_path)
+                                if os.path.exists(img_local_path) and img_rel_path not in seen_images:
+                                    matched_images.append((hinh_key, img_rel_path))
+                                    seen_images.add(img_rel_path)
+                                    sources_with_images.add(source)
+                        if len(matched_images) >= 5:
+                            break
+                
+                # Bước 3: Fallback - nếu chưa tìm thấy ảnh nào, gửi Hình 1 từ mỗi source liên quan
+                if not matched_images:
+                    for score, chunk in relevant_results:
+                        source = chunk.get('source', '')
+                        if source not in sources_with_images:
+                            img_map = db.query(models.ImageMapping).join(models.Document).filter(
+                                models.Document.source == source,
+                                models.ImageMapping.hinh_key == "Hình 1"
+                            ).first()
+                            
+                            if img_map:
+                                img_rel_path = img_map.img_rel_path
+                                img_local_path = os.path.join(OUTPUT_DIR, img_rel_path)
+                                if os.path.exists(img_local_path) and img_rel_path not in seen_images:
+                                    matched_images.append(("Hình 1", img_rel_path))
+                                    seen_images.add(img_rel_path)
+                                    sources_with_images.add(source)
+                        if len(matched_images) >= 3:  # Giới hạn fallback 3 ảnh
+                            break
+            except Exception as e:
+                print(f"[Zalo Bot Error] Lỗi truy vấn ảnh minh họa từ CSDL: {e}")
+            finally:
+                db.close()
             
             print(f"[Zalo QA] Matched images: {len(matched_images)}")
 
@@ -959,6 +1046,83 @@ def process_zalo_message(message):
                 "👉 Để soạn thảo công văn giao việc, bạn hãy gửi ảnh chụp trang đầu văn bản chỉ đạo vào đây."
             )
             send_zalo_message(chat_id, reply)
+
+def process_zalo_webhook_payload(payload):
+    """
+    Xử lý payload webhook từ Zalo Official Account.
+    Hỗ trợ: tin nhắn text, tin nhắn ảnh, và tin nhắn gửi file tài liệu từ Admin để nạp tri thức.
+    """
+    print(f"[Zalo Webhook Log] Nhận payload: {json.dumps(payload, ensure_ascii=False)}")
+    
+    event_name = payload.get("event_name")
+    sender_id = payload.get("sender", {}).get("id")
+    if not sender_id:
+        return
+        
+    # Tạo cấu trúc tin nhắn chuẩn để tương thích với process_zalo_message
+    message = {
+        "chat": {"id": sender_id},
+        "from": {"display_name": "Người dùng Zalo"},
+        "text": "",
+        "photo_url": ""
+    }
+    
+    msg_data = payload.get("message", {})
+    
+    # 1. Xử lý trường hợp Admin gửi file tài liệu để nạp tri thức
+    if event_name == "user_send_file":
+        attachments = msg_data.get("attachments", [])
+        if attachments:
+            file_payload = attachments[0].get("payload", {})
+            file_url = file_payload.get("url")
+            file_name = file_payload.get("name")
+            
+            # Kiểm tra phân quyền Admin (đọc cấu hình từ môi trường)
+            admin_ids = [i.strip() for i in os.environ.get('ADMIN_ZALO_IDS', '').split(',') if i.strip()]
+            if sender_id not in admin_ids:
+                send_zalo_message(sender_id, "❌ Bạn không có quyền nạp tài liệu tri thức vào hệ thống.")
+                return
+                
+            if file_url and file_name:
+                send_zalo_message(sender_id, f"📥 Đang tải tài liệu: {file_name}...")
+                
+                # Tải file về thư mục tạm
+                temp_file_path = os.path.join(TEMP_DIR, file_name)
+                if download_file_from_url(file_url, temp_file_path):
+                    send_zalo_message(sender_id, "⚙️ Đang tiến hành phân tích văn bản và nạp tri thức RAG...")
+                    
+                    from document_uploader import ingest_document_file
+                    result = ingest_document_file(temp_file_path)
+                    
+                    # Xóa file tạm
+                    if os.path.exists(temp_file_path):
+                        os.remove(temp_file_path)
+                        
+                    if result.get("status") == "success":
+                        details = result.get("details", {})
+                        send_zalo_message(
+                            sender_id,
+                            f"✅ Nạp tri thức thành công!\n"
+                            f"📄 Tài liệu: {details.get('title')}\n"
+                            f"🧩 Số chunks tri thức: {details.get('chunks')}\n"
+                            f"📸 Số ảnh minh họa: {details.get('images')}"
+                        )
+                    else:
+                        send_zalo_message(sender_id, f"❌ Nạp tri thức thất bại: {result.get('message')}")
+                else:
+                    send_zalo_message(sender_id, "❌ Không thể tải file tài liệu từ Zalo Server.")
+        return
+
+    # 2. Chuẩn hóa các sự kiện text/image thông thường
+    if event_name == "user_send_text":
+        message["text"] = msg_data.get("text", "")
+    elif event_name == "user_send_image":
+        attachments = msg_data.get("attachments", [])
+        if attachments:
+            message["photo_url"] = attachments[0].get("payload", {}).get("url", "")
+            
+    # Chạy xử lý thông qua logic chung
+    process_zalo_message(message)
 
 def main():
     if not ZALO_API_TOKEN:

@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: chatbot-db
+    restart: always
+    environment:
+      POSTGRES_DB: chatbot_db
+      POSTGRES_USER: chatbot_user
+      POSTGRES_PASSWORD: chatbot_password_secure_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chatbot_user -d chatbot_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: chatbot-web
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgresql://chatbot_user:chatbot_password_secure_2026@db:5432/chatbot_db
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - ZALO_API_TOKEN=${ZALO_API_TOKEN}
+      - SERVER_DOMAIN=${SERVER_DOMAIN}
+      - ADMIN_PHONE_NUMBERS=${ADMIN_PHONE_NUMBERS}
+    volumes:
+      - ./taovanban_khoidang/output:/app/taovanban_khoidang/output
+      - ./taovanban_khoidang/references:/app/taovanban_khoidang/references
+
+volumes:
+  pgdata:

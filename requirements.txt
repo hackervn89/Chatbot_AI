@@ -1,8 +1,12 @@
-pyTelegramBotAPI
+fastapi
+uvicorn
+sqlalchemy
+pgvector
+psycopg2-binary
 pypdf
 python-docx
 google-genai
 requests
-flask
 Pillow
 ddgs
+python-multipart
