@@ -49,10 +49,9 @@ DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY')
 
 # Danh sách mô hình Gemini theo thứ tự ưu tiên (fallback chain)
 GEMINI_MODELS = [
-    "gemini-1.5-flash",
     "gemini-2.5-flash",
+    "gemini-2.0-flash",
     "gemini-1.5-pro",
-    "gemini-3.5-flash",
 ]
 # =======================================================
 
