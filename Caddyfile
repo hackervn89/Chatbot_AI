@@ -1,3 +1,6 @@
 bot.conghaiso.vn {
+    log {
+        output stdout
+    }
     reverse_proxy web:8080
 }
