@@ -41,5 +41,22 @@ services:
       - ./taovanban_khoidang/output:/app/taovanban_khoidang/output
       - ./taovanban_khoidang/references:/app/taovanban_khoidang/references
 
+  caddy:
+    image: caddy:2-alpine
+    container_name: chatbot-caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+
 volumes:
   pgdata:
+  caddy_data:
+  caddy_config:
