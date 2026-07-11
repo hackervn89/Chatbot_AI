@@ -67,9 +67,9 @@ def hybrid_search(db: Session, query: str, top_n: int = 5) -> list:
                 WITH dense_search AS (
                     SELECT 
                         id, 
-                        (1 - (embedding <=> :vector::vector)) as dense_score
+                        (1 - (embedding <=> cast(:vector as vector))) as dense_score
                     FROM knowledge_chunks
-                    ORDER BY embedding <=> :vector::vector
+                    ORDER BY embedding <=> cast(:vector as vector)
                     LIMIT 50
                 ),
                 sparse_search AS (
