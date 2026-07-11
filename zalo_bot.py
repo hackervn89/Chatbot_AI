@@ -1055,8 +1055,20 @@ def process_zalo_webhook_payload(payload):
     print(f"[Zalo Webhook Log] Nhận payload: {json.dumps(payload, ensure_ascii=False)}")
     
     event_name = payload.get("event_name")
-    sender_id = payload.get("sender", {}).get("id")
+    
+    # Nhận diện sender_id một cách linh hoạt theo nhiều phiên bản API của Zalo
+    sender_id = None
+    if payload.get("sender", {}).get("id"):
+        sender_id = payload["sender"]["id"]
+    elif payload.get("message", {}).get("from", {}).get("id"):
+        sender_id = payload["message"]["from"]["id"]
+    elif payload.get("sender_id"):
+        sender_id = payload["sender_id"]
+    elif payload.get("user_id"):
+        sender_id = payload["user_id"]
+        
     if not sender_id:
+        print("[Zalo Webhook Warning] Không xác định được sender_id từ payload.")
         return
         
     # Tạo cấu trúc tin nhắn chuẩn để tương thích với process_zalo_message
@@ -1070,7 +1082,7 @@ def process_zalo_webhook_payload(payload):
     msg_data = payload.get("message", {})
     
     # 1. Xử lý trường hợp Admin gửi file tài liệu để nạp tri thức
-    if event_name == "user_send_file":
+    if event_name in ["user_send_file", "message.file.received"]:
         attachments = msg_data.get("attachments", [])
         if attachments:
             file_payload = attachments[0].get("payload", {})
@@ -1080,7 +1092,7 @@ def process_zalo_webhook_payload(payload):
             # Kiểm tra phân quyền Admin (đọc cấu hình từ môi trường)
             admin_ids = [i.strip() for i in os.environ.get('ADMIN_ZALO_IDS', '').split(',') if i.strip()]
             if sender_id not in admin_ids:
-                send_zalo_message(sender_id, "❌ Bạn không có quyền nạp tài liệu tri thức vào hệ thống.")
+                send_zalo_message(sender_id, "x Bạn không có quyền nạp tài liệu tri thức vào hệ thống.")
                 return
                 
             if file_url and file_name:
@@ -1108,18 +1120,20 @@ def process_zalo_webhook_payload(payload):
                             f"📸 Số ảnh minh họa: {details.get('images')}"
                         )
                     else:
-                        send_zalo_message(sender_id, f"❌ Nạp tri thức thất bại: {result.get('message')}")
+                        send_zalo_message(sender_id, f"x Nạp tri thức thất bại: {result.get('message')}")
                 else:
-                    send_zalo_message(sender_id, "❌ Không thể tải file tài liệu từ Zalo Server.")
+                    send_zalo_message(sender_id, "x Không thể tải file tài liệu từ Zalo Server.")
         return
-
+ 
     # 2. Chuẩn hóa các sự kiện text/image thông thường
-    if event_name == "user_send_text":
+    if event_name in ["user_send_text", "message.text.received"] or "text" in msg_data:
         message["text"] = msg_data.get("text", "")
-    elif event_name == "user_send_image":
+        
+    if event_name in ["user_send_image", "message.image.received"] or "photo" in msg_data or "photo_url" in msg_data:
         attachments = msg_data.get("attachments", [])
         if attachments:
-            message["photo_url"] = attachments[0].get("payload", {}).get("url", "")
+            payload_data = attachments[0].get("payload", {})
+            message["photo_url"] = payload_data.get("url", "")
             
     # Chạy xử lý thông qua logic chung
     process_zalo_message(message)
