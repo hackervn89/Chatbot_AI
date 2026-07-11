@@ -233,8 +233,9 @@ Nhiệm vụ của bạn là giải đáp các thắc mắc của người dùng
 Quy tắc trả lời:
 1. Đối với các câu hỏi về thao tác phần mềm Hệ thống Điều hành tác nghiệp (ĐHTN) hoặc Thủ tục hành chính (TTHC) Đảng: Bạn ưu tiên sử dụng thông tin chi tiết trong Bộ Kiến Thức Nghiệp Vụ được cung cấp dưới đây để trả lời chính xác các bước bấm nút, giao diện.
 2. Đối với các quy trình nghiệp vụ Đảng chung (như quy trình chuyển sinh hoạt Đảng, thủ tục kết nạp Đảng, đảng phí...) hoặc khi tài liệu được cung cấp chưa có hướng dẫn chi tiết: Bạn hãy sử dụng kiến thức chuyên môn sâu rộng của mình về Điều lệ Đảng, Quy định số 24-QĐ/TW, Hướng dẫn số 09-HD/BTCTW... để trả lời đầy đủ, cụ thể từng bước và đúng quy định của Đảng cho người dùng.
-3. Luôn giữ phong cách hành văn lịch sự, nhã nhặn, chuẩn mực công vụ Việt Nam.
-4. Khi hướng dẫn thao tác phần mềm, nếu tài liệu tham chiếu có đề cập đến hình ảnh minh họa (ví dụ: "Hình 1", "Hình 2"...), hãy giữ nguyên nhãn "Hình N" trong câu trả lời để hệ thống có thể tự động đính kèm ảnh minh họa tương ứng cho người dùng.
+3. Đối với các câu hỏi chung ngoài lề (như trò chuyện hàng ngày, toán học, dịch thuật, lập trình, nấu ăn, thời tiết...): Bạn đóng vai trò là một trợ lý đa nhiệm thông minh, trả lời trực tiếp, đầy đủ, nhiệt tình và chính xác theo kiến thức chung của bạn hoặc kết quả tìm kiếm được cung cấp mà không bị giới hạn bởi tài liệu hành chính đảng.
+4. Luôn giữ phong cách hành văn lịch sự, nhã nhặn, chuẩn mực công vụ Việt Nam.
+5. Khi hướng dẫn thao tác phần mềm, nếu tài liệu tham chiếu có đề cập đến hình ảnh minh họa (ví dụ: "Hình 1", "Hình 2"...), hãy giữ nguyên nhãn "Hình N" trong câu trả lời để hệ thống có thể tự động đính kèm ảnh minh họa tương ứng cho người dùng.
 
 Dưới đây là Bộ Kiến Thức Nghiệp Vụ để bạn tham chiếu:
 === BẮT ĐẦU BỘ KIẾN THỨC ===
@@ -284,21 +285,36 @@ def ask_dhtn_qa(chat_id, question):
             
     # Lấy thông tin ngữ cảnh (Nội bộ hoặc Tìm kiếm Web)
     relevant_context = ""
-    if best_score >= 35:
-        print(f"[RAG] Điểm số nội bộ cao ({best_score:.1f}). Sử dụng tài liệu nghiệp vụ nội bộ.")
-        relevant_context = "\n\nDưới đây là tài liệu hướng dẫn chi tiết trích từ HDSD hệ thống:\n"
-        for idx, (score, chunk) in enumerate(relevant_results):
-            relevant_context += f"--- Nguồn tài liệu: {chunk['source']} ---\n{chunk['text']}\n"
+    use_internal_kt = True
+    
+    if best_score >= 15:
+        # Có sự tương thích tri thức nội bộ
+        if best_score >= 35:
+            print(f"[RAG] Điểm số nội bộ cao ({best_score:.1f}). Sử dụng tài liệu nghiệp vụ nội bộ.")
+            relevant_context = "\n\nDưới đây là tài liệu hướng dẫn chi tiết trích từ HDSD hệ thống:\n"
+            for idx, (score, chunk) in enumerate(relevant_results):
+                relevant_context += f"--- Nguồn tài liệu: {chunk['source']} ---\n{chunk['text']}\n"
+        else:
+            print(f"[RAG] Điểm số nội bộ trung bình ({best_score:.1f}). Đang tìm kiếm Web...")
+            web_results = search_duckduckgo_free(question)
+            if web_results:
+                relevant_context = "\n\nDưới đây là thông tin tìm kiếm thời gian thực trên Internet về câu hỏi này:\n"
+                for idx, snippet in enumerate(web_results):
+                    relevant_context += f"- Kết quả {idx+1}: {snippet}\n"
     else:
-        print(f"[RAG] Điểm số nội bộ thấp ({best_score:.1f}). Đang tìm kiếm Web...")
+        # Điểm số cực thấp -> Chit-chat hoặc câu hỏi chung
+        print(f"[RAG] Điểm số nội bộ cực thấp ({best_score:.1f}). Nhận diện câu hỏi chung/ngoài lề.")
+        use_internal_kt = False
         web_results = search_duckduckgo_free(question)
         if web_results:
-            relevant_context = "\n\nDưới đây là thông tin tìm kiếm thời gian thực trên Internet về câu hỏi này:\n"
+            relevant_context = "\n\ Dưới đây là thông tin tìm kiếm trên Internet:\n"
             for idx, snippet in enumerate(web_results):
                 relevant_context += f"- Kết quả {idx+1}: {snippet}\n"
                 
+    # Nếu không phải câu hỏi nội bộ, bỏ qua bộ 37k ký tự KIENTHUC_CONTENT để tránh nghẽn mô hình và tiết kiệm token
+    kt_content = KIENTHUC_CONTENT if use_internal_kt else "Không có tài liệu tham chiếu nội bộ phù hợp."
     system_prompt = DHTN_QA_SYSTEM_PROMPT.format(
-        kienthuc_content=KIENTHUC_CONTENT + relevant_context
+        kienthuc_content=kt_content + relevant_context
     )
     
     # 1. Ưu tiên số 1: Luôn dùng DeepSeek cho mọi câu hỏi
@@ -317,7 +333,7 @@ def ask_dhtn_qa(chat_id, question):
             "temperature": 0.5
         }
         try:
-            print(f"[Telegram QA] Đang gửi câu hỏi tới DeepSeek (Lịch sử: {len(history)} tin)...")
+            print(f"[QA] Đang gửi câu hỏi tới DeepSeek (Lịch sử: {len(history)} tin)...")
             response = requests.post(url, json=payload, headers=headers, timeout=25)
             if response.status_code == 200:
                 res_data = response.json()
@@ -327,7 +343,7 @@ def ask_dhtn_qa(chat_id, question):
                     add_chat_message(chat_id, "assistant", reply)
                     return reply, "DeepSeek-V3", relevant_results
         except Exception as e:
-            print(f"[Telegram QA] Lỗi gọi DeepSeek Q&A: {e}")
+            print(f"[QA] Lỗi gọi DeepSeek Q&A: {e}")
             
     # 2. Phương án dự phòng cuối cùng nếu DeepSeek lỗi hoặc hết tiền -> Dùng Gemini
     if GEMINI_API_KEY:
@@ -358,25 +374,25 @@ def ask_dhtn_qa(chat_id, question):
             
         for model_name in GEMINI_MODELS:
             try:
-                print(f"[Telegram QA] Đang gọi Gemini dự phòng ({model_name})...")
+                print(f"[QA] Đang gọi Gemini dự phòng ({model_name})...")
                 response = client.models.generate_content(
                     model=model_name,
                     contents=gemini_contents,
                     config=types.GenerateContentConfig(
                         system_instruction=system_prompt,
                         temperature=0.5,
-                        tools=tools_config if tools_config else None
-                    ),
+                        tools=tools_config
+                    )
                 )
-                reply = response.text.strip()
+                reply = response.text.strip() if response.text else ""
                 if reply:
                     add_chat_message(chat_id, "user", question)
                     add_chat_message(chat_id, "assistant", reply)
-                    return reply, model_name, relevant_results
+                    return reply, f"Gemini ({model_name})", relevant_results
             except Exception as e:
-                print(f"[Telegram QA] Lỗi gọi Gemini dự phòng: {e}")
+                print(f"[QA] Lỗi gọi model Gemini {model_name}: {e}")
                 
-    return None, None, []
+    return "Tôi đang gặp sự cố kết nối tới máy chủ AI. Xin vui lòng thử lại sau.", None, []
 
 def analyze_with_gemini(pdf_text):
     """
