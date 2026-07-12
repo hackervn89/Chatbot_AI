@@ -22,6 +22,7 @@
             <li><a href="/admin/documents" class="{% if '/admin/documents' in request.url.path %}active{% endif %}">📄 Tài liệu</a></li>
             <li><a href="/admin/chats" class="{% if '/admin/chats' in request.url.path %}active{% endif %}">💬 Hội thoại</a></li>
             <li><a href="/admin/audit" class="{% if request.url.path == '/admin/audit' %}active{% endif %}">📋 Nhật ký</a></li>
+            <li><a href="/admin/logs" class="{% if request.url.path == '/admin/logs' %}active{% endif %}">💻 Log hệ thống</a></li>
             <li><a href="/admin/settings" class="{% if request.url.path == '/admin/settings' %}active{% endif %}">⚙️ Cài đặt</a></li>
         </ul>
         <div class="sidebar-footer">

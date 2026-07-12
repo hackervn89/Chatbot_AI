@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}Log Hệ Thống - Admin Dashboard{% endblock %}
+
+{% block head %}
+<style>
+    .log-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 180px);
+        background: #0f172a;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        overflow: hidden;
+        border: 1px solid #1e293b;
+    }
+    
+    .log-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 24px;
+        background: #1e293b;
+        border-bottom: 1px solid #334155;
+    }
+    
+    .log-header-title {
+        color: #f8fafc;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .log-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    
+    .log-terminal {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        font-family: 'Consolas', 'Monaco', 'Courier New', Courier, monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        color: #e2e8f0;
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+    
+    .log-terminal::-webkit-scrollbar {
+        width: 8px;
+    }
+    .log-terminal::-webkit-scrollbar-track {
+        background: #0f172a;
+    }
+    .log-terminal::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+    }
+    .log-terminal::-webkit-scrollbar-thumb:hover {
+        background: #475569;
+    }
+    
+    .btn-log {
+        background: #334155;
+        color: #f8fafc;
+        border: 1px solid #475569;
+        padding: 6px 12px;
+        font-size: 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+    .btn-log:hover {
+        background: #475569;
+        border-color: #64748b;
+    }
+    
+    .filter-input {
+        background: #0f172a;
+        border: 1px solid #334155;
+        color: #f8fafc;
+        padding: 6px 12px;
+        font-size: 12px;
+        border-radius: 6px;
+        outline: none;
+        width: 200px;
+    }
+    .filter-input:focus {
+        border-color: #64748b;
+    }
+    
+    .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+        display: inline-block;
+    }
+    
+    .status-indicator.paused {
+        background: #f59e0b;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header" style="margin-bottom: 20px;">
+    <h1>Nhật ký Log Hệ thống</h1>
+    <span style="font-size: 14px; color: var(--text-secondary);">Xem trực tiếp logs ứng dụng FastAPI và Bot</span>
+</div>
+
+<div class="log-container">
+    <div class="log-header">
+        <div class="log-header-title">
+            <span id="status-dot" class="status-indicator"></span>
+            <span id="status-text">Đang kết nối...</span>
+        </div>
+        <div class="log-header-actions">
+            <input type="text" id="filter" class="filter-input" placeholder="Lọc từ khóa (RAG, ERROR...)" oninput="filterLogs()">
+            <label style="display: flex; align-items: center; gap: 6px; color: #94a3b8; font-size: 12px; cursor: pointer; user-select: none; margin-bottom: 0;">
+                <input type="checkbox" id="auto-scroll" checked style="width: 14px; height: 14px; cursor: pointer;">
+                Cuộn xuống dưới
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; color: #94a3b8; font-size: 12px; cursor: pointer; user-select: none; margin-bottom: 0;">
+                <input type="checkbox" id="auto-refresh" checked style="width: 14px; height: 14px; cursor: pointer;" onchange="toggleAutoRefresh(this)">
+                Tự động tải lại (3s)
+            </label>
+            <button class="btn-log" onclick="fetchLogs()">🔄 Tải lại</button>
+        </div>
+    </div>
+    <pre id="terminal" class="log-terminal">Đang tải logs...</pre>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let autoRefreshInterval = null;
+    let rawLogContent = "";
+    
+    // Tải logs lần đầu tiên
+    fetchLogs();
+    startAutoRefresh();
+    
+    function fetchLogs() {
+        const statusText = document.getElementById("status-text");
+        const statusDot = document.getElementById("status-dot");
+        
+        statusText.innerText = "Đang cập nhật...";
+        
+        fetch('/admin/logs/data?lines=400')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Lỗi HTTP " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === "success") {
+                    rawLogContent = data.content;
+                    displayLogs();
+                    
+                    statusText.innerText = "Đã cập nhật lúc " + new Date().toLocaleTimeString();
+                    statusDot.className = "status-indicator";
+                } else {
+                    document.getElementById("terminal").innerText = "Lỗi khi lấy log: " + data.content;
+                    statusText.innerText = "Lỗi đọc file log";
+                    statusDot.className = "status-indicator paused";
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi khi fetch logs:", error);
+                statusText.innerText = "Lỗi kết nối máy chủ";
+                statusDot.className = "status-indicator paused";
+            });
+    }
+    
+    function displayLogs() {
+        const terminal = document.getElementById("terminal");
+        const filterVal = document.getElementById("filter").value.toLowerCase();
+        const autoScroll = document.getElementById("auto-scroll").checked;
+        
+        if (!filterVal) {
+            terminal.innerText = rawLogContent;
+        } else {
+            // Lọc logs theo dòng
+            const lines = rawLogContent.split("\n");
+            const filteredLines = lines.filter(line => line.toLowerCase().includes(filterVal));
+            terminal.innerText = filteredLines.join("\n");
+        }
+        
+        // Tự động cuộn xuống đáy
+        if (autoScroll) {
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+    }
+    
+    function filterLogs() {
+        displayLogs();
+    }
+    
+    function startAutoRefresh() {
+        if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+        autoRefreshInterval = setInterval(fetchLogs, 3000);
+    }
+    
+    function stopAutoRefresh() {
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+        }
+    }
+    
+    function toggleAutoRefresh(cb) {
+        const statusDot = document.getElementById("status-dot");
+        const statusText = document.getElementById("status-text");
+        
+        if (cb.checked) {
+            startAutoRefresh();
+            statusDot.className = "status-indicator";
+            statusText.innerText = "Đang kết nối...";
+        } else {
+            stopAutoRefresh();
+            statusDot.className = "status-indicator paused";
+            statusText.innerText = "Đã tạm dừng tự động tải lại";
+        }
+    }
+</script>
+{% endblock %}

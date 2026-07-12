@@ -523,3 +523,31 @@ async def change_password(
         return RedirectResponse(url="/admin/settings?msg=wrong_password", status_code=302)
     finally:
         db.close()
+
+
+@router.get("/logs")
+async def show_logs_page(request: Request):
+    admin = _require_login(request)
+    if not admin:
+        return RedirectResponse(url="/admin/login", status_code=302)
+    return templates.TemplateResponse("logs.html", {"request": request, "admin": admin})
+
+
+@router.get("/logs/data")
+async def get_logs_data(request: Request, lines: int = 300):
+    admin = _require_login(request)
+    if not admin:
+        return JSONResponse(status_code=401, content={"detail": "Unauthorized"})
+    
+    log_file = "app.log"
+    if not os.path.exists(log_file):
+        return {"status": "success", "content": "[System] Chưa có log hệ thống được tạo."}
+        
+    try:
+        with open(log_file, "r", encoding="utf-8", errors="ignore") as f:
+            all_lines = f.readlines()
+            tail_lines = all_lines[-lines:] if len(all_lines) > lines else all_lines
+            content = "".join(tail_lines)
+            return {"status": "success", "content": content}
+    except Exception as e:
+        return {"status": "error", "content": f"Không thể đọc file log: {str(e)}"}

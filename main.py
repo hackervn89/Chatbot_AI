@@ -19,6 +19,38 @@ from routers import webhook, admin
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stderr.reconfigure(encoding='utf-8')
 
+# Tee logger: Ghi logs ra cả file app.log để hiển thị trên web admin
+class TeeLogger:
+    def __init__(self, filename, stream):
+        self.stream = stream
+        try:
+            self.file = open(filename, "a", encoding="utf-8")
+        except Exception:
+            self.file = None
+
+    def write(self, data):
+        self.stream.write(data)
+        self.stream.flush()
+        if self.file:
+            try:
+                self.file.write(data)
+                self.file.flush()
+            except Exception:
+                pass
+
+    def flush(self):
+        self.stream.flush()
+        if self.file:
+            try:
+                self.file.flush()
+            except Exception:
+                pass
+
+LOG_FILE_PATH = "app.log"
+sys.stdout = TeeLogger(LOG_FILE_PATH, sys.stdout)
+sys.stderr = TeeLogger(LOG_FILE_PATH, sys.stderr)
+print(f"[System] Đã kích hoạt TeeLogger ghi file: {LOG_FILE_PATH}")
+
 app = FastAPI(title="Chuyên Viên Ảo FastAPI Server", version="3.0.0")
 
 # Khởi tạo các bảng database nếu chưa tồn tại
