@@ -439,10 +439,10 @@ def ask_dhtn_qa(chat_id, question, db=None):
             for idx, snippet in enumerate(web_results):
                 relevant_context += f"- Kết quả {idx+1}: {snippet}\n"
                 
-    # Nếu không phải câu hỏi nội bộ, bỏ qua bộ 37k ký tự KIENTHUC_CONTENT để tránh nghẽn mô hình và tiết kiệm token
-    kt_content = KIENTHUC_CONTENT if use_internal_kt else "Không có tài liệu tham chiếu nội bộ phù hợp."
+    # Toàn bộ ngữ cảnh RAG chỉ lấy từ database động, loại bỏ file tĩnh KIENTHUC_CONTENT
+    kt_content = relevant_context if use_internal_kt else "Không có tài liệu tham chiếu nội bộ phù hợp."
     system_prompt = DHTN_QA_SYSTEM_PROMPT.format(
-        kienthuc_content=kt_content + relevant_context
+        kienthuc_content=kt_content
     )
     
     # 1. Ưu tiên số 1: Luôn dùng DeepSeek cho mọi câu hỏi

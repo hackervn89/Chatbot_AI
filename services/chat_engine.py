@@ -220,9 +220,9 @@ def answer_question(
                 for s in web_snippets:
                     relevant_context += f"- {s}\n"
 
-        # 4. Build prompt
-        kt = KIENTHUC_CONTENT if use_internal_kt else "Không có tài liệu nội bộ phù hợp."
-        system_prompt = QA_SYSTEM_PROMPT.format(kienthuc_content=kt + relevant_context)
+        # 4. Build prompt - Toàn bộ ngữ cảnh RAG chỉ lấy từ database động, loại bỏ file tĩnh KIENTHUC_CONTENT
+        kt = relevant_context if use_internal_kt else "Không có tài liệu nội bộ phù hợp."
+        system_prompt = QA_SYSTEM_PROMPT.format(kienthuc_content=kt)
 
         # 5. Call AI
         reply, model_name, response_time = call_ai(
