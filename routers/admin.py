@@ -167,25 +167,13 @@ async def dashboard(request: Request):
         db.close()
 
 
-# Danh sách gợi ý metadata mặc định chuẩn hóa theo Hướng dẫn số 05-HD/VPTW
-DEFAULT_DOCUMENT_TYPES = [
-    "Nghị quyết (NQ)", "Quyết định (QĐ)", "Quy định (QyĐ)", "Chỉ thị (CT)",
-    "Kết luận (KL)", "Hướng dẫn (HD)", "Báo cáo số liệu (BC)", "Công văn (CV)",
-    "Quy chế (QC)", "Chương trình (CTr)", "Tờ trình (TTr)", "Kế hoạch (KH)",
-    "Thông báo (TB)", "Thông tri (TT)", "Biên bản (BB)"
-]
-
-DEFAULT_ISSUERS = [
-    "Trung ương (TW)",
-    "Tỉnh ủy Khánh Hòa",
-    "Đảng ủy xã Công Hải",
-    "Chi bộ trực thuộc"
-]
-
-DEFAULT_DOMAINS = [
-    "Tổ chức cán bộ", "Kiểm tra giám sát", "Tuyên giáo", "Dân vận",
-    "Văn phòng", "Nội chính", "Tài chính Đảng", "Quản lý đảng viên",
-    "Bảo vệ chính trị nội bộ", "Thi đua khen thưởng"
+# Danh sách Danh mục tri thức mặc định
+DEFAULT_CATEGORIES = [
+    "Văn bản của Trung ương",
+    "Văn bản của Tỉnh",
+    "Văn bản của Xã",
+    "Hướng dẫn điều hành tác nghiệp",
+    "Hướng dẫn sổ tay điện tử"
 ]
 
 
@@ -202,21 +190,14 @@ async def documents_page(request: Request):
         category = request.query_params.get("category", "")
         docs = get_all_documents(db, category=category if category else None)
         
-        # Gợi ý động
-        db_types = [r[0] for r in db.query(Document.document_type).distinct().all() if r[0]]
-        db_issuers = [r[0] for r in db.query(Document.issuer).distinct().all() if r[0]]
-        db_domains = [r[0] for r in db.query(Document.domain).distinct().all() if r[0]]
-        
-        suggested_types = sorted(list(set(DEFAULT_DOCUMENT_TYPES + db_types)))
-        suggested_issuers = sorted(list(set(DEFAULT_ISSUERS + db_issuers)))
-        suggested_domains = sorted(list(set(DEFAULT_DOMAINS + db_domains)))
+        # Gợi ý danh mục động từ database
+        db_categories = [r[0] for r in db.query(Document.category).distinct().all() if r[0]]
+        suggested_categories = sorted(list(set(DEFAULT_CATEGORIES + db_categories)))
         
         return templates.TemplateResponse(request=request, name="documents.html", context={
             "request": request, "admin": admin, "documents": docs,
             "current_category": category,
-            "suggested_types": suggested_types,
-            "suggested_issuers": suggested_issuers,
-            "suggested_domains": suggested_domains
+            "suggested_categories": suggested_categories
         })
     finally:
         db.close()
@@ -234,20 +215,13 @@ async def document_detail_page(request: Request, doc_id: int):
         if not detail:
             return RedirectResponse(url="/admin/documents", status_code=302)
             
-        # Gợi ý động
-        db_types = [r[0] for r in db.query(Document.document_type).distinct().all() if r[0]]
-        db_issuers = [r[0] for r in db.query(Document.issuer).distinct().all() if r[0]]
-        db_domains = [r[0] for r in db.query(Document.domain).distinct().all() if r[0]]
-        
-        suggested_types = sorted(list(set(DEFAULT_DOCUMENT_TYPES + db_types)))
-        suggested_issuers = sorted(list(set(DEFAULT_ISSUERS + db_issuers)))
-        suggested_domains = sorted(list(set(DEFAULT_DOMAINS + db_domains)))
+        # Gợi ý danh mục động từ database
+        db_categories = [r[0] for r in db.query(Document.category).distinct().all() if r[0]]
+        suggested_categories = sorted(list(set(DEFAULT_CATEGORIES + db_categories)))
         
         return templates.TemplateResponse(request=request, name="document_detail.html", context={
             "request": request, "admin": admin, **detail,
-            "suggested_types": suggested_types,
-            "suggested_issuers": suggested_issuers,
-            "suggested_domains": suggested_domains
+            "suggested_categories": suggested_categories
         })
     finally:
         db.close()
@@ -257,14 +231,10 @@ async def document_detail_page(request: Request, doc_id: int):
 async def upload_document(
     request: Request,
     title: str = Form(...),
-    category: str = Form(CATEGORY_CORE),
+    category: str = Form("Văn bản của Xã"),
     description: str = Form(""),
     status: str = Form("draft"),
-    document_type: str = Form("other"),
-    issuer: str = Form("other"),
-    domain: str = Form("other"),
     effective_date: str = Form(None),
-    validity: str = Form("active"),
     file: UploadFile = File(...)
 ):
     admin = _require_login(request)
@@ -285,11 +255,11 @@ async def upload_document(
             description=description,
             created_by=admin.username,
             status=status,
-            document_type=document_type,
-            issuer=issuer,
-            domain=domain,
+            document_type="other",
+            issuer="other",
+            domain="other",
             effective_date=effective_date if effective_date else None,
-            validity=validity
+            validity="active"
         )
         
         # Redirect with message
@@ -359,11 +329,7 @@ async def edit_doc(
     title: str = Form(...),
     category: str = Form(...),
     description: str = Form(""),
-    document_type: str = Form("other"),
-    issuer: str = Form("other"),
-    domain: str = Form("other"),
     effective_date: str = Form(None),
-    validity: str = Form("active"),
     raw_text: str = Form(...)
 ):
     admin = _require_login(request)
@@ -377,10 +343,6 @@ async def edit_doc(
             doc.title = title
             doc.category = category
             doc.description = description
-            doc.document_type = document_type
-            doc.issuer = issuer
-            doc.domain = domain
-            doc.validity = validity
             
             # Parse effective_date
             from datetime import datetime
@@ -394,17 +356,20 @@ async def edit_doc(
                         pass
             doc.effective_date = eff_date
             
-            # Logic tự động tính toán is_latest cho báo cáo số liệu (nhận diện động qua từ khóa 'báo cáo' hoặc 'bc')
+            # Logic tự động tính toán is_latest cho báo cáo số liệu (nhận diện động qua category hoặc title)
             is_report = False
-            if document_type:
-                dt_lower = document_type.lower()
-                if "báo cáo" in dt_lower or "bc" in dt_lower:
+            if category:
+                cat_lower = category.lower()
+                if "báo cáo" in cat_lower or "số liệu" in cat_lower:
+                    is_report = True
+            if title and not is_report:
+                title_lower = title.lower()
+                if "báo cáo" in title_lower or "số liệu" in title_lower:
                     is_report = True
 
             if is_report and eff_date:
                 other_reports = db.query(Document).filter(
-                    (Document.document_type.ilike("%báo cáo%") | Document.document_type.ilike("%bc%")),
-                    Document.domain == domain,
+                    Document.category == category,
                     Document.status == 'active',
                     Document.id != doc.id
                 ).all()

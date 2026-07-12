@@ -35,45 +35,28 @@
     <div>
         <div class="card">
             <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;">Thông tin chung</h3>
+            <div class="card">
+            <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;">Thông tin chung</h3>
             <div class="meta-grid">
                 <div class="meta-item">
-                    <div class="meta-label">Danh mục chính</div>
-                    <span class="badge {% if document.category == 'core' %}badge-core{% elif document.category == 'updatable' %}badge-updatable{% else %}badge-personal{% endif %}">
-                        {{ 'Tri thức gốc' if document.category == 'core' else 'Cập nhật' if document.category == 'updatable' else 'Cá nhân' }}
+                    <div class="meta-label">Danh mục tri thức</div>
+                    <span class="badge badge-core" style="background-color: rgba(179,0,0,0.05); color: var(--primary-color); font-weight: 600;">
+                        📂 {{ document.category }}
                     </span>
                 </div>
                 <div class="meta-item">
-                    <div class="meta-label">Loại văn bản</div>
-                    <strong style="color: var(--primary-color);">
-                        {{ 'Nghị quyết (NQ)' if document.document_type == 'nq' else 'Quyết định (QĐ)' if document.document_type == 'qd' else 'Chỉ thị (CT)' if document.document_type == 'ct' else 'Quy định (QyĐ)' if document.document_type == 'qyd' else 'Kết luận (KL)' if document.document_type == 'kl' else 'Hướng dẫn (HD)' if document.document_type == 'hd' else 'Báo cáo số liệu (BC)' if document.document_type == 'bc' else 'Khác' }}
-                    </strong>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Cơ quan ban hành</div>
-                    <span>{{ 'Trung ương (TW)' if document.issuer == 'tw' else 'Tỉnh ủy' if document.issuer == 'tinh' else 'Huyện ủy' if document.issuer == 'huyen' else 'Đảng ủy xã' if document.issuer == 'xa' else 'Khác' }}</span>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Lĩnh vực chuyên môn</div>
-                    <span>{{ 'Tổ chức cán bộ' if document.domain == 'to_chuc' else 'Kiểm tra giám sát' if document.domain == 'kiem_tra' else 'Tuyên giáo' if document.domain == 'tuyen_giao' else 'Dân vận' if document.domain == 'dan_van' else 'Văn phòng' if document.domain == 'van_phong' else 'Khác' }}</span>
-                </div>
-                <div class="meta-item">
                     <div class="meta-label">Ngày hiệu lực / Báo cáo</div>
-                    <span>{{ document.effective_date.strftime('%d/%m/%Y') if document.effective_date else 'Không áp dụng' }}</span>
+                    <span>
+                        {% if document.effective_date %}
+                            {{ document.effective_date.strftime('%d/%m/%Y') }}
+                            {% if document.is_latest %}<strong style="color: var(--success-color); margin-left: 6px;">(Mới nhất)</strong>{% endif %}
+                        {% else %}
+                            Không áp dụng
+                        {% endif %}
+                    </span>
                 </div>
                 <div class="meta-item">
-                    <div class="meta-label">Hiệu lực tri thức</div>
-                    {% if document.document_type == 'bc' and document.effective_date %}
-                        <span class="badge {% if document.is_latest %}badge-active{% else %}badge-inactive{% endif %}">
-                            {{ 'Mới nhất' if document.is_latest else 'Đã cũ' }}
-                        </span>
-                    {% else %}
-                        <span class="badge {% if document.validity == 'active' %}badge-active{% elif document.validity == 'expired' %}badge-inactive{% else %}badge-draft{% endif %}">
-                            {{ 'Còn hiệu lực' if document.validity == 'active' else 'Hết hiệu lực' if document.validity == 'expired' else 'Bị thay thế' }}
-                        </span>
-                    {% endif %}
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Phiên bản / Chunks</div>
+                    <div class="meta-label">Phiên bản / Số Chunks</div>
                     <strong>v{{ document.current_version }} ({{ document.chunk_count }} chunks)</strong>
                 </div>
                 <div class="meta-item">
@@ -100,55 +83,17 @@
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                     <div class="form-group">
-                        <label for="edit-category">Danh mục chính</label>
-                        <select id="edit-category" name="category" class="form-control">
-                            <option value="core" {% if document.category == 'core' %}selected{% endif %}>Tri thức gốc</option>
-                            <option value="updatable" {% if document.category == 'updatable' %}selected{% endif %}>Tri thức cập nhật</option>
-                            <option value="personal" {% if document.category == 'personal' %}selected{% endif %}>Tri thức cá nhân</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-document_type">Loại văn bản (tự gõ / gợi ý)</label>
-                        <input type="text" id="edit-document_type" name="document_type" class="form-control" value="{{ document.document_type }}" list="suggested-types-list" required>
-                        <datalist id="suggested-types-list">
-                            {% for t in suggested_types %}
-                            <option value="{{ t }}"></option>
+                        <label for="edit-category">Danh mục tri thức (tự gõ / gợi ý)</label>
+                        <input type="text" id="edit-category" name="category" class="form-control" value="{{ document.category }}" list="suggested-categories-list" required>
+                        <datalist id="suggested-categories-list">
+                            {% for c in suggested_categories %}
+                            <option value="{{ c }}"></option>
                             {% endfor %}
                         </datalist>
                     </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div class="form-group">
-                        <label for="edit-issuer">Cơ quan ban hành (tự gõ / gợi ý)</label>
-                        <input type="text" id="edit-issuer" name="issuer" class="form-control" value="{{ document.issuer }}" list="suggested-issuers-list" required>
-                        <datalist id="suggested-issuers-list">
-                            {% for i in suggested_issuers %}
-                            <option value="{{ i }}"></option>
-                            {% endfor %}
-                        </datalist>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-domain">Lĩnh vực chuyên môn (tự gõ / gợi ý)</label>
-                        <input type="text" id="edit-domain" name="domain" class="form-control" value="{{ document.domain }}" list="suggested-domains-list" required>
-                        <datalist id="suggested-domains-list">
-                            {% for d in suggested_domains %}
-                            <option value="{{ d }}"></option>
-                            {% endfor %}
-                        </datalist>
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                     <div class="form-group">
                         <label for="edit-effective_date">Ngày hiệu lực / Ngày báo cáo</label>
                         <input type="date" id="edit-effective_date" name="effective_date" class="form-control" value="{{ document.effective_date.strftime('%Y-%m-%d') if document.effective_date else '' }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-validity">Trạng thái hiệu lực</label>
-                        <select id="edit-validity" name="validity" class="form-control">
-                            <option value="active" {% if document.validity == 'active' %}selected{% endif %}>Còn hiệu lực</option>
-                            <option value="expired" {% if document.validity == 'expired' %}selected{% endif %}>Hết hiệu lực</option>
-                            <option value="replaced" {% if document.validity == 'replaced' %}selected{% endif %}>Bị thay thế</option>
-                        </select>
                     </div>
                 </div>
                 <div class="form-group">

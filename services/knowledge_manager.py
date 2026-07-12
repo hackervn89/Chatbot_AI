@@ -233,17 +233,20 @@ def ingest_document(
             db.add(version)
             action = "CREATE"
 
-        # Logic tự động tính toán is_latest cho báo cáo số liệu (nhận diện động qua từ khóa 'báo cáo' hoặc 'bc')
+        # Logic tự động tính toán is_latest cho báo cáo số liệu (nhận diện động qua category hoặc title)
         is_report = False
-        if document_type:
-            dt_lower = document_type.lower()
-            if "báo cáo" in dt_lower or "bc" in dt_lower:
+        if category:
+            cat_lower = category.lower()
+            if "báo cáo" in cat_lower or "số liệu" in cat_lower:
+                is_report = True
+        if title and not is_report:
+            title_lower = title.lower()
+            if "báo cáo" in title_lower or "số liệu" in title_lower:
                 is_report = True
 
         if is_report and eff_date:
             other_reports = db.query(Document).filter(
-                (Document.document_type.ilike("%báo cáo%") | Document.document_type.ilike("%bc%")),
-                Document.domain == domain,
+                Document.category == category,
                 Document.id != doc.id
             ).all()
             
@@ -486,18 +489,20 @@ def publish_document(doc_id: int, actor: str = "admin", db: Session = None) -> d
             db.commit()
             time.sleep(1.0)  # Sleep 1s giữa các batch
             
-        # 4. Logic tự động tính toán is_latest cho báo cáo số liệu (bc) khi publish
-        # 4. Logic tự động tính toán is_latest cho báo cáo số liệu (nhận diện động qua từ khóa 'báo cáo' hoặc 'bc') khi publish
+        # Logic tự động tính toán is_latest cho báo cáo số liệu (nhận diện động qua category hoặc title) khi publish
         is_report = False
-        if doc.document_type:
-            dt_lower = doc.document_type.lower()
-            if "báo cáo" in dt_lower or "bc" in dt_lower:
+        if doc.category:
+            cat_lower = doc.category.lower()
+            if "báo cáo" in cat_lower or "số liệu" in cat_lower:
+                is_report = True
+        if doc.title and not is_report:
+            title_lower = doc.title.lower()
+            if "báo cáo" in title_lower or "số liệu" in title_lower:
                 is_report = True
 
         if is_report and doc.effective_date:
             other_reports = db.query(Document).filter(
-                (Document.document_type.ilike("%báo cáo%") | Document.document_type.ilike("%bc%")),
-                Document.domain == doc.domain,
+                Document.category == doc.category,
                 Document.status == 'active',
                 Document.id != doc.id
             ).all()

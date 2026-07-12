@@ -21,55 +21,17 @@
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <div class="form-group">
-                    <label for="category">Danh mục chính</label>
-                    <select id="category" name="category" class="form-control">
-                        <option value="core">Tri thức gốc (Quy định, Điều lệ)</option>
-                        <option value="updatable">Tri thức cập nhật (Quy trình, Số liệu)</option>
-                        <option value="personal">Tri thức cá nhân (Ghi chú)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="document_type">Loại văn bản (tự gõ / gợi ý)</label>
-                    <input type="text" id="document_type" name="document_type" class="form-control" placeholder="Ví dụ: Quy định, Hướng dẫn..." list="suggested-types-list" required>
-                    <datalist id="suggested-types-list">
-                        {% for t in suggested_types %}
-                        <option value="{{ t }}"></option>
-                        {% endfor %}
-                    </datalist>
-                </div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div class="form-group">
-                    <label for="issuer">Cơ quan ban hành (tự gõ / gợi ý)</label>
-                    <input type="text" id="issuer" name="issuer" class="form-control" placeholder="Ví dụ: Ban Bí thư, Tỉnh ủy..." list="suggested-issuers-list" required>
-                    <datalist id="suggested-issuers-list">
-                        {% for i in suggested_issuers %}
-                        <option value="{{ i }}"></option>
+                    <label for="category">Danh mục tri thức (tự gõ / gợi ý)</label>
+                    <input type="text" id="category" name="category" class="form-control" placeholder="Ví dụ: Văn bản của Xã..." list="suggested-categories-list" required>
+                    <datalist id="suggested-categories-list">
+                        {% for c in suggested_categories %}
+                        <option value="{{ c }}"></option>
                         {% endfor %}
                     </datalist>
                 </div>
                 <div class="form-group">
-                    <label for="domain">Lĩnh vực chuyên môn (tự gõ / gợi ý)</label>
-                    <input type="text" id="domain" name="domain" class="form-control" placeholder="Ví dụ: Tổ chức cán bộ, Tuyên giáo..." list="suggested-domains-list" required>
-                    <datalist id="suggested-domains-list">
-                        {% for d in suggested_domains %}
-                        <option value="{{ d }}"></option>
-                        {% endfor %}
-                    </datalist>
-                </div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div class="form-group">
-                    <label for="effective_date">Ngày hiệu lực / Ngày báo cáo</label>
+                    <label for="effective_date">Ngày hiệu lực / Báo cáo (nếu có)</label>
                     <input type="date" id="effective_date" name="effective_date" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="validity">Trạng thái hiệu lực</label>
-                    <select id="validity" name="validity" class="form-control">
-                        <option value="active" selected>Còn hiệu lực</option>
-                        <option value="expired">Hết hiệu lực</option>
-                        <option value="replaced">Bị thay thế</option>
-                    </select>
                 </div>
             </div>
             <div class="form-group">
@@ -96,11 +58,11 @@
 </div>
 
 <div class="card">
-    <div style="display: flex; gap: 12px; margin-bottom: 20px;">
-        <a href="/admin/documents" class="btn {% if not current_category %}btn-primary{% else %}btn-secondary{% endif %}" style="padding: 8px 16px; font-size: 13px;">Tất cả</a>
-        <a href="/admin/documents?category=core" class="btn {% if current_category == 'core' %}btn-primary{% else %}btn-secondary{% endif %}" style="padding: 8px 16px; font-size: 13px;">Tri thức gốc</a>
-        <a href="/admin/documents?category=updatable" class="btn {% if current_category == 'updatable' %}btn-primary{% else %}btn-secondary{% endif %}" style="padding: 8px 16px; font-size: 13px;">Tri thức cập nhật</a>
-        <a href="/admin/documents?category=personal" class="btn {% if current_category == 'personal' %}btn-primary{% else %}btn-secondary{% endif %}" style="padding: 8px 16px; font-size: 13px;">Tri thức cá nhân</a>
+    <div style="display: flex; gap: 12px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 8px;">
+        <a href="/admin/documents" class="btn {% if not current_category %}btn-primary{% else %}btn-secondary{% endif %}" style="padding: 8px 16px; font-size: 13px; white-space: nowrap;">Tất cả</a>
+        {% for c in suggested_categories %}
+        <a href="/admin/documents?category={{ c }}" class="btn {% if current_category == c %}btn-primary{% else %}btn-secondary{% endif %}" style="padding: 8px 16px; font-size: 13px; white-space: nowrap;">{{ c }}</a>
+        {% endfor %}
     </div>
 
     <div class="table-responsive">
@@ -108,10 +70,10 @@
             <thead>
                 <tr>
                     <th>Tiêu đề tài liệu</th>
-                    <th>Cơ quan / Lĩnh vực</th>
-                    <th>Loại văn bản / Hiệu lực</th>
+                    <th>Danh mục</th>
+                    <th>Ngày hiệu lực / Báo cáo</th>
                     <th>Phiên bản / Chunks</th>
-                    <th>Trạng thái</th>
+                    <th>Trạng thái RAG</th>
                     <th>Ngày cập nhật</th>
                     <th style="text-align: right;">Hành động</th>
                 </tr>
@@ -123,36 +85,23 @@
                         <a href="/admin/documents/{{ doc.id }}" style="color: var(--text-primary); text-decoration: none; font-weight: 600; display: block; margin-bottom: 4px;">
                             {{ doc.title }}
                         </a>
-                        <span style="font-size: 12px; color: var(--text-secondary); display: block; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <span style="font-size: 12px; color: var(--text-secondary); display: block; max-width: 350px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                             {{ doc.description or 'Không có mô tả' }}
                         </span>
                     </td>
                     <td>
-                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <span class="badge" style="width: fit-content; background-color: rgba(179,0,0,0.05); color: var(--primary-color);">
-                                🏛️ {{ 'Trung ương' if doc.issuer == 'tw' else 'Tỉnh ủy' if doc.issuer == 'tinh' else 'Huyện ủy' if doc.issuer == 'huyen' else 'Đảng ủy xã' if doc.issuer == 'xa' else 'Khác' }}
-                            </span>
-                            <span class="badge" style="width: fit-content; background-color: rgba(0,0,0,0.03); color: var(--text-secondary);">
-                                🏷️ {{ 'Tổ chức cán bộ' if doc.domain == 'to_chuc' else 'Kiểm tra giám sát' if doc.domain == 'kiem_tra' else 'Tuyên giáo' if doc.domain == 'tuyen_giao' else 'Dân vận' if doc.domain == 'dan_van' else 'Văn phòng' if doc.domain == 'van_phong' else 'Khác' }}
-                            </span>
-                        </div>
+                        <span class="badge badge-core" style="background-color: rgba(179,0,0,0.05); color: var(--primary-color);">
+                            📂 {{ doc.category }}
+                        </span>
                     </td>
                     <td>
-                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <span class="badge" style="width: fit-content; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(0,0,0,0.08);">
-                                📝 {{ 'Nghị quyết' if doc.document_type == 'nq' else 'Quyết định' if doc.document_type == 'qd' else 'Chỉ thị' if doc.document_type == 'ct' else 'Quy định' if doc.document_type == 'qyd' else 'Kết luận' if doc.document_type == 'kl' else 'Hướng dẫn' if doc.document_type == 'hd' else 'Báo cáo số liệu' if doc.document_type == 'bc' else 'Khác' }}
+                        {% if doc.effective_date %}
+                            <span class="badge {% if doc.is_latest %}badge-active{% else %}badge-inactive{% endif %}" style="width: fit-content;">
+                                📅 {{ doc.effective_date.strftime('%d/%m/%Y') }} {% if doc.is_latest %}(Mới nhất){% endif %}
                             </span>
-                            
-                            {% if doc.document_type == 'bc' and doc.effective_date %}
-                                <span class="badge {% if doc.is_latest %}badge-active{% else %}badge-inactive{% endif %}" style="width: fit-content;">
-                                    📅 {{ doc.effective_date.strftime('%d/%m/%Y') }} {% if doc.is_latest %}(Mới nhất){% else %}(Cũ){% endif %}
-                                </span>
-                            {% else %}
-                                <span class="badge {% if doc.validity == 'active' %}badge-active{% elif doc.validity == 'expired' %}badge-inactive{% else %}badge-draft{% endif %}" style="width: fit-content;">
-                                    ⚡ {{ 'Còn hiệu lực' if doc.validity == 'active' else 'Hết hiệu lực' if doc.validity == 'expired' else 'Bị thay thế' }}
-                                </span>
-                            {% endif %}
-                        </div>
+                        {% else %}
+                            <span style="font-size: 13px; color: var(--text-secondary);">--</span>
+                        {% endif %}
                     </td>
                     <td>
                         <span style="font-size: 13px; color: var(--text-primary); display: block; font-weight: 500;">v{{ doc.current_version }}</span>

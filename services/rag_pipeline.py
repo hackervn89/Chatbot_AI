@@ -220,8 +220,7 @@ def _postgres_hybrid_search(db: Session, query: str, top_n: int) -> list:
                 FROM knowledge_chunks kc
                 JOIN documents d ON kc.document_id = d.id
                 WHERE d.is_active = true 
-                    AND d.validity = 'active' 
-                    AND (d.document_type != 'bc' OR d.is_latest = true)
+                    AND (d.is_latest = true OR d.effective_date IS NULL)
                 ORDER BY embedding <=> cast(:vector as vector)
                 LIMIT 50
             ),
@@ -234,8 +233,7 @@ def _postgres_hybrid_search(db: Session, query: str, top_n: int) -> list:
                 FROM knowledge_chunks kc
                 JOIN documents d ON kc.document_id = d.id
                 WHERE d.is_active = true
-                    AND d.validity = 'active' 
-                    AND (d.document_type != 'bc' OR d.is_latest = true)
+                    AND (d.is_latest = true OR d.effective_date IS NULL)
                     AND to_tsvector('simple', kc.text) @@ to_tsquery('simple', :tsquery)
                 ORDER BY rank_sparse
                 LIMIT 50
