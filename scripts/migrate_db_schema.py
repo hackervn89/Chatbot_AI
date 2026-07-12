@@ -21,11 +21,13 @@ def migrate_schema():
             # 1. Bảng documents
             "ALTER TABLE documents ADD COLUMN IF NOT EXISTS category VARCHAR(50) DEFAULT 'core';",
             "ALTER TABLE documents ADD COLUMN IF NOT EXISTS description TEXT DEFAULT '';",
+            "ALTER TABLE documents ADD COLUMN IF NOT EXISTS file_type VARCHAR(20) DEFAULT '';",
             "ALTER TABLE documents ADD COLUMN IF NOT EXISTS raw_text TEXT DEFAULT '';",
             "ALTER TABLE documents ADD COLUMN IF NOT EXISTS current_version INTEGER DEFAULT 1;",
             "ALTER TABLE documents ADD COLUMN IF NOT EXISTS chunk_count INTEGER DEFAULT 0;",
             "ALTER TABLE documents ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE;",
             "ALTER TABLE documents ADD COLUMN IF NOT EXISTS created_by VARCHAR(100) DEFAULT 'system';",
+            "ALTER TABLE documents ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;",
             
             # 2. Bảng knowledge_chunks
             "ALTER TABLE knowledge_chunks ADD COLUMN IF NOT EXISTS chunk_index INTEGER DEFAULT 0;",
