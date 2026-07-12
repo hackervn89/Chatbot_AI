@@ -1,126 +1,110 @@
-# 🗺️ MAPCODE - Bản Đồ Mã Nguồn Chi Tiết (Production Version)
+# 🗺️ MAPCODE - Bản Đồ Mã Nguồn Chi Tiết (Production Release 2026)
 
-> Tệp này lưu trữ kiến thức kỹ thuật chi tiết về toàn bộ codebase mới phục vụ triển khai chính thức. AI và developer có thể nhanh chóng hiểu và làm việc với dự án.
+> Tệp này lưu trữ cấu trúc thư mục chi tiết, thiết kế API, sơ đồ cơ sở dữ liệu và các module chức năng của dự án Chuyên Viên Ảo. Dành cho các kỹ sư phát triển và hệ thống để bảo trì, tối ưu hóa hoặc mở rộng dự án.
 
 ---
 
-## 📐 Tổng Quan Kiến Trúc Hệ Thống
+## 📐 1. Tổng Quan Kiến Trúc Hệ Thống
 
 ```
-[Người dùng Zalo] (Text/Ảnh/File)
-      │
-      ▼ (HTTP POST Webhook)
-  main.py (FastAPI Server) ──→ API Webhook /webhook/zalo
-      │
-      ├─→ [Lưu vào CSDL] (ChatHistory, FileMapping)
-      │
-      ├─→ [Q&A Flow - Q&A Nghiệp vụ]
-      │         │
-      │         ▼
-      │   rag_engine.py (Hybrid Search) 
-      │         ├─→ Dense: models/gemini-embedding-2 (3072 dims)
-      │         ├─→ Sparse: Postgres Full-Text Search (simple)
-      │         └─→ Kết hợp: Cosine Similarity + ts_rank
-      │         │
-      │         ▼ (Prompt + Context + ChatHistory)
-      │   DeepSeek-V3 / Gemini Fallback
-      │         │
-      │         ▼ (Trích xuất ảnh minh họa từ CSDL image_mappings)
-      │   Đính kèm link ảnh static / images/ -> Gửi tin Zalo
-      │
-      └─→ [Luồng Admin nạp tri thức - user_send_file]
-                │
-                ▼ (Tải file tạm)
-          document_uploader.py (Background Task)
-                ├─→ Parse PDF (pypdf) / SRT (clean text) / DOCX (python-docx)
-                ├─→ Trích xuất ảnh minh họa tự động trong DOCX/PDF
-                ├─→ Cắt chunks + Sinh vector embeddings 3072-dim
-                └─→ Ghi nhận đồng bộ vào Database (documents, chunks, images)
+                    [Người dùng Zalo OA]
+                              │
+                              ▼ (HTTP POST Webhook)
+            FastAPI Server (main.py + routers/webhook.py)
+                              │
+       ┌──────────────────────┴──────────────────────┐
+       ▼ (BackgroundTasks)                           ▼ (BackgroundTasks)
+[Luồng Q&A Nghiệp vụ & ĐHTN]               [Luồng Nạp Tri Thức & Soạn Thảo]
+       │                                             │
+       ▼                                             ▼
+services/rag_pipeline.py                     services/knowledge_manager.py
+  ├─ Dense: pgvector (Gemini 768-dim)          ├─ Parser: pypdf, python-docx, srt
+  ├─ Sparse: Postgres FTS (Simple parser)      ├─ Bóc tách ảnh minh họa thao tác
+  └─ Merge: RRF (scale 1200)                   └─ Batch Embedding (gemini-embed)
+       │                                             │
+       ▼ (Prompt + Context)                          ▼
+services/ai_engine.py                        services/document_creator.py
+  ├─ Primary: DeepSeek-Chat                    ├─ Điền template cong_van_mau.docx
+  └─ Fallback: Gemini (2.5/2.0/1.5)            ├─ Áp dụng quy tắc gộp/recipient
+       │                                       └─ Lưu file output & FileMapping DB
+       ▼                                             │
+Gửi Zalo text kèm link ảnh minh họa                 Gửi link tải /download/{file_id}
 ```
 
 ---
 
-## 📝 Chi Tiết Các Tệp Tin nguồn
+## 📁 2. Chi Tiết Các Tệp Tin Trong Codebase
 
-### 1. `main.py` (FastAPI Server)
-*   **Vai trò**: Cổng giao tiếp chính, nhận Webhook Zalo OA, phục vụ ảnh tĩnh minh họa và tải xuống file Word kết quả.
-*   **Các Endpoint chính**:
-    *   `GET /`: Health check trạng thái hoạt động.
-    *   `GET /download/{file_id}`: Tải file Word kết quả. Tra cứu DB bảng `file_mappings` để lấy tên file thực tế (tăng độ bảo mật). Fallback tải trực tiếp.
-    *   `POST /webhook/zalo`: Endpoint nhận sự kiện Zalo OA. Trả về `{"status": "received"}` ngay lập tức để tránh lặp tin nhắn và xử lý ngầm qua FastAPI `BackgroundTasks`.
-*   **Background Threads**:
-    *   `file_cleaner_task()`: Chạy định kỳ mỗi 1 giờ, tự động xóa các file Word cũ quá 24 giờ và dọn sạch DB mappings tương ứng.
-    *   `run_zalo_polling()`: Chạy bot ở chế độ Polling (Development) nếu cấu hình `ZALO_MODE=polling`.
+### 🌐 Cổng Giao Tiếp API & Máy Chủ
+*   **[main.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/main.py)**:
+    *   Khởi tạo ứng dụng FastAPI và tự động gọi `models.Base.metadata.create_all` để khởi tạo cấu trúc CSDL PostgreSQL/SQLite.
+    *   Phục vụ tệp tĩnh (`/static` cho CSS/JS giao diện và `/images` cho ảnh minh họa nghiệp vụ trích xuất từ tài liệu).
+    *   Endpoint `GET /download/{file_id}`: Tra cứu bảng `file_mappings` để lấy tên file thực tế và gửi về cho người dùng tải xuống một cách bảo mật.
+    *   Background Daemon Thread `file_cleaner_task()`: Chạy định kỳ mỗi 1 giờ để quét và xóa sạch các file Word kết quả cũ hơn 24 giờ trên ổ cứng, đồng thời giải phóng mapping trong DB.
+*   **[routers/webhook.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/routers/webhook.py)**:
+    *   Endpoint Webhook Zalo OA (`POST /webhook/zalo`) nhận sự kiện từ Zalo Server. Trả về status `200 OK` ngay lập tức để tránh Zalo gửi lặp tin nhắn khi chờ AI phản hồi.
+    *   Sử dụng FastAPI `BackgroundTasks` để chuyển tiếp payload xử lý bất đồng bộ ngầm:
+        *   `user_send_file`: Admin gửi file mới (`.pdf`, `.docx`, `.srt`) để nạp tri thức.
+        *   `user_send_image`: Gửi ảnh văn bản chỉ đạo cấp trên để chạy OCR sinh công văn giao việc.
+        *   `user_send_text`: Hỏi đáp nghiệp vụ (Q&A RAG).
+*   **[routers/admin.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/routers/admin.py)**:
+    *   Chứa toàn bộ logic render HTML của **Admin Dashboard** sử dụng `Jinja2Templates` (tương thích hoàn toàn với Starlette 0.28+ bằng cách sử dụng tham số tường minh `request`, `name`, `context`).
+    *   Trang Dashboard (`/admin/dashboard`): Thống kê hệ thống, danh sách phiên chat và log hoạt động gần đây.
+    *   Quản lý tài liệu (`/admin/documents`): CRUD tài liệu, upload tệp trực tiếp, xem chi tiết và lịch sử các phiên bản sửa đổi.
+    *   Nhật ký giám sát (`/admin/audit`): Truy vết chi tiết các thao tác của quản trị viên và phiên chat.
 
-### 2. `zalo_bot.py` (Zalo Message Processor)
-*   **Vai trò**: Xử lý logic nghiệp vụ tin nhắn Zalo, bóc tách ảnh chụp OCR bằng Gemini để soạn thảo công văn, và tích hợp Q&A RAG.
-*   **Các Hàm chính**:
-    *   `process_zalo_webhook_payload(payload)`: Parse JSON webhook, xác thực Admin qua Zalo ID để thực hiện nạp tài liệu tự động, hoặc điều phối tin nhắn text/image.
-    *   `process_zalo_message(message)`: Xử lý OCR hình ảnh (Gemini Multimodal) để trích xuất 6 trường thông tin, gọi engine sinh Word, hoặc xử lý tin nhắn Q&A RAG.
-    *   `ask_dhtn_qa(chat_id, question, db)`: Lấy lịch sử chat từ DB, gọi `hybrid_search`, build prompt RAG và gọi DeepSeek (fallback sang Gemini) để sinh câu trả lời.
-    *   `save_file_mapping()`, `get_chat_history()`, `add_chat_message()`: Đọc ghi dữ liệu đồng bộ vào PostgreSQL/SQLite Database.
-
-### 3. `database.py` (Database Connection)
-*   **Vai trò**: Quản lý kết nối cơ sở dữ liệu.
-*   **Cơ chế hoạt động**:
-    *   Đọc `DATABASE_URL` từ tệp `.env`.
-    *   **Fallback SQLite local**: Nếu không có cấu hình PostgreSQL, tự động chuyển sang sử dụng SQLite cục bộ tại thư mục tạm (`chatbot_local.db`), giúp lập trình viên chạy test và phát triển offline cực kỳ dễ dàng.
-
-### 4. `models.py` (ORM Database Schemas)
-*   **Vai trò**: Định nghĩa cấu trúc bảng CSDL sử dụng SQLAlchemy ORM.
-*   **Các Bảng**:
-    *   `Document`: Lưu nguồn tài liệu (ví dụ: `HDSD_Lịch họp_Mobile.docx`).
-    *   `KnowledgeChunk`: Lưu các đoạn text tri thức và vector embeddings (`VECTOR(3072)` cho Postgres, fallback `JSON` cho SQLite).
-    *   `ImageMapping`: Bản đồ Hình X -> Đường dẫn ảnh tĩnh để bot gửi minh họa.
-    *   `ChatHistory`: Lịch sử chat theo Zalo ID.
-    *   `FileMapping`: Mapping file Word sinh ra.
-
-### 5. `rag_engine.py` (Hybrid Search Engine)
-*   **Vai trò**: Thực hiện tìm kiếm lai giữa vector ngữ nghĩa và từ khóa.
-*   **Các Hàm chính**:
-    *   `get_embedding(text)`: Sinh vector embeddings 3072 chiều từ mô hình `models/gemini-embedding-2` của Gemini API.
-    *   `hybrid_search(db, query, top_n)`:
-        *   **PostgreSQL**: Thực hiện truy vấn kết hợp: Dense Score (1 - cosine distance của pgvector) + Sparse Score (`ts_rank_cd` full-text search đơn giản tiếng Việt). Kết hợp tỉ lệ trọng số `0.7 * Dense + 0.3 * Sparse`.
-        *   **SQLite local**: Fallback về tìm kiếm từ khóa dùng `LIKE` trên SQL kết hợp tính điểm số trùng khớp trên Python.
-
-### 6. `document_uploader.py` (Ingestion Pipeline)
-*   **Vai trò**: Tự động parse và nạp tài liệu tri thức mới.
-*   **Các Hàm chính**:
-    *   `ingest_document_file(file_path, title)`: Điểm đầu vào chính. Tự động nhận diện định dạng (.pdf, .docx, .srt, .txt).
-    *   `parse_docx_and_extract_images()`: Bóc tách text trong file Word, đồng thời giải nén zip, đọc cấu trúc XML để trích xuất ảnh minh họa đính kèm khớp với captions "Hình N", lưu vào đĩa cứng và map vào DB.
-    *   `clean_srt()`: Làm sạch file srt của video (tẩy mốc thời gian, số thứ tự) để gộp thành văn bản tri thức.
-    *   `chunk_text()`: Cắt text thành các khối nhỏ tối ưu ngữ cảnh.
-
-### 7. `migrate_data.py` (Migration Script)
-*   **Vai trò**: Script hỗ trợ di trú dữ liệu chunks từ file JSON cũ vào cơ sở dữ liệu mới (được chạy khi khởi chạy dự án lần đầu).
-*   **Cơ chế hoạt động**: Gọi Gemini API theo lô (batch size 50) để sinh vector embeddings và lưu vào DB. Tự động fallback sinh từng phần nếu lô bị lỗi rate limit.
+### 🛠️ Lõi Dịch Vụ Hệ Thống (services/)
+*   **[services/rag_pipeline.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/services/rag_pipeline.py)**:
+    *   `get_embedding(text)`: Sinh vector embeddings cho một đoạn văn bản.
+    *   `get_embeddings_batch(texts)`: Sinh vector cho danh sách văn bản theo lô (tối đa 50 phần tử) để chống rate limit 429 và tăng tốc nạp tri thức lên 50x.
+    *   `semantic_chunk(text)`: Phân đoạn văn bản ngữ nghĩa dựa vào heading Markdown (`#`, `##`, `###`) và dòng trống, cấu hình overlap 150 ký tự giữ ngữ cảnh.
+    *   `_prepare_tsquery(query)`: Tiền xử lý tiếng Việt cho Postgres FTS, tự động loại bỏ stop-words nghiệp vụ và nối bằng toán tử `OR` (`|`).
+    *   `_postgres_hybrid_search(db, query)`: Tìm kiếm lai pgvector + FTS. Sắp xếp và xếp hạng kết quả bằng **Reciprocal Rank Fusion (RRF)**. Điểm số RRF được nhân với **1200** để đồng bộ với thang điểm cũ.
+*   **[services/ai_engine.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/services/ai_engine.py)**:
+    *   `call_ai(system_prompt, user_message, history)`: Định tuyến cuộc gọi AI.
+    *   **Fallback Chain**: Thử gọi DeepSeek API (`deepseek-chat`) trước với timeout cấu hình 30s. Nếu DeepSeek quá tải/lỗi kết nối, hệ thống tự động chuyển sang gọi Gemini API (`gemini-2.5-flash` -> `gemini-2.0-flash` -> `gemini-1.5-pro`) làm dự phòng.
+    *   `call_gemini_with_grounding()`: Gọi Gemini tích hợp Google Search Grounding cho các thông tin thời gian thực.
+*   **[services/knowledge_manager.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/services/knowledge_manager.py)**:
+    *   Bộ lọc định dạng file: `parse_pdf` sử dụng `pypdf`, `parse_docx` sử dụng `docx`, `parse_srt` tẩy mốc thời gian phụ đề.
+    *   `_extract_docx_images()`: Giải nén tệp DOCX, phân tích file quan hệ XML `document.xml.rels` để bóc tách ảnh chụp màn hình gốc và lưu lại dưới dạng bản đồ hình ảnh `ImageMapping`.
+    *   `ingest_document()`: Nhận diện file, cắt chunks ngữ nghĩa, tạo batch embedding (768 chiều) và lưu đồng bộ vào database.
+*   **[services/document_creator.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/services/document_creator.py)**:
+    *   Tiến hành phân vai giao việc cho 5 cơ quan cấp xã dựa trên từ khóa nhận diện trong `taovanban_khoidang/SKILL.md`.
+    *   Áp dụng các quy tắc hành chính Đảng: Quy tắc gộp nhiệm vụ đặc thù (Ban Xây dựng Đảng) và Quy tắc kính gửi tối giản (chỉ hiển thị các ban ngành thực sự được giao nhiệm vụ).
+    *   Mở tệp mẫu `cong_van_giao_viec_mau.docx` và điền dữ liệu vào các thẻ biến `{{...}}` thông qua thư viện `python-docx`.
+*   **[services/zalo_api.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/services/zalo_api.py)**:
+    *   `clean_markdown_for_zalo(text)`: Zalo OA không hỗ trợ cú pháp Markdown thô. Hàm này loại bỏ dấu in đậm `**` và chuyển Markdown links `[Hình 1](url)` thành văn bản thuần kèm link thô để Zalo tự tạo liên kết click được (`Hình 1: url`).
+    *   `send_zalo_message(user_id, text)`: Tự động chia nhỏ tin nhắn và gửi làm nhiều phần nếu độ dài câu trả lời của AI vượt quá giới hạn **2000 ký tự** của Zalo.
 
 ---
 
-## 📊 Cấu Hình Cơ Sở Dữ Liệu PostgreSQL (docker/init.sql)
-Bản SQL khởi tạo chứa các cấu hình quan trọng sau để tối ưu hóa RAG:
-*   `CREATE EXTENSION IF NOT EXISTS vector;`: Kích hoạt extension pgvector.
-*   **Chỉ mục HNSW**:
-    ```sql
-    CREATE INDEX IF NOT EXISTS idx_chunks_embedding ON knowledge_chunks 
-    USING hnsw (embedding vector_cosine_ops);
-    ```
-*   **Chỉ mục Full-Text Search**:
-    ```sql
-    CREATE INDEX IF NOT EXISTS idx_chunks_text_fts ON knowledge_chunks 
-    USING gin (to_tsvector('simple', text));
-    ```
+## 🗄️ 3. Mô Hình Dữ Liệu Chi Tiết (models.py)
 
----
+Bảng chi tiết các SQLAlchemy ORM Models và mối liên kết quan hệ:
 
-## 🔄 Cấu Hình Biến Môi Trường (.env)
-
-| Biến | Ý nghĩa | Mặc định | Ghi chú |
+| Tên Bảng | Class Name | Vai trò | Các trường chính |
 |---|---|---|---|
-| `ZALO_API_TOKEN` | Token của Zalo Official Account | Không có | Bắt buộc |
-| `GEMINI_API_KEY` | Google Gemini API Key | Không có | Bắt buộc (Embeddings & OCR) |
-| `DEEPSEEK_API_KEY` | DeepSeek API Key | Không có | Khuyên dùng (Mô hình Q&A chính) |
-| `SERVER_DOMAIN` | Domain HTTPS của server | Không có | Khuyên dùng (Để tạo link tải ảnh/file) |
-| `ADMIN_ZALO_IDS` | Danh sách Zalo ID của admin | Không có | Dùng để phân quyền nạp tri thức |
-| `ZALO_MODE` | Chế độ chạy Zalo bot | `webhook` | `webhook` (Prod) hoặc `polling` (Dev) |
-| `DATABASE_URL` | URL kết nối Database | SQLite local | Cấu hình trong docker-compose.yml |
+| `documents` | `Document` | Lưu trữ tài liệu tri thức nguồn | `id`, `title`, `source`, `category`, `raw_text`, `is_active`, `current_version` |
+| `document_versions` | `DocumentVersion` | Lịch sử phiên bản của từng tài liệu | `id`, `document_id`, `version`, `raw_text`, `change_summary`, `changed_by` |
+| `knowledge_chunks` | `KnowledgeChunk` | Lưu các đoạn văn và vector tương ứng | `id`, `document_id`, `chunk_index`, `text`, `embedding` (768 dims), `chunk_metadata` |
+| `image_mappings` | `ImageMapping` | Bản đồ khớp hình ảnh minh họa | `id`, `document_id`, `hinh_key` (Hình N), `img_rel_path` |
+| `chat_sessions` | `ChatSession` | Quản lý phiên hội thoại của người dùng | `id`, `platform` (zalo, telegram), `external_chat_id`, `user_display_name` |
+| `chat_messages` | `ChatMessage` | Lưu chi tiết từng tin nhắn chat | `id`, `session_id`, `role`, `content`, `ai_model_used`, `rag_score`, `response_time_ms` |
+| `audit_logs` | `AuditLog` | Nhật ký giám sát thay đổi hệ thống | `id`, `entity_type`, `action`, `actor`, `details` (JSON), `ip_address` |
+| `file_mappings` | `FileMapping` | Bản đồ tải xuống file Word bảo mật | `id`, `file_id` (UUID), `filename` |
+
+---
+
+## ⚙️ 4. Cấu Hình Biến Môi Trường (.env)
+
+| Biến môi trường | Vai trò | Giá trị mặc định / Khuyên dùng |
+|---|---|---|
+| `DATABASE_URL` | Đường dẫn kết nối CSDL PostgreSQL hoặc SQLite local | `postgresql://chatbot_user:chatbot_password_secure_2026@db:5432/chatbot_db` |
+| `GEMINI_API_KEY` | Google AI Studio Key dùng cho Embeddings & OCR | *Bắt buộc* |
+| `DEEPSEEK_API_KEY` | DeepSeek Key dùng làm AI phản hồi chính | *Bắt buộc* |
+| `AI_PRIMARY_ENGINE`| Động cơ AI chính được ưu tiên | `deepseek` |
+| `DEEPSEEK_TIMEOUT` | Thời gian ngắt kết nối DeepSeek chờ phản hồi | `30` (giây) |
+| `ZALO_API_TOKEN` | Token kết nối Zalo Official Account | *Bắt buộc* |
+| `ZALO_MODE` | Chế độ lắng nghe Zalo Bot | `webhook` (chạy Production) |
+| `SERVER_DOMAIN` | Tên miền HTTPS của hệ thống | `https://bot.conghaiso.vn` |
+| `ADMIN_ZALO_IDS` | Danh sách Zalo ID của admin được phép nạp tri thức | Ngăn cách bằng dấu phẩy |
