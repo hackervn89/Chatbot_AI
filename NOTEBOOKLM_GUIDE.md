@@ -40,14 +40,14 @@ QUY TẮC CẤU TRÚC VĂN BẢN:
 4. Nội dung chi tiết trong mỗi quy trình (###):
    - Viết rõ ràng, rành mạch từng bước (Bước 1, Bước 2, Bước 3...).
    - Các nút bấm, nhãn giao diện hoặc tên trường thông tin phải được đặt trong dấu ngoặc kép hoặc viết hoa rõ ràng (ví dụ: bấm nút "Phê duyệt", chọn trạng thái "Hoàn thành").
-   - Nếu tài liệu gốc có nhắc đến hình ảnh minh họa, hãy giữ nguyên ký hiệu hình ảnh dạng "Hình N" (Ví dụ: "...như hiển thị ở Hình 2"). Không được xóa nhãn hình ảnh này.
+   - Nếu muốn đính kèm hình ảnh minh họa, hãy chèn trực tiếp liên kết ảnh tĩnh dạng Markdown (ví dụ: `![Mô tả ảnh](https://domain.com/path/to/image.png)`).
 
 5. Loại bỏ hoàn toàn nhiễu:
    - Loại bỏ số trang (ví dụ: Trang 1/24).
    - Loại bỏ các dòng Header/Footer lặp đi lặp lại của trang.
    - Loại bỏ các câu chuyển tiếp không mang giá trị tri thức (ví dụ: "Chào mừng quý vị đến với...", "Bảng mục lục dưới đây...").
 
-Dưới đây là cấu trúc mẫu bạn phải tuân thủ:
+Dưới đây là cấu trúc mẫu, ví dụ cụ thể mà bạn cần tuân thủ:
 
 # [Tên tài liệu tri thức]
 
@@ -56,11 +56,10 @@ Dưới đây là cấu trúc mẫu bạn phải tuân thủ:
 ### [Quy trình cụ thể A]
 Mô tả ngắn gọn về quy trình này.
 Các bước thực hiện:
-1. Bước 1: Truy cập vào mục "..." trên giao diện (Hình 1).
+1. Bước 1: Truy cập vào mục "..." trên giao diện.
 2. Bước 2: Điền đầy đủ thông tin vào trường "..." và nhấn nút "...".
 3. Bước 3: Đợi hệ thống phê duyệt.
-
-Hãy phân tích toàn bộ tài liệu đã tải lên và xuất ra nội dung Markdown (.md) hoàn chỉnh theo đúng cấu trúc trên. Không thêm bớt ý kiến cá nhân hoặc câu giới thiệu của AI ở đầu/cuối kết quả. Chỉ trả về mã Markdown thô.
+Không thêm bớt ý kiến cá nhân hoặc câu giới thiệu của AI ở đầu/cuối kết quả. Chỉ trả về mã Markdown thô.
 ```
 
 ### 📝 Ví dụ kết quả đầu ra cho tài liệu HDSD:
@@ -72,7 +71,7 @@ Hãy phân tích toàn bộ tài liệu đã tải lên và xuất ra nội dung
 ### Bước 1: Tiếp nhận và đăng ký văn bản đến
 Mục đích: Đưa văn bản giấy hoặc văn bản điện tử của cấp trên vào hệ thống quản lý.
 Các bước thực hiện:
-1. Truy cập vào menu "Văn bản đến" -> chọn "Đăng ký văn bản" (Hình 1).
+1. Truy cập vào menu "Văn bản đến" -> chọn "Đăng ký văn bản".
 2. Quét (scan) văn bản giấy sang tệp PDF và tải lên trường "Tệp đính kèm".
 3. Điền các thông tin pháp lý bắt buộc: Số ký hiệu, Ngày ban hành, Cơ quan ban hành.
 4. Nhấn nút "Lưu nháp" để hoàn tất đăng ký bước đầu.
@@ -109,6 +108,7 @@ QUY TẮC CẤU TRÚC VĂN BẢN ĐẢNG:
 5. Loại bỏ hoàn toàn nhiễu:
    - Loại bỏ số trang, header/footer.
    - Loại bỏ phần ký tên đóng dấu và danh sách nơi nhận ở cuối văn bản (ví dụ: "T/M BAN CHẤP HÀNH...", "Nơi nhận:...").
+   - Đối với người ký chỉ cần ghi: Văn bản ký bởi [Họ tên người ký], [Chức vụ].
 
 Hãy phân tích toàn bộ tài liệu đã tải lên và xuất ra nội dung Markdown (.md) hoàn chỉnh theo đúng cấu trúc trên. Không thêm bớt ý kiến cá nhân hay câu giới thiệu của AI ở đầu/cuối kết quả. Chỉ trả về mã Markdown thô.
 ```

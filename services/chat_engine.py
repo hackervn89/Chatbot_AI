@@ -228,99 +228,11 @@ def answer_question(
         )
 
         if reply:
-            # 6. Tự động phát hiện các hình ảnh liên quan từ NỘI DUNG RAG chunks VÀ reply
-            matched_images = []
-            seen_images = set()
-            sources_with_images = set()
-
-            import models
-            try:
-                # Bước 1: Quét "Hình N" trong CÂU TRẢ LỜI AI (nếu AI giữ nhãn)
-                for match in re.finditer(r'Hình\s+(\d+)', reply, re.IGNORECASE):
-                    hinh_num = match.group(1)
-                    hinh_key = f"Hình {hinh_num}"
-                    for score, chunk in relevant_results:
-                        source = chunk.get('source', '')
-                        img_map = db.query(models.ImageMapping).join(models.Document).filter(
-                            models.Document.source == source,
-                            models.ImageMapping.hinh_key == hinh_key
-                        ).first()
-                        if img_map:
-                            img_rel_path = img_map.img_rel_path
-                            if img_rel_path not in seen_images:
-                                matched_images.append((hinh_key, img_rel_path))
-                                seen_images.add(img_rel_path)
-                                sources_with_images.add(source)
-                                break
-
-                # Bước 2: Quét "Hình N" trong NỘI DUNG RAG chunks (bổ sung thêm nếu chưa đủ)
-                if len(matched_images) < 5:
-                    for score, chunk in relevant_results:
-                        source = chunk.get('source', '')
-                        for match in re.finditer(r'Hình\s+(\d+)', chunk.get('text', '')):
-                            hinh_num = match.group(1)
-                            hinh_key = f"Hình {hinh_num}"
-                            img_map = db.query(models.ImageMapping).join(models.Document).filter(
-                                models.Document.source == source,
-                                models.ImageMapping.hinh_key == hinh_key
-                            ).first()
-                            if img_map:
-                                img_rel_path = img_map.img_rel_path
-                                if img_rel_path not in seen_images:
-                                    matched_images.append((hinh_key, img_rel_path))
-                                    seen_images.add(img_rel_path)
-                                    sources_with_images.add(source)
-                        if len(matched_images) >= 5:
-                            break
-
-                # Bước 3: Fallback - nếu chưa tìm thấy ảnh nào, gửi Hình 1 từ mỗi source liên quan
-                if not matched_images:
-                    for score, chunk in relevant_results:
-                        source = chunk.get('source', '')
-                        if source not in sources_with_images:
-                            img_map = db.query(models.ImageMapping).join(models.Document).filter(
-                                models.Document.source == source,
-                                models.ImageMapping.hinh_key == "Hình 1"
-                            ).first()
-                            if img_map:
-                                img_rel_path = img_map.img_rel_path
-                                if img_rel_path not in seen_images:
-                                    matched_images.append(("Hình 1", img_rel_path))
-                                    seen_images.add(img_rel_path)
-                                    sources_with_images.add(source)
-                        if len(matched_images) >= 3:
-                            break
-            except Exception as e:
-                print(f"[Chat] Lỗi truy vấn ảnh minh họa từ CSDL: {e}")
-
-            # Chèn link ảnh nếu cấu hình SERVER_DOMAIN
-            from config import SERVER_DOMAIN
-            from services.document_creator import upload_to_file_io
-            server_domain = SERVER_DOMAIN.strip().rstrip('/')
-            image_links_text = ""
-            
-            if server_domain and matched_images:
-                for hinh_key, rel_path in matched_images:
-                    img_url = f"{server_domain}/{rel_path}"
-                    reply = re.sub(rf'({hinh_key}\b)', r'[\1](' + img_url + ')', reply, flags=re.IGNORECASE)
-            elif matched_images:
-                # Fallback file.io
-                image_links_text = "\n\n📷 Ảnh minh họa thao tác:\n"
-                for hinh_key, rel_path in matched_images:
-                    from config import OUTPUT_DIR
-                    img_local_path = os.path.join(OUTPUT_DIR, rel_path)
-                    try:
-                        img_url = upload_to_file_io(img_local_path)
-                        if img_url:
-                            image_links_text += f"- {hinh_key}: {img_url}\n"
-                    except Exception as e:
-                        print(f"[Chat Error] Không thể upload ảnh {hinh_key} lên file.io: {e}")
-
             # Xóa bỏ câu cảnh báo cũ nếu AI tự sinh từ tri thức để tránh lặp lại
             reply = re.sub(r'\(?Bạn cần kiểm tra lại thông tin trước khi sử dụng\.?\)?', '', reply, flags=re.IGNORECASE).strip()
 
             footnote = f"\n\n🤖 Trợ lý ảo - Văn phòng Đảng ủy Công Hải"
-            final_reply = reply + image_links_text + footnote
+            final_reply = reply + footnote
 
             # Save messages
             rag_sources_list = [

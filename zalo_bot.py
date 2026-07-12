@@ -955,114 +955,11 @@ def process_zalo_message(message):
         reply_text, model_used, relevant_results = ask_dhtn_qa(chat_id, text)
         
         if reply_text:
-            # Tự động phát hiện các hình ảnh liên quan từ NỘI DUNG RAG chunks VÀ reply_text
-            # AI model có thể giữ hoặc không giữ nhãn "Hình N" nên ta quét cả hai nguồn
-            matched_images = []
-            seen_images = set()  # Tránh gửi trùng ảnh
-            sources_with_images = set()  # Theo dõi sources đã có ảnh
-            
-            # Bước 1: Quét "Hình N" trong CÂU TRẢ LỜI AI (nếu AI giữ nhãn)
-            from database import SessionLocal
-            import models
-            
-            db = SessionLocal()
-            try:
-                for match in re.finditer(r'Hình\s+(\d+)', reply_text, re.IGNORECASE):
-                    hinh_num = match.group(1)
-                    hinh_key = f"Hình {hinh_num}"
-                    for score, chunk in relevant_results:
-                        source = chunk.get('source', '')
-                        
-                        # Tra cứu ảnh trong CSDL
-                        img_map = db.query(models.ImageMapping).join(models.Document).filter(
-                            models.Document.source == source,
-                            models.ImageMapping.hinh_key == hinh_key
-                        ).first()
-                        
-                        if img_map:
-                            img_rel_path = img_map.img_rel_path
-                            img_local_path = os.path.join(OUTPUT_DIR, img_rel_path)
-                            if os.path.exists(img_local_path) and img_rel_path not in seen_images:
-                                matched_images.append((hinh_key, img_rel_path))
-                                seen_images.add(img_rel_path)
-                                sources_with_images.add(source)
-                                break
-                
-                # Bước 2: Quét "Hình N" trong NỘI DUNG RAG chunks (bổ sung thêm nếu chưa đủ)
-                if len(matched_images) < 5:
-                    for score, chunk in relevant_results:
-                        source = chunk.get('source', '')
-                        for match in re.finditer(r'Hình\s+(\d+)', chunk.get('text', '')):
-                            hinh_num = match.group(1)
-                            hinh_key = f"Hình {hinh_num}"
-                            
-                            img_map = db.query(models.ImageMapping).join(models.Document).filter(
-                                models.Document.source == source,
-                                models.ImageMapping.hinh_key == hinh_key
-                            ).first()
-                            
-                            if img_map:
-                                img_rel_path = img_map.img_rel_path
-                                img_local_path = os.path.join(OUTPUT_DIR, img_rel_path)
-                                if os.path.exists(img_local_path) and img_rel_path not in seen_images:
-                                    matched_images.append((hinh_key, img_rel_path))
-                                    seen_images.add(img_rel_path)
-                                    sources_with_images.add(source)
-                        if len(matched_images) >= 5:
-                            break
-                
-                # Bước 3: Fallback - nếu chưa tìm thấy ảnh nào, gửi Hình 1 từ mỗi source liên quan
-                if not matched_images:
-                    for score, chunk in relevant_results:
-                        source = chunk.get('source', '')
-                        if source not in sources_with_images:
-                            img_map = db.query(models.ImageMapping).join(models.Document).filter(
-                                models.Document.source == source,
-                                models.ImageMapping.hinh_key == "Hình 1"
-                            ).first()
-                            
-                            if img_map:
-                                img_rel_path = img_map.img_rel_path
-                                img_local_path = os.path.join(OUTPUT_DIR, img_rel_path)
-                                if os.path.exists(img_local_path) and img_rel_path not in seen_images:
-                                    matched_images.append(("Hình 1", img_rel_path))
-                                    seen_images.add(img_rel_path)
-                                    sources_with_images.add(source)
-                        if len(matched_images) >= 3:  # Giới hạn fallback 3 ảnh
-                            break
-            except Exception as e:
-                print(f"[Zalo Bot Error] Lỗi truy vấn ảnh minh họa từ CSDL: {e}")
-            finally:
-                db.close()
-            
-            print(f"[Zalo QA] Matched images: {len(matched_images)}")
-
-
-            # Chèn link ảnh nếu cấu hình SERVER_DOMAIN
-            server_domain = os.environ.get('SERVER_DOMAIN', '').strip().rstrip('/')
-            image_links_text = ""
-            if server_domain and matched_images:
-                for hinh_key, rel_path in matched_images:
-                    img_url = f"{server_domain}/{rel_path}"
-                    # Chuyển chữ "Hình X" thành link click được dạng Markdown
-                    reply_text = re.sub(rf'({hinh_key}\b)', r'[\1](' + img_url + ')', reply_text, flags=re.IGNORECASE)
-            elif matched_images:
-                # Nếu không có SERVER_DOMAIN riêng, tải lên file.io tạm thời để lấy link xem ảnh
-                image_links_text = "\n\n📷 Ảnh minh họa thao tác:\n"
-                for hinh_key, rel_path in matched_images:
-                    img_local_path = os.path.join(OUTPUT_DIR, rel_path)
-                    try:
-                        img_url = upload_to_file_io(img_local_path)
-                        if img_url:
-                            image_links_text += f"- {hinh_key}: {img_url}\n"
-                    except Exception as e:
-                        print(f"[Zalo Bot Error] Không thể upload ảnh {hinh_key} lên file.io: {e}")
-
             # Xóa bỏ câu cảnh báo cũ nếu AI tự sinh từ tri thức để tránh lặp lại
             reply_text = re.sub(r'\(?Bạn cần kiểm tra lại thông tin trước khi sử dụng\.?\)?', '', reply_text, flags=re.IGNORECASE).strip()
 
             footnote = f"\n\n🤖 Trợ lý ảo - Văn phòng Đảng ủy Công Hải"
-            send_zalo_message(chat_id, reply_text + image_links_text + footnote)
+            send_zalo_message(chat_id, reply_text + footnote)
         else:
             # Nhắc nhở nếu lỗi hệ thống
             reply = (

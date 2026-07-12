@@ -29,17 +29,14 @@ def parse_pdf(file_path: str) -> str:
 
 
 def parse_docx(file_path: str) -> tuple:
-    """Trích xuất văn bản + hình ảnh từ DOCX"""
+    """Trích xuất văn bản từ DOCX (loại bỏ hình ảnh)"""
     from docx import Document as DocxDocument
     doc = DocxDocument(file_path)
     
     full_text = [para.text.strip() for para in doc.paragraphs if para.text.strip()]
     raw_text = "\n".join(full_text)
     
-    # Trích xuất hình ảnh
-    image_mappings = _extract_docx_images(file_path)
-    
-    return raw_text, image_mappings
+    return raw_text, {}
 
 
 def _extract_docx_images(docx_path: str) -> dict:
