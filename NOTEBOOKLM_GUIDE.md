@@ -1,30 +1,28 @@
 # 📖 Hướng Dẫn Định Dạng Tri Thức RAG Bằng NotebookLM
 
-> Tài liệu này hướng dẫn cách sử dụng Google NotebookLM để phân tích tài liệu thô (PDF, Word, văn bản ghi chép...) và chuyển hóa chúng thành định dạng Markdown (`.md`) chuẩn tối ưu 100% cho hệ thống RAG Chuyên Viên Ảo.
+> Tài liệu này hướng dẫn cách sử dụng Google NotebookLM để phân tích tài liệu thô (PDF, Word, văn bản chỉ đạo của Đảng...) và chuyển hóa chúng thành định dạng Markdown (`.md`) chuẩn tối ưu 100% cho hệ thống RAG Chuyên Viên Ảo.
 
 ---
 
 ## 📐 1. Tại Sao Cần Định Dạng Chuẩn Markdown?
-Hệ thống RAG của chúng ta sử dụng module **Phân đoạn ngữ nghĩa (`semantic_chunk`)**. Bộ chia này sẽ cắt tài liệu dựa vào tiêu đề heading Markdown (`#`, `##`, `###`).
-*   Nếu tài liệu định dạng lộn xộn: AI sẽ bị cắt nửa chừng câu hỏi hoặc nửa chừng bước thao tác, dẫn đến câu trả lời của Chatbot bị thiếu thông tin hoặc sai lệch.
-*   Nếu định dạng chuẩn Markdown: Từng quy trình, từng nghiệp vụ sẽ được gom gọn hoàn chỉnh trong 1 chunk, giúp Chatbot trả lời cực kỳ chính xác.
+Hệ thống RAG sử dụng module **Phân đoạn ngữ nghĩa (`semantic_chunk`)** để tự động chia nhỏ tài liệu dựa vào tiêu đề heading Markdown (`#`, `##`, `###`).
+*   **Nếu định dạng lộn xộn:** AI sẽ cắt nửa chừng câu hỏi, điều khoản hoặc quy trình, làm chatbot trả lời thiếu chính xác.
+*   **Nếu định dạng chuẩn Markdown:** Từng quy trình thao tác hoặc từng Điều khoản pháp lý sẽ được gom gọn hoàn chỉnh trong 1 chunk (khối tri thức), giúp Chatbot trả lời cực kỳ đầy đủ và chuẩn xác.
 
 ---
 
 ## 🛠️ 2. Quy Trình Thực Hiện Trên NotebookLM
-
-### Bước 1: Tải tài liệu nguồn lên NotebookLM
 1. Truy cập [Google NotebookLM](https://notebooklm.google.com/).
 2. Tạo một Notebook mới (ví dụ đặt tên: *Chuẩn hóa tri thức Đảng bộ*).
-3. Tải lên các tài liệu thô của bạn (PDF, Word, file TXT hoặc dán liên kết).
-
-### Bước 2: Chạy Prompt chuẩn hóa cấu trúc
-Dán đoạn prompt dưới đây vào khung chat của NotebookLM để yêu cầu AI phân tích và biên soạn lại văn bản theo chuẩn RAG Markdown.
+3. Tải lên tài liệu thô của bạn (PDF, Word, file TXT).
+4. Tùy thuộc vào loại tài liệu, hãy copy **Prompt tương ứng** dưới đây dán vào khung chat của NotebookLM để AI xử lý và xuất ra Markdown chuẩn.
 
 ---
 
-## ✍️ 3. Prompt Mẫu Cho NotebookLM (Hãy Copy Đoạn Này)
+## 📂 PHẦN A: DÀNH CHO TÀI LIỆU HƯỚNG DẪN SỬ DỤNG PHẦN MỀM (HDSD)
+*Dành cho tài liệu có các bước bấm nút, màn hình, hình ảnh thao tác thực tế.*
 
+### ✍️ Prompt NotebookLM cho tài liệu HDSD:
 ```text
 Bạn là một chuyên gia cấu trúc dữ liệu cho hệ thống RAG (Retrieval-Augmented Generation). 
 Nhiệm vụ của bạn là đọc toàn bộ tài liệu nguồn tôi đã cung cấp và chuyển đổi/tái cấu trúc nó thành định dạng Markdown (.md) chuẩn hóa theo đúng các quy tắc dưới đây.
@@ -62,18 +60,10 @@ Các bước thực hiện:
 2. Bước 2: Điền đầy đủ thông tin vào trường "..." và nhấn nút "...".
 3. Bước 3: Đợi hệ thống phê duyệt.
 
-### [Quy trình cụ thể B]
-...
-
 Hãy phân tích toàn bộ tài liệu đã tải lên và xuất ra nội dung Markdown (.md) hoàn chỉnh theo đúng cấu trúc trên. Không thêm bớt ý kiến cá nhân hoặc câu giới thiệu của AI ở đầu/cuối kết quả. Chỉ trả về mã Markdown thô.
 ```
 
----
-
-## 📝 4. Ví Dụ Minh Họa Kết Quả Đầu Ra
-
-Sau khi NotebookLM chạy xong, kết quả trả về sẽ có dạng chuẩn như sau:
-
+### 📝 Ví dụ kết quả đầu ra cho tài liệu HDSD:
 ```markdown
 # Hướng dẫn xử lý Văn bản đến cấp xã
 
@@ -86,22 +76,69 @@ Các bước thực hiện:
 2. Quét (scan) văn bản giấy sang tệp PDF và tải lên trường "Tệp đính kèm".
 3. Điền các thông tin pháp lý bắt buộc: Số ký hiệu, Ngày ban hành, Cơ quan ban hành.
 4. Nhấn nút "Lưu nháp" để hoàn tất đăng ký bước đầu.
-
-### Bước 2: Trình xin ý kiến chỉ đạo của Bí thư
-Mục đích: Xin ý kiến phân phối công việc từ Thường trực Đảng ủy.
-Các bước thực hiện:
-1. Tại danh sách văn bản đến, chọn văn bản vừa đăng ký.
-2. Nhấn nút "Trình xin chỉ đạo" (Hình 2).
-3. Chọn người nhận là "Bí thư Đảng ủy xã" và nhập nội dung xin ý kiến chỉ đạo.
-4. Nhấn "Gửi đi".
 ```
 
 ---
 
-## 📥 5. Cách Đưa Vào Hệ Thống RAG Sau Khi Chuẩn Hóa
+## 📂 PHẦN B: DÀNH CHO VĂN BẢN CHỈ ĐẠO, NGHỊ QUYẾT, QUY ĐỊNH CỦA ĐẢNG
+*Dành cho tài liệu pháp lý, quy chế điều lệ, các văn bản hành chính Khối Đảng.*
+
+### ✍️ Prompt NotebookLM cho Văn bản Đảng:
+```text
+Bạn là một chuyên gia cấu trúc dữ liệu cho hệ thống RAG (Retrieval-Augmented Generation) của Khối Đảng.
+Nhiệm vụ của bạn là đọc toàn bộ văn bản chỉ đạo, nghị quyết, quy định, chỉ thị của Đảng được cung cấp và tái cấu trúc nó thành định dạng Markdown (.md) chuẩn tối ưu cho RAG theo đúng các quy tắc dưới đây.
+
+QUY TẮC CẤU TRÚC VĂN BẢN ĐẢNG:
+1. Tên văn bản (Tiêu đề cấp 1 #): Ghi đầy đủ tên văn bản, số ký hiệu, ngày ban hành và cơ quan ban hành.
+   Ví dụ: # Nghị quyết số 18-NQ/TW ngày 25/10/2017 của Ban Chấp hành Trung ương khóa XII
+
+2. Các chương / Phần lớn (Tiêu đề cấp 2 ##): Chia theo cấu trúc lớn của văn bản gốc (Chương I, Chương II...).
+   Ví dụ: ## Chương I: Quy định chung
+
+3. Các điều khoản cụ thể (Tiêu đề cấp 3 ### - QUAN TRỌNG NHẤT):
+   - Mỗi Điều, Mục, hoặc Khoản lớn độc lập phải được tách thành một tiêu đề cấp 3 (###).
+   - Quy tắc đính kèm ngữ cảnh (Self-Contained Context): Tại mỗi tiêu đề cấp 3, bạn BẮT BUỘC phải đưa thông tin viết tắt của tên văn bản vào đầu tiêu đề để khi hệ thống cắt chunks, đoạn văn bản đó vẫn tự mang đầy đủ ngữ cảnh thuộc văn bản nào.
+     Định dạng tiêu đề: ### [Viết tắt tên văn bản] Điều N: [Tên điều]
+     Ví dụ: ### [NQ 18-NQ/TW] Điều 1: Mục tiêu và yêu cầu
+
+4. Nội dung chi tiết trong mỗi điều (###):
+   - Giữ nguyên văn phong hành chính trang trọng của Đảng.
+   - Sử dụng danh sách gạch đầu dòng hoặc đánh số rõ ràng (1., 2., a., b...) để các khoản, điểm được rành mạch.
+   - Nếu điều khoản có tham chiếu đến điều khác (ví dụ: "...theo quy định tại Điều 5 của Nghị quyết này"), hãy ghi chú rõ điều tham chiếu.
+
+5. Loại bỏ hoàn toàn nhiễu:
+   - Loại bỏ số trang, header/footer.
+   - Loại bỏ phần ký tên đóng dấu và danh sách nơi nhận ở cuối văn bản (ví dụ: "T/M BAN CHẤP HÀNH...", "Nơi nhận:...").
+
+Hãy phân tích toàn bộ tài liệu đã tải lên và xuất ra nội dung Markdown (.md) hoàn chỉnh theo đúng cấu trúc trên. Không thêm bớt ý kiến cá nhân hay câu giới thiệu của AI ở đầu/cuối kết quả. Chỉ trả về mã Markdown thô.
+```
+
+### 📝 Ví dụ kết quả đầu ra cho Văn bản Đảng:
+```markdown
+# Quy định số 24-QĐ/TW ngày 30/7/2021 của Ban Chấp hành Trung ương về thi hành Điều lệ Đảng
+
+## Chương I: Đảng viên
+
+### [QĐ 24-QĐ/TW] Điều 1: Tuổi đời và trình độ học vấn của người vào Đảng
+1. Về tuổi đời:
+   - Người vào Đảng phải từ 18 tuổi đến đủ 60 tuổi (tính theo tháng).
+   - Việc kết nạp vào Đảng những người trên 60 tuổi do Ban Thường vụ Tỉnh ủy xem xét, quyết định.
+2. Về trình độ học vấn:
+   - Người vào Đảng phải có bằng tốt nghiệp trung học cơ sở hoặc tương đương trở lên.
+
+### [QĐ 24-QĐ/TW] Điều 2: Thủ tục kết nạp đảng viên
+Các bước thực hiện thủ tục kết nạp đảng viên bao gồm:
+a) Người vào Đảng phải tự làm đơn xin vào Đảng.
+b) Báo cáo trung thực lý lịch với chi bộ.
+c) Được hai đảng viên chính thức giới thiệu (theo quy định cụ thể tại Điều 3 Quy định này).
+```
+
+---
+
+## 📥 5. Quy Trình Nạp Vào RAG Sau Khi Chuẩn Hóa
 1. Copy kết quả Markdown từ NotebookLM.
-2. Lưu lại thành tệp có phần mở rộng `.md` (Ví dụ: `huong_dan_van_ban_den.md`).
-3. Truy cập vào giao diện quản trị của bạn tại: `https://bot.conghaiso.vn/admin/documents`.
+2. Lưu lại thành tệp có phần mở rộng `.md` (Ví dụ: `quy_dinh_24_qd_tw.md`).
+3. Truy cập vào giao diện quản trị: `https://bot.conghaiso.vn/admin/documents`.
 4. Nhấn nút **"+ Nạp tài liệu mới"**.
-5. Chọn danh mục phù hợp (Tri thức gốc hoặc Tri thức cập nhật).
-6. Tải tệp `.md` vừa lưu lên. Chọn **"Lưu Nháp"** để kiểm tra lại trên hệ thống trước khi chính thức kích hoạt RAG.
+5. Chọn danh mục phù hợp và tải tệp `.md` lên.
+6. Chọn chế độ **"Lưu Nháp"** để kiểm tra lại trên Dashboard và chạy AI thẩm định trước khi kích hoạt.
