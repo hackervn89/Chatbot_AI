@@ -224,7 +224,7 @@ def ingest_document(
                 chunk_index=i,
                 text=chunk_data["text"],
                 embedding=vector,
-                metadata=chunk_data.get("metadata", {})
+                chunk_metadata=chunk_data.get("metadata", {})
             )
             db.add(chunk_obj)
             inserted += 1

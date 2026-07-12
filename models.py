@@ -110,7 +110,7 @@ class KnowledgeChunk(Base):
     chunk_index = Column(Integer, default=0)  # Thứ tự trong tài liệu
     text = Column(Text, nullable=False)
     embedding = Column(VectorColumnType, nullable=False)
-    metadata = Column(JSONType, default=dict)  # Heading, page number...
+    chunk_metadata = Column(JSONType, default=dict)  # Heading, page number...
     created_at = Column(DateTime, server_default=func.now())
 
     document = relationship("Document", back_populates="chunks")

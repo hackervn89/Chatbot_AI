@@ -171,7 +171,7 @@ def _postgres_hybrid_search(db: Session, query: str, top_n: int) -> list:
                 d.source,
                 d.title as doc_title,
                 d.category,
-                kc.metadata,
+                kc.chunk_metadata,
                 COALESCE(1.0 / (60 + ds.rank_dense), 0) as rrf_dense,
                 COALESCE(1.0 / (60 + ss.rank_sparse), 0) as rrf_sparse,
                 (COALESCE(1.0 / (60 + ds.rank_dense), 0) + COALESCE(1.0 / (60 + ss.rank_sparse), 0)) as rrf_score
@@ -200,7 +200,7 @@ def _postgres_hybrid_search(db: Session, query: str, top_n: int) -> list:
                     "source": r.source,
                     "doc_title": r.doc_title,
                     "category": r.category,
-                    "metadata": r.metadata or {}
+                    "metadata": r.chunk_metadata or {}
                 }
             ))
         return formatted

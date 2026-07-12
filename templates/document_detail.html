@@ -64,8 +64,8 @@
                 <div style="padding: 16px; background-color: rgba(0,0,0,0.15); border: 1px solid var(--card-border); border-radius: 8px; font-size: 13.5px; line-height: 1.6;">
                     <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 4px;">
                         <span>CHUNK #{{ chunk.chunk_index + 1 }}</span>
-                        {% if chunk.metadata and chunk.metadata.heading %}
-                        <span>Tiêu đề: <strong>{{ chunk.metadata.heading }}</strong></span>
+                        {% if chunk.chunk_metadata and chunk.chunk_metadata.heading %}
+                        <span>Tiêu đề: <strong>{{ chunk.chunk_metadata.heading }}</strong></span>
                         {% endif %}
                     </div>
                     <p style="white-space: pre-line;">{{ chunk.text }}</p>
