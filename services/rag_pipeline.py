@@ -235,7 +235,7 @@ def _postgres_hybrid_search(db: Session, query: str, top_n: int) -> list:
         formatted = []
         for r in results:
             formatted.append((
-                float(r.rrf_score) * 100,  # Scale để dễ đọc
+                float(r.rrf_score) * 1200,  # Scale để tương thích với ngưỡng HIGH(35)/MEDIUM(15) trong config
                 {
                     "id": r.id,
                     "text": r.text,
