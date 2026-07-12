@@ -133,6 +133,30 @@ def semantic_chunk(text_content: str, chunk_size: int = None, overlap: int = Non
     return chunks
 
 
+def normalize_abbreviations(query: str) -> str:
+    """Chuẩn hóa từ viết tắt tiếng Việt đặc thù văn phòng Đảng trước khi tìm kiếm"""
+    if not query:
+        return ""
+    
+    # Từ điển viết tắt Đảng & Hành chính
+    abbrev_dict = {
+        r'\bdhtn\b': 'điều hành tác nghiệp',
+        r'\bđhtn\b': 'điều hành tác nghiệp',
+        r'\btthc\b': 'thủ tục hành chính',
+        r'\bktgs\b': 'kiểm tra giám sát',
+        r'\btccb\b': 'tổ chức cán bộ',
+        r'\btg\b': 'tuyên giáo',
+        r'\bdv\b': 'dân vận',
+        r'\bvp\b': 'văn phòng'
+    }
+    
+    normalized = query.lower()
+    for pattern, replacement in abbrev_dict.items():
+        normalized = re.sub(pattern, replacement, normalized)
+        
+    return normalized
+
+
 # ==================== HYBRID SEARCH ====================
 
 def hybrid_search(db: Session, query: str, top_n: int = None) -> list:
@@ -146,6 +170,9 @@ def hybrid_search(db: Session, query: str, top_n: int = None) -> list:
     
     if not query.strip():
         return []
+
+    # Chuẩn hóa viết tắt trước khi truy vấn vector và full-text search
+    query = normalize_abbreviations(query)
 
     if IS_POSTGRES:
         return _postgres_hybrid_search(db, query, top_n)
