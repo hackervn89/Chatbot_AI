@@ -4,6 +4,7 @@ import json
 import time
 from sqlalchemy.orm import Session
 from google import genai
+from google.genai import types
 from database import engine, SessionLocal, IS_POSTGRES
 import models
 
@@ -46,7 +47,7 @@ def embed_batch(client, texts):
         response = client.models.embed_content(
             model="models/gemini-embedding-2",
             contents=texts,
-            config={"output_dimensionality": 768}
+            config=types.EmbedContentConfig(output_dimensionality=768)
         )
         return [e.values for e in response.embeddings]
     except Exception as e:
@@ -58,7 +59,7 @@ def embed_batch(client, texts):
                 res = client.models.embed_content(
                     model="models/gemini-embedding-2", 
                     contents=t,
-                    config={"output_dimensionality": 768}
+                    config=types.EmbedContentConfig(output_dimensionality=768)
                 )
                 vectors.append(res.embeddings[0].values)
                 time.sleep(0.1)
@@ -146,7 +147,7 @@ def migrate():
                     res = client.models.embed_content(
                         model="models/gemini-embedding-2", 
                         contents=t,
-                        config={"output_dimensionality": 768}
+                        config=types.EmbedContentConfig(output_dimensionality=768)
                     )
                     vectors.append(res.embeddings[0].values)
                 except Exception as ex:

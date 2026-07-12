@@ -3,6 +3,7 @@ import sys
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from google import genai
+from google.genai import types
 from database import IS_POSTGRES
 import models
 
@@ -28,20 +29,21 @@ load_dotenv()
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 
 def get_embedding(text_content: str) -> list:
-    """Tạo vector embeddings 3072 chiều bằng Gemini API gemini-embedding-2"""
+    """Tạo vector embeddings 768 chiều bằng Gemini API gemini-embedding-2"""
     if not GEMINI_API_KEY:
         print("[!] RAG Engine Warning: GEMINI_API_KEY chưa cấu hình. Trả về vector rỗng.")
-        return [0.0] * 3072
+        return [0.0] * 768
     try:
         client = genai.Client(api_key=GEMINI_API_KEY)
         response = client.models.embed_content(
             model="models/gemini-embedding-2",
-            contents=text_content
+            contents=text_content,
+            config=types.EmbedContentConfig(output_dimensionality=768)
         )
         return response.embeddings[0].values
     except Exception as e:
         print(f"[!] RAG Engine Error: Không thể tạo embedding: {e}")
-        return [0.0] * 3072
+        return [0.0] * 768
 
 def hybrid_search(db: Session, query: str, top_n: int = 5) -> list:
     """

@@ -7,6 +7,7 @@ import re
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from google import genai
+from google.genai import types
 
 from config import (
     GEMINI_API_KEY, IS_POSTGRES, EMBEDDING_MODEL, EMBEDDING_DIMENSION,
@@ -26,7 +27,7 @@ def get_embedding(text_content: str) -> list:
         response = client.models.embed_content(
             model=EMBEDDING_MODEL,
             contents=text_content,
-            config={"output_dimensionality": EMBEDDING_DIMENSION}
+            config=types.EmbedContentConfig(output_dimensionality=EMBEDDING_DIMENSION)
         )
         return response.embeddings[0].values
     except Exception as e:
@@ -46,7 +47,7 @@ def get_embeddings_batch(texts: list) -> list:
         response = client.models.embed_content(
             model=EMBEDDING_MODEL,
             contents=texts,
-            config={"output_dimensionality": EMBEDDING_DIMENSION}
+            config=types.EmbedContentConfig(output_dimensionality=EMBEDDING_DIMENSION)
         )
         return [emb.values for emb in response.embeddings]
     except Exception as e:
