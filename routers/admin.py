@@ -176,8 +176,11 @@ DEFAULT_DOCUMENT_TYPES = [
 ]
 
 DEFAULT_ISSUERS = [
-    "Trung ương (TW)", "Tỉnh ủy / Thành ủy", "Huyện ủy / Quận ủy", "Đảng ủy xã / phường",
-    "Đảng bộ cơ sở", "Chi bộ trực thuộc"
+    "Trung ương (TW)",
+    "Tỉnh ủy Ninh Thuận",
+    "Huyện ủy Thuận Bắc",
+    "Đảng ủy xã Công Hải",
+    "Chi bộ trực thuộc"
 ]
 
 DEFAULT_DOMAINS = [
