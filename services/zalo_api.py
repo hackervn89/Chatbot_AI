@@ -6,16 +6,52 @@ import requests
 from config import ZALO_API_TOKEN
 
 
+import re
+
+def clean_markdown_for_zalo(text: str) -> str:
+    """Chuyển đổi cú pháp Markdown thành plain text phù hợp hiển thị trên Zalo OA"""
+    if not text:
+        return ""
+        
+    # 1. Chuyển đổi Markdown Link [text](url) -> text: url
+    text = re.sub(r'\[([^\]]+)\]\((https?://[^\)]+)\)', r'\1: \2', text)
+    
+    # 2. Loại bỏ dấu in đậm **text** -> text
+    text = re.sub(r'\*\*([^*]+)\*\*', r'\1', text)
+    
+    # 3. Loại bỏ dấu in nghiêng *text* hoặc _text_ -> text
+    text = re.sub(r'\*([^*]+)\*', r'\1', text)
+    text = re.sub(r'_([^_]+)_', r'\1', text)
+    
+    # 4. Loại bỏ code inline `code` -> code
+    text = re.sub(r'`([^`]+)`', r'\1', text)
+    
+    # 5. Loại bỏ code block ```code```
+    text = re.sub(r'```[a-zA-Z]*\n?(.*?)\n?```', r'\1', text, flags=re.DOTALL)
+    
+    # 6. Làm sạch ký tự heading #, ##, ### ở đầu dòng
+    def replace_heading(match):
+        heading_text = match.group(2).strip()
+        return f"\n🔹 {heading_text.upper()}\n"
+        
+    text = re.sub(r'^(#+)\s*(.*)$', replace_heading, text, flags=re.MULTILINE)
+    
+    return text.strip()
+
+
 def send_message(chat_id: str, text: str) -> dict:
     """
     Gửi tin nhắn text qua Zalo Bot API.
-    Tự động chia nhỏ nếu tin nhắn > 2000 ký tự.
+    Tự động chuyển đổi Markdown và chia nhỏ nếu tin nhắn > 2000 ký tự.
     
     Returns: dict kết quả API hoặc None nếu lỗi
     """
     if not ZALO_API_TOKEN:
         print("[Zalo API] Lỗi: ZALO_API_TOKEN chưa cấu hình.")
         return None
+
+    # Làm sạch Markdown cho Zalo
+    text = clean_markdown_for_zalo(text)
 
     # Chia nhỏ tin nhắn nếu quá dài
     max_len = 2000
