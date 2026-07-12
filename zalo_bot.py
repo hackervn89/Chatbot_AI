@@ -241,30 +241,34 @@ def search_duckduckgo_free(query, max_results=3):
 
 def ask_dhtn_qa(chat_id, question, db=None):
     """Trả lời thắc mắc của người dùng dựa trên bộ tri thức ĐHTN kết hợp RAG HDSD và giữ ngữ cảnh hội thoại, chỉ dùng DeepSeek làm mô hình chính"""
-    if not KIENTHUC_CONTENT:
-        return None, None, []
-        
     history = get_chat_history(chat_id)
     best_score = 0
     relevant_results = []
     
-    # Sử dụng database hybrid search để tìm kiếm tri thức
-    should_close_db = False
-    if db is None:
-        from database import SessionLocal
-        db = SessionLocal()
-        should_close_db = True
-        
-    try:
-        from rag_engine import hybrid_search
-        relevant_results = hybrid_search(db, question, top_n=3)
-        if relevant_results:
-            best_score = relevant_results[0][0]
-    except Exception as e:
-        print(f"[Zalo Bot Error] Lỗi thực hiện Hybrid Search: {e}")
-    finally:
-        if should_close_db:
-            db.close()
+    # Phân loại câu hỏi bằng LLM trước
+    from rag_engine import classify_question, hybrid_search
+    question_type = classify_question(question)
+    print(f"[Zalo Bot] Phân loại câu hỏi: '{question}' -> {question_type}")
+    
+    if question_type == "nội_bộ":
+        # Sử dụng database hybrid search để tìm kiếm tri thức
+        should_close_db = False
+        if db is None:
+            from database import SessionLocal
+            db = SessionLocal()
+            should_close_db = True
+            
+        try:
+            relevant_results = hybrid_search(db, question, top_n=3)
+            if relevant_results:
+                best_score = relevant_results[0][0]
+        except Exception as e:
+            print(f"[Zalo Bot Error] Lỗi thực hiện Hybrid Search: {e}")
+        finally:
+            if should_close_db:
+                db.close()
+    else:
+        print("[Zalo Bot] Bỏ qua RAG search vì câu hỏi xã giao/ngoài lề.")
             
     # Lấy thông tin ngữ cảnh (Nội bộ hoặc Tìm kiếm Web)
     relevant_context = ""

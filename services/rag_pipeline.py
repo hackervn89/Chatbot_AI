@@ -233,6 +233,44 @@ def is_chitchat(query: str) -> bool:
     return False
 
 
+def classify_question(query: str) -> str:
+    """
+    Phân loại câu hỏi của người dùng để quyết định có sử dụng RAG hay không.
+    Trả về:
+    - 'nội_bộ': Nếu câu hỏi liên quan đến tài liệu, nghiệp vụ, thao tác phần mềm ĐHTN của cơ quan.
+    - 'ngoài_lề': Nếu câu hỏi là xã giao (chào hỏi, cảm ơn), kiến thức chung, hoặc kỹ năng/học thuật không liên quan đến ĐHTN.
+    """
+    if not GEMINI_API_KEY:
+        return "nội_bộ"
+        
+    try:
+        client = genai.Client(api_key=GEMINI_API_KEY)
+        prompt = f"""Phân loại câu hỏi của người dùng dưới đây thành một trong hai nhãn sau:
+- 'nội_bộ': Nếu câu hỏi là về thao tác, chức năng, lỗi, hướng dẫn sử dụng phần mềm Điều hành tác nghiệp (ĐHTN) của cơ quan (ví dụ: tạo phiếu trình, gửi văn bản đi, xử lý văn bản đến, quản lý nhiệm vụ, cấu hình hoặc quản trị hệ thống...).
+- 'ngoài_lề': Nếu câu hỏi chỉ là chào hỏi xã giao (xin chào, hello, hi, cảm ơn, chúc sức khỏe), hỏi về kiến thức chung, lập trình, toán học, thời tiết, kỹ năng văn phòng chung (như Excel, Word chung không liên quan ĐHTN), hoặc các chủ đề học thuật ngoài lề khác.
+
+Bạn PHẢI trả về duy nhất một từ là 'nội_bộ' hoặc 'ngoài_lề' (không kèm bất kỳ giải thích nào khác).
+
+Câu hỏi: "{query}"
+Nhãn phân loại:"""
+        
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.0,
+                max_output_tokens=10
+            )
+        )
+        result = response.text.strip().lower()
+        if "nội_bộ" in result or "noi_bo" in result or "nội bộ" in result:
+            return "nội_bộ"
+        return "ngoài_lề"
+    except Exception as e:
+        print(f"[RAG Classifier] Lỗi phân loại câu hỏi: {e}")
+        return "nội_bộ"
+
+
 # ==================== HYBRID SEARCH ====================
 
 def hybrid_search(db: Session, query: str, top_n: int = None) -> list:

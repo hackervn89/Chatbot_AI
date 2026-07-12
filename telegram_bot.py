@@ -279,17 +279,22 @@ def search_duckduckgo_free(query, max_results=3):
 
 def ask_dhtn_qa(chat_id, question):
     """Trả lời thắc mắc của người dùng dựa trên bộ tri thức ĐHTN kết hợp RAG HDSD và giữ ngữ cảnh hội thoại, chỉ dùng DeepSeek làm mô hình chính"""
-    if not KIENTHUC_CONTENT and not CHUNKS_DATA:
-        return None, None, []
-        
     history = get_chat_history(chat_id)
     best_score = 0
     relevant_results = []
     
-    if CHUNKS_DATA:
-        relevant_results = retrieve_chunks(question, CHUNKS_DATA, CHUNKS_IDFS, top_n=3)
-        if relevant_results:
-            best_score = relevant_results[0][0]
+    # Phân loại câu hỏi bằng LLM trước
+    from rag_engine import classify_question
+    question_type = classify_question(question)
+    print(f"[Telegram Bot] Phân loại câu hỏi: '{question}' -> {question_type}")
+    
+    if question_type == "nội_bộ":
+        if CHUNKS_DATA:
+            relevant_results = retrieve_chunks(question, CHUNKS_DATA, CHUNKS_IDFS, top_n=3)
+            if relevant_results:
+                best_score = relevant_results[0][0]
+    else:
+        print("[Telegram Bot] Bỏ qua RAG search vì câu hỏi xã giao/ngoài lề.")
             
     # Lấy thông tin ngữ cảnh (Nội bộ hoặc Tìm kiếm Web)
     relevant_context = ""

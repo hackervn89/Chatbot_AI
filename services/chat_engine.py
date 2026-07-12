@@ -14,7 +14,7 @@ from config import (
 )
 from database import get_db_session
 from models import ChatSession, ChatMessage
-from services.rag_pipeline import hybrid_search
+from services.rag_pipeline import hybrid_search, classify_question
 from services.ai_engine import call_ai, call_gemini_with_grounding
 from services.audit_logger import log_chat_action
 
@@ -182,16 +182,22 @@ def answer_question(
         session = get_or_create_session(platform, chat_id, display_name, db)
         history = get_chat_history(session.id, db)
 
-        # 2. RAG Search
+        # 2. Phân loại câu hỏi bằng LLM trước
+        question_type = classify_question(question)
+        print(f"[Chat Engine] Phân loại câu hỏi: '{question}' -> {question_type}")
+        
         best_score = 0
         relevant_results = []
         
-        try:
-            relevant_results = hybrid_search(db, question)
-            if relevant_results:
-                best_score = relevant_results[0][0]
-        except Exception as e:
-            print(f"[Chat] Lỗi RAG search: {e}")
+        if question_type == "nội_bộ":
+            try:
+                relevant_results = hybrid_search(db, question)
+                if relevant_results:
+                    best_score = relevant_results[0][0]
+            except Exception as e:
+                print(f"[Chat] Lỗi RAG search: {e}")
+        else:
+            print("[Chat Engine] Bỏ qua RAG search vì câu hỏi xã giao/ngoài lề.")
 
         # 3. Xây dựng context
         relevant_context = ""
