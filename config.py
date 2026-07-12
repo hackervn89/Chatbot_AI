@@ -58,7 +58,7 @@ AI_PRIMARY_ENGINE = os.environ.get('AI_PRIMARY_ENGINE', 'deepseek')
 # DeepSeek config
 DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions"
 DEEPSEEK_MODEL = os.environ.get('DEEPSEEK_MODEL', 'deepseek-chat')
-DEEPSEEK_TIMEOUT = int(os.environ.get('DEEPSEEK_TIMEOUT', '10'))
+DEEPSEEK_TIMEOUT = int(os.environ.get('DEEPSEEK_TIMEOUT', '30'))
 
 # Gemini config — danh sách model theo thứ tự ưu tiên fallback
 GEMINI_MODELS = [
