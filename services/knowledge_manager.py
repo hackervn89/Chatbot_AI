@@ -460,7 +460,20 @@ def publish_document(doc_id: int, actor: str = "admin", db: Session = None) -> d
         db.query(KnowledgeChunk).filter(KnowledgeChunk.document_id == doc.id).delete()
         
         # 2. Cắt chunks ngữ nghĩa
-        chunks = semantic_chunk(doc.raw_text)
+        raw_chunks = semantic_chunk(doc.raw_text)
+        
+        # Tự động chèn Tiền tố ngữ cảnh (Contextual Prefix) vào đầu mỗi chunk để AI phân biệt chính xác phần mềm/danh mục
+        chunks = []
+        for c in raw_chunks:
+            context_prefix = f"Danh mục: {doc.category} | Tài liệu: {doc.title}\n"
+            if c.get("metadata", {}).get("heading"):
+                context_prefix += f"Nội dung: {c['metadata']['heading']}\n"
+            context_prefix += "\n"
+            
+            chunks.append({
+                "text": context_prefix + c["text"],
+                "metadata": c.get("metadata", {})
+            })
         
         # 3. Tạo vector embeddings bằng BATCH để tránh rate-limit
         from services.rag_pipeline import get_embeddings_batch
