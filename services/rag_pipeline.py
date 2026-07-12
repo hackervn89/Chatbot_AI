@@ -84,7 +84,8 @@ def semantic_chunk(text_content: str, chunk_size: int = None, overlap: int = Non
             # Lưu section trước
             if current_section["lines"]:
                 sections.append(current_section)
-            current_section = {"heading": stripped.lstrip('#').strip(), "lines": []}
+            # Giữ nguyên dòng heading gốc đưa vào lines của section mới để LLM đọc được tiêu đề
+            current_section = {"heading": stripped.lstrip('#').strip(), "lines": [line]}
         else:
             current_section["lines"].append(line)
     
@@ -95,13 +96,22 @@ def semantic_chunk(text_content: str, chunk_size: int = None, overlap: int = Non
     if not sections:
         sections = [{"heading": "", "lines": lines}]
 
-    # Giai đoạn 2: Chia mỗi section thành chunks với overlap
+    # Giai đoạn 2: Chia mỗi section thành chunks
     chunks = []
     for section in sections:
         section_text = '\n'.join(section["lines"]).strip()
         if not section_text:
             continue
 
+        # Nếu độ dài toàn bộ section nhỏ hơn chunk_size, lưu trọn vẹn thành 1 chunk
+        if len(section_text) <= chunk_size:
+            chunks.append({
+                "text": section_text,
+                "metadata": {"heading": section["heading"]} if section["heading"] else {}
+            })
+            continue
+
+        # Nếu vượt quá chunk_size, mới chia nhỏ theo paragraphs
         paragraphs = [p.strip() for p in section_text.split('\n') if p.strip()]
         current_chunk_lines = []
         current_len = 0

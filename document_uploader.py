@@ -118,33 +118,61 @@ def parse_docx_and_extract_images(docx_path: str, doc_source_name: str) -> tuple
         
     return raw_text, image_mappings
 
-def chunk_text(text: str, chunk_size: int = 800, chunk_overlap: int = 150) -> list:
-    """Chia nhỏ văn bản thành các chunks có kích thước đều nhau và có overlap"""
-    # Tách theo dòng trước để tránh chia cắt giữa câu
-    paragraphs = text.split('\n')
-    chunks = []
-    current_chunk = []
-    current_len = 0
+def chunk_text(text: str, chunk_size: int = 1500, chunk_overlap: int = 150) -> list:
+    """Chia nhỏ văn bản theo ngữ nghĩa đề mục Markdown H3 (hoặc H2, H1)"""
+    if not text.strip():
+        return []
     
-    for p in paragraphs:
-        p = p.strip()
-        if not p:
-            continue
-        p_len = len(p)
-        if current_len + p_len > chunk_size:
-            if current_chunk:
-                chunks.append("\n".join(current_chunk))
-            # Tạo overlap bằng cách lấy 1-2 dòng cuối của chunk trước
-            overlap_lines = current_chunk[-2:] if len(current_chunk) >= 2 else current_chunk[-1:] if current_chunk else []
-            current_chunk = overlap_lines + [p]
-            current_len = sum(len(l) for l in current_chunk)
+    lines = text.split('\n')
+    sections = []
+    current_section = {"lines": []}
+    
+    for line in lines:
+        stripped = line.strip()
+        # Phát hiện heading Markdown
+        if stripped.startswith('#'):
+            if current_section["lines"]:
+                sections.append(current_section)
+            current_section = {"lines": [line]}
         else:
-            current_chunk.append(p)
-            current_len += p_len
+            current_section["lines"].append(line)
             
-    if current_chunk:
-        chunks.append("\n".join(current_chunk))
+    if current_section["lines"]:
+        sections.append(current_section)
         
+    if not sections:
+        sections = [{"lines": lines}]
+        
+    chunks = []
+    for section in sections:
+        section_text = '\n'.join(section["lines"]).strip()
+        if not section_text:
+            continue
+            
+        # Nếu độ dài của toàn bộ section nhỏ hơn chunk_size, lưu trọn vẹn thành 1 chunk
+        if len(section_text) <= chunk_size:
+            chunks.append(section_text)
+            continue
+            
+        # Nếu vượt quá chunk_size, chia nhỏ theo paragraphs
+        paragraphs = [p.strip() for p in section_text.split('\n') if p.strip()]
+        current_chunk_lines = []
+        current_len = 0
+        
+        for para in paragraphs:
+            para_len = len(para)
+            if current_len + para_len > chunk_size and current_chunk_lines:
+                chunks.append('\n'.join(current_chunk_lines))
+                overlap_lines = current_chunk_lines[-2:] if len(current_chunk_lines) >= 2 else current_chunk_lines[-1:]
+                current_chunk_lines = list(overlap_lines) + [para]
+                current_len = sum(len(l) for l in current_chunk_lines)
+            else:
+                current_chunk_lines.append(para)
+                current_len += para_len
+                
+        if current_chunk_lines:
+            chunks.append('\n'.join(current_chunk_lines))
+            
     return chunks
 
 def ingest_document_file(file_path: str, title: str = None) -> dict:

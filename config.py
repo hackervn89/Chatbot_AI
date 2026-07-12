@@ -91,7 +91,7 @@ SESSION_SECRET_KEY = os.environ.get('SESSION_SECRET_KEY', 'rag-chatbot-secret-ke
 
 # ==================== RAG CONFIG ====================
 # Chunking
-CHUNK_SIZE = int(os.environ.get('CHUNK_SIZE', '800'))
+CHUNK_SIZE = int(os.environ.get('CHUNK_SIZE', '1500'))
 CHUNK_OVERLAP = int(os.environ.get('CHUNK_OVERLAP', '150'))
 
 # Search
