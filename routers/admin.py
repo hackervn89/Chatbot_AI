@@ -233,7 +233,7 @@ async def upload_document(
     title: str = Form(...),
     category: str = Form("Văn bản của Xã"),
     description: str = Form(""),
-    status: str = Form("draft"),
+    status: str = Form("active"),
     effective_date: str = Form(None),
     no_split: bool = Form(False),
     file: UploadFile = File(...)
