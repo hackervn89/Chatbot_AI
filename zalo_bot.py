@@ -55,133 +55,9 @@ TEMPLATE_PATH = os.path.join(PROJECT_ROOT, "references", "cong_van_giao_viec_mau
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, "output")
 TEMP_DIR = os.path.join(PROJECT_ROOT, "scripts", "temp")
 MAP_FILE = os.path.join(TEMP_DIR, "file_map.json")
-KIENTHUC_PATH = os.path.join(PROJECT_ROOT, "references", "kienthuc_dhtn.md")
-IMAGE_MAP_PATH = os.path.join(OUTPUT_DIR, "images", "image_map.json")
-IMAGE_MAP_DATA = {}
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(TEMP_DIR, exist_ok=True)
-
-CHUNKS_PATH = os.path.join(PROJECT_ROOT, "references", "hdsd_chunks.json")
-KIENTHUC_CONTENT = ""
-CHUNKS_DATA = []
-CHUNKS_IDFS = {}
-
-def remove_accents(input_str):
-    import unicodedata
-    input_str = unicodedata.normalize('NFC', input_str)
-    s1 = u'ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẬậẸẹẺẻẼẽẾếỀềỂểỄễỆệỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỶỷỸỹỴỵ'
-    s0 = u'AAAAEEEIIOOOOUUYaaaaeeeiioooouuyAaDdIiUuOoUuAaAaAaAaAaAaAaAaAaAaAaAaEeEeEeEeEeEeEeEeIiOoOoOoOoOoOoOoOoOoOoOoOoUuUuUuUuUuUuUuYyYyYyYy'
-    s = ""
-    for c in input_str:
-        if c in s1:
-            s += s0[s1.index(c)]
-        else:
-            s += c
-    return s
-
-def calculate_idfs(chunks):
-    import math
-    total_docs = len(chunks)
-    doc_counts = {}
-    for chunk in chunks:
-        unique_words = set(chunk["text_unsigned"].split())
-        path_words = chunk["source_unsigned"].replace("/", " ").replace("_", " ").replace(".", " ").split()
-        unique_words.update(path_words)
-        for word in unique_words:
-            if len(word) > 1:
-                doc_counts[word] = doc_counts.get(word, 0) + 1
-    idfs = {}
-    for word, count in doc_counts.items():
-        idfs[word] = math.log(total_docs / count)
-    return idfs
-
-def retrieve_chunks(question, chunks, idfs, top_n=3):
-    question_clean = remove_accents(question.lower())
-    words = [w for w in question_clean.split() if len(w) > 1]
-    if not words:
-        return []
-    
-    # Tạo bigram (cặp từ liên tiếp) để khớp cụm từ đặc trưng
-    # Ví dụ: "đảng phí" → "dang phi", "thủ tục" → "thu tuc"
-    bigrams = []
-    for i in range(len(words) - 1):
-        bigrams.append(words[i] + " " + words[i + 1])
-    
-    scored_chunks = []
-    for chunk in chunks:
-        text_lower = chunk["text_unsigned"]
-        source_lower = chunk["source_unsigned"]
-        score = 0
-        
-        # 1. Unigram scoring (giữ nguyên logic gốc)
-        for word in words:
-            if word not in idfs:
-                continue
-            idf = idfs[word]
-            word_score = 0
-            if word in text_lower:
-                tf = min(text_lower.count(word), 5)
-                word_score += tf * idf
-            if word in source_lower:
-                word_score += 80 * idf
-            score += word_score
-        
-        # 2. Bigram scoring (boost x3 cho cụm từ ghép khớp chính xác)
-        for bigram in bigrams:
-            if bigram in text_lower:
-                tf = min(text_lower.count(bigram), 3)
-                # Boost cao hơn unigram vì cụm từ chính xác hơn
-                bigram_idf = sum(idfs.get(w, 0) for w in bigram.split())
-                score += tf * bigram_idf * 3
-            if bigram in source_lower:
-                bigram_idf = sum(idfs.get(w, 0) for w in bigram.split())
-                score += 120 * bigram_idf
-        
-        if score > 0:
-            scored_chunks.append((score, chunk))
-    scored_chunks.sort(key=lambda x: x[0], reverse=True)
-    return scored_chunks[:top_n]
-
-
-def load_knowledge_bases():
-    global KIENTHUC_CONTENT, CHUNKS_DATA, CHUNKS_IDFS, IMAGE_MAP_DATA
-    # 1. Tải kienthuc_dhtn.md
-    if os.path.exists(KIENTHUC_PATH):
-        try:
-            with open(KIENTHUC_PATH, 'r', encoding='utf-8') as f:
-                KIENTHUC_CONTENT = f.read().strip()
-            print(f"[Zalo Bot] Đã tải bộ kiến thức hệ thống ĐHTN ({len(KIENTHUC_CONTENT)} ký tự).")
-        except Exception as e:
-            print(f"[Zalo Bot] Lỗi khi đọc file kiến thức: {e}")
-    else:
-        print(f"[Zalo Bot] Cảnh báo: Không tìm thấy tệp kiến thức tại: {KIENTHUC_PATH}")
-
-    # 2. Tải hdsd_chunks.json (RAG)
-    if os.path.exists(CHUNKS_PATH):
-        try:
-            with open(CHUNKS_PATH, 'r', encoding='utf-8') as f:
-                CHUNKS_DATA = json.load(f)
-            for chunk in CHUNKS_DATA:
-                chunk["text_unsigned"] = remove_accents(chunk["text"].lower())
-                chunk["source_unsigned"] = remove_accents(chunk["source"].lower())
-            CHUNKS_IDFS = calculate_idfs(CHUNKS_DATA)
-            print(f"[Zalo Bot] Đã tải RAG database ({len(CHUNKS_DATA)} chunks).")
-        except Exception as e:
-            print(f"[Zalo Bot] Lỗi khi tải RAG database: {e}")
-    else:
-        print(f"[Zalo Bot] Cảnh báo: Không tìm thấy tệp RAG tại: {CHUNKS_PATH}")
-
-    # 3. Tải bản đồ hình ảnh
-    if os.path.exists(IMAGE_MAP_PATH):
-        try:
-            with open(IMAGE_MAP_PATH, 'r', encoding='utf-8') as f:
-                IMAGE_MAP_DATA = json.load(f)
-            print(f"[Zalo Bot] Đã tải bản đồ hình ảnh ({len(IMAGE_MAP_DATA)} tài liệu).")
-        except Exception as e:
-            print(f"[Zalo Bot] Lỗi khi tải bản đồ hình ảnh: {e}")
-
-load_knowledge_bases()
 
 # Shared Prompts
 GEMINI_SYSTEM_PROMPT = """Bạn là chuyên viên văn thư hành chính Đảng. Nhiệm vụ của bạn là đọc văn bản chỉ đạo của cấp trên và trích xuất chính xác các thông tin sau.
@@ -348,38 +224,7 @@ def upload_to_file_io(file_path):
         print(f"[!] Lỗi khi tải file lên file.io: {e}")
     return None
 
-def save_file_mapping(file_id, filename):
-    """Lưu mapping giữa mã file ngắn và tên tệp tin thực tế"""
-    try:
-        data = {}
-        if os.path.exists(MAP_FILE):
-            with open(MAP_FILE, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-        data[file_id] = filename
-        with open(MAP_FILE, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f"[Zalo Bot] Đã lưu mapping file: {file_id} -> {filename}")
-    except Exception as e:
-        print(f"[Zalo Bot] Lỗi khi ghi file_map: {e}")
 
-MAX_HISTORY_LEN = 10  # 10 tin nhắn gần nhất (5 lượt hội thoại)
-CONVERSATION_HISTORY = {}
-
-def get_chat_history(chat_id):
-    if chat_id not in CONVERSATION_HISTORY:
-        CONVERSATION_HISTORY[chat_id] = []
-    history = []
-    for msg in CONVERSATION_HISTORY[chat_id]:
-        cleaned_content = re.sub(r'\n*🤖 Trợ lý ảo - Văn phòng Đảng ủy Công Hải', '', msg["content"]).strip()
-        history.append({"role": msg["role"], "content": cleaned_content})
-    return history
-
-def add_chat_message(chat_id, role, content):
-    if chat_id not in CONVERSATION_HISTORY:
-        CONVERSATION_HISTORY[chat_id] = []
-    CONVERSATION_HISTORY[chat_id].append({"role": role, "content": content})
-    if len(CONVERSATION_HISTORY[chat_id]) > MAX_HISTORY_LEN:
-        CONVERSATION_HISTORY[chat_id] = CONVERSATION_HISTORY[chat_id][-MAX_HISTORY_LEN:]
 
 def search_duckduckgo_free(query, max_results=3):
     """Tìm kiếm DuckDuckGo sử dụng thư viện ddgs để lấy thông tin thời gian thực"""

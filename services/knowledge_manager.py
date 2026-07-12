@@ -11,7 +11,8 @@ from sqlalchemy.sql import func
 from pypdf import PdfReader
 
 from config import (
-    IMAGES_DIR, CATEGORY_CORE, CATEGORY_UPDATABLE, CATEGORY_PERSONAL
+    IMAGES_DIR, CATEGORY_CORE, CATEGORY_UPDATABLE, CATEGORY_PERSONAL,
+    EMBEDDING_DIMENSION
 )
 from database import get_db_session
 from models import Document, DocumentVersion, KnowledgeChunk, ImageMapping
@@ -326,7 +327,7 @@ def ingest_document(
             vectors = get_embeddings_batch(batch_texts)
             
             for j, chunk_data in enumerate(chunk_batch):
-                vector = vectors[j] if j < len(vectors) else [0.0] * 3072
+                vector = vectors[j] if j < len(vectors) else [0.0] * EMBEDDING_DIMENSION
                 chunk_obj = KnowledgeChunk(
                     document_id=doc.id,
                     chunk_index=idx + j,
