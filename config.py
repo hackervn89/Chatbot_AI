@@ -99,6 +99,7 @@ HYBRID_SEARCH_DENSE_WEIGHT = float(os.environ.get('DENSE_WEIGHT', '0.6'))
 HYBRID_SEARCH_SPARSE_WEIGHT = float(os.environ.get('SPARSE_WEIGHT', '0.4'))
 SEARCH_TOP_K = int(os.environ.get('SEARCH_TOP_K', '5'))
 RERANK_TOP_N = int(os.environ.get('RERANK_TOP_N', '3'))
+ENABLE_WEB_SEARCH = os.environ.get('ENABLE_WEB_SEARCH', 'False') == 'True'
 
 # Score thresholds (quyết định dùng tri thức nội bộ hay tìm web)
 RAG_SCORE_HIGH = float(os.environ.get('RAG_SCORE_HIGH', '35'))

@@ -42,10 +42,10 @@ else:
 
 from generate_docx import generate_document
 
-# ==================== CONFIGURATION ====================
 API_TOKEN = os.environ.get('TELEGRAM_API_TOKEN')
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY')
+ENABLE_WEB_SEARCH = os.environ.get('ENABLE_WEB_SEARCH', 'False') == 'True'
 
 # Danh sách mô hình Gemini theo thứ tự ưu tiên (fallback chain)
 GEMINI_MODELS = [
@@ -298,21 +298,29 @@ def ask_dhtn_qa(chat_id, question):
             for idx, (score, chunk) in enumerate(relevant_results):
                 relevant_context += f"--- Nguồn tài liệu: {chunk['source']} ---\n{chunk['text']}\n"
         else:
-            print(f"[RAG] Điểm số nội bộ trung bình ({best_score:.1f}). Đang tìm kiếm Web...")
-            web_results = search_duckduckgo_free(question)
-            if web_results:
-                relevant_context = "\n\nDưới đây là thông tin tìm kiếm thời gian thực trên Internet về câu hỏi này:\n"
-                for idx, snippet in enumerate(web_results):
-                    relevant_context += f"- Kết quả {idx+1}: {snippet}\n"
+            if ENABLE_WEB_SEARCH:
+                print(f"[RAG] Điểm số nội bộ trung bình ({best_score:.1f}). Đang tìm kiếm Web...")
+                web_results = search_duckduckgo_free(question)
+                if web_results:
+                    relevant_context = "\n\nDưới đây là thông tin tìm kiếm thời gian thực trên Internet về câu hỏi này:\n"
+                    for idx, snippet in enumerate(web_results):
+                        relevant_context += f"- Kết quả {idx+1}: {snippet}\n"
+            else:
+                print(f"[RAG] Điểm số nội bộ trung bình ({best_score:.1f}) nhưng ENABLE_WEB_SEARCH=False. Bỏ qua tìm kiếm Web.")
+                relevant_context = "\nKhông có tài liệu tham chiếu nội bộ phù hợp."
     else:
         # Điểm số cực thấp -> Chit-chat hoặc câu hỏi chung
         print(f"[RAG] Điểm số nội bộ cực thấp ({best_score:.1f}). Nhận diện câu hỏi chung/ngoài lề.")
         use_internal_kt = False
-        web_results = search_duckduckgo_free(question)
-        if web_results:
-            relevant_context = "\n\ Dưới đây là thông tin tìm kiếm trên Internet:\n"
-            for idx, snippet in enumerate(web_results):
-                relevant_context += f"- Kết quả {idx+1}: {snippet}\n"
+        if ENABLE_WEB_SEARCH:
+            web_results = search_duckduckgo_free(question)
+            if web_results:
+                relevant_context = "\n\nDưới đây là thông tin tìm kiếm trên Internet:\n"
+                for idx, snippet in enumerate(web_results):
+                    relevant_context += f"- Kết quả {idx+1}: {snippet}\n"
+        else:
+            print(f"[RAG] Điểm số cực thấp và ENABLE_WEB_SEARCH=False. Không tìm kiếm Web.")
+            relevant_context = "Không có tài liệu tham chiếu nội bộ phù hợp."
                 
     # Toàn bộ ngữ cảnh RAG chỉ lấy từ database động, loại bỏ file tĩnh KIENTHUC_CONTENT
     kt_content = relevant_context if use_internal_kt else "Không có tài liệu tham chiếu nội bộ phù hợp."

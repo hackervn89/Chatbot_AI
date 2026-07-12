@@ -10,7 +10,7 @@ import re
 
 from config import (
     MAX_CHAT_HISTORY, RAG_SCORE_HIGH, RAG_SCORE_MEDIUM,
-    REFERENCES_DIR
+    REFERENCES_DIR, ENABLE_WEB_SEARCH
 )
 from database import get_db_session
 from models import ChatSession, ChatMessage
@@ -205,20 +205,26 @@ def answer_question(
                 relevant_context += f"--- {chunk['source']} ---\n{chunk['text']}\n"
             
             # Thêm web search
-            web_snippets = _search_web(question)
-            if web_snippets:
-                relevant_context += "\nThông tin từ Internet:\n"
-                for s in web_snippets:
-                    relevant_context += f"- {s}\n"
+            if ENABLE_WEB_SEARCH:
+                web_snippets = _search_web(question)
+                if web_snippets:
+                    relevant_context += "\nThông tin từ Internet:\n"
+                    for s in web_snippets:
+                        relevant_context += f"- {s}\n"
+            else:
+                relevant_context += "\n[ENABLE_WEB_SEARCH=False] Bỏ qua thông tin bổ sung từ Internet.\n"
         else:
             # Điểm thấp → câu hỏi chung/chit-chat
             print(f"[RAG] Điểm thấp ({best_score:.1f}). Câu hỏi chung.")
             use_internal_kt = False
-            web_snippets = _search_web(question)
-            if web_snippets:
-                relevant_context = "\nThông tin từ Internet:\n"
-                for s in web_snippets:
-                    relevant_context += f"- {s}\n"
+            if ENABLE_WEB_SEARCH:
+                web_snippets = _search_web(question)
+                if web_snippets:
+                    relevant_context = "\nThông tin từ Internet:\n"
+                    for s in web_snippets:
+                        relevant_context += f"- {s}\n"
+            else:
+                relevant_context = "Không có tài liệu nội bộ phù hợp."
 
         # 4. Build prompt - Toàn bộ ngữ cảnh RAG chỉ lấy từ database động, loại bỏ file tĩnh KIENTHUC_CONTENT
         kt = relevant_context if use_internal_kt else "Không có tài liệu nội bộ phù hợp."
