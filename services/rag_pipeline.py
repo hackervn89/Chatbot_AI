@@ -144,7 +144,7 @@ def _postgres_hybrid_search(db: Session, query: str, top_n: int) -> list:
         sql_query = text("""
             WITH dense_search AS (
                 SELECT 
-                    id,
+                    kc.id,
                     ROW_NUMBER() OVER (ORDER BY embedding <=> cast(:vector as vector)) as rank_dense
                 FROM knowledge_chunks kc
                 JOIN documents d ON kc.document_id = d.id

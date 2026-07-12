@@ -6,6 +6,8 @@ import time
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 
+import re
+
 from config import (
     MAX_CHAT_HISTORY, RAG_SCORE_HIGH, RAG_SCORE_MEDIUM,
     REFERENCES_DIR
