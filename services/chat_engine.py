@@ -104,7 +104,13 @@ def get_chat_history(session_id: int, db: Session = None) -> list:
             ChatMessage.session_id == session_id
         ).order_by(ChatMessage.created_at.desc()).limit(MAX_CHAT_HISTORY).all()
 
-        return [{"role": r.role, "content": r.content} for r in reversed(rows)]
+        history = []
+        for r in reversed(rows):
+            content = r.content
+            # Làm sạch các footnote nếu lỡ bị lưu vào DB
+            content = re.sub(r'\n*🤖 Trợ lý ảo - Văn phòng Đảng ủy Công Hải', '', content).strip()
+            history.append({"role": r.role, "content": content})
+        return history
     finally:
         if should_close:
             db.close()
@@ -252,7 +258,7 @@ def answer_question(
 
             add_message(session.id, "user", question, db=db)
             add_message(
-                session.id, "assistant", final_reply,
+                session.id, "assistant", reply, # Lưu reply gốc (chưa có footnote)
                 ai_model=model_name,
                 rag_score=best_score,
                 rag_sources=rag_sources_list,

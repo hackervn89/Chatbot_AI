@@ -296,7 +296,12 @@ def get_chat_history(chat_id):
     try:
         rows = db.query(models.ChatHistory).filter(models.ChatHistory.chat_id == str(chat_id))\
                  .order_by(models.ChatHistory.created_at.desc()).limit(MAX_HISTORY_LEN).all()
-        history = [{"role": r.role, "content": r.content} for r in reversed(rows)]
+        history = []
+        for r in reversed(rows):
+            content = r.content
+            # Làm sạch các footnote nếu lỡ bị lưu vào DB
+            content = re.sub(r'\n*🤖 Trợ lý ảo - Văn phòng Đảng ủy Công Hải', '', content).strip()
+            history.append({"role": r.role, "content": content})
         return history
     except Exception as e:
         print(f"[Zalo Bot Error] Lỗi đọc chat history từ DB: {e}")
@@ -363,7 +368,11 @@ CONVERSATION_HISTORY = {}
 def get_chat_history(chat_id):
     if chat_id not in CONVERSATION_HISTORY:
         CONVERSATION_HISTORY[chat_id] = []
-    return CONVERSATION_HISTORY[chat_id]
+    history = []
+    for msg in CONVERSATION_HISTORY[chat_id]:
+        cleaned_content = re.sub(r'\n*🤖 Trợ lý ảo - Văn phòng Đảng ủy Công Hải', '', msg["content"]).strip()
+        history.append({"role": msg["role"], "content": cleaned_content})
+    return history
 
 def add_chat_message(chat_id, role, content):
     if chat_id not in CONVERSATION_HISTORY:

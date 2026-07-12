@@ -251,7 +251,11 @@ CONVERSATION_HISTORY = {}
 def get_chat_history(chat_id):
     if chat_id not in CONVERSATION_HISTORY:
         CONVERSATION_HISTORY[chat_id] = []
-    return CONVERSATION_HISTORY[chat_id]
+    history = []
+    for msg in CONVERSATION_HISTORY[chat_id]:
+        cleaned_content = re.sub(r'\n*🤖 Trợ lý ảo - Văn phòng Đảng ủy Công Hải', '', msg["content"]).strip()
+        history.append({"role": msg["role"], "content": cleaned_content})
+    return history
 
 def add_chat_message(chat_id, role, content):
     if chat_id not in CONVERSATION_HISTORY:
