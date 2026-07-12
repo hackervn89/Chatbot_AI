@@ -33,40 +33,55 @@ def reindex_all():
             db.rollback()
             print(f"[Re-index] Lưu ý ALTER COLUMN: {e}")
         
-        # 3. Get all active documents and their chunks
-        docs = db.query(Document).filter(Document.is_active == True).all()
-        total_chunks = db.query(KnowledgeChunk).count()
-        print(f"[Re-index] Tổng: {len(docs)} documents, {total_chunks} chunks cần re-embed.")
+        # 3. Get all active documents
+        docs = db.query(Document).filter(Document.is_active == True, Document.status == "active").all()
+        print(f"[Re-index] Tổng: {len(docs)} documents cần xử lý lại.")
         
-        # 4. Re-embed in batches per document
+        # 4. Re-chunk and re-embed per document
+        from services.rag_pipeline import semantic_chunk
         batch_size = 50
         processed = 0
         errors = 0
         
         for doc in docs:
-            chunks = db.query(KnowledgeChunk).filter(
-                KnowledgeChunk.document_id == doc.id
-            ).order_by(KnowledgeChunk.chunk_index).all()
-            
-            if not chunks:
+            if not doc.raw_text:
+                print(f"[Re-index] Doc ID={doc.id}: Không có nội dung raw_text. Bỏ qua.")
                 continue
                 
-            print(f"\n[Re-index] Doc ID={doc.id}: {doc.title[:50]}... ({len(chunks)} chunks)")
+            # Xóa các chunks cũ của doc
+            db.query(KnowledgeChunk).filter(KnowledgeChunk.document_id == doc.id).delete()
+            
+            # Cắt chunks mới
+            chunks = semantic_chunk(doc.raw_text)
+            if not chunks:
+                print(f"[Re-index] Doc ID={doc.id}: Không tạo được chunks từ raw_text. Bỏ qua.")
+                continue
+                
+            print(f"\n[Re-index] Doc ID={doc.id}: {doc.title[:50]}... ({len(chunks)} chunks mới)")
+            doc_inserted = 0
             
             for idx in range(0, len(chunks), batch_size):
                 batch = chunks[idx:idx + batch_size]
-                texts = [c.text for c in batch]
+                texts = [c["text"] for c in batch]
                 
                 try:
                     vectors = get_embeddings_batch(texts)
                     
-                    for j, chunk in enumerate(batch):
-                        if j < len(vectors):
-                            chunk.embedding = vectors[j]
+                    for j, chunk_data in enumerate(batch):
+                        vector = vectors[j] if j < len(vectors) else [0.0] * EMBEDDING_DIMENSION
+                        chunk_obj = KnowledgeChunk(
+                            document_id=doc.id,
+                            chunk_index=idx + j,
+                            text=chunk_data["text"],
+                            embedding=vector,
+                            chunk_metadata=chunk_data.get("metadata", {})
+                        )
+                        db.add(chunk_obj)
+                        doc_inserted += 1
                     
                     db.commit()
                     processed += len(batch)
-                    print(f"  Batch {idx//batch_size + 1}: {len(batch)} chunks OK (tổng: {processed}/{total_chunks})")
+                    print(f"  Batch {idx//batch_size + 1}: {len(batch)} chunks OK (tổng doc: {doc_inserted}/{len(chunks)})")
                     
                     # Rate limit: 1 second between batches
                     time.sleep(1.0)
@@ -75,8 +90,12 @@ def reindex_all():
                     db.rollback()
                     errors += len(batch)
                     print(f"  Batch {idx//batch_size + 1}: LỖI - {e}")
+            
+            # Cập nhật số chunk
+            doc.chunk_count = doc_inserted
+            db.commit()
         
-        print(f"\n[Re-index] Hoàn tất: {processed} OK, {errors} lỗi.")
+        print(f"\n[Re-index] Hoàn tất: {processed} chunks OK, {errors} chunks lỗi.")
         
         # 5. Create HNSW index
         if EMBEDDING_DIMENSION <= 2000:
