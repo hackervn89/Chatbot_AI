@@ -115,6 +115,7 @@ def ingest_document(
     domain: str = "other",
     effective_date: str = None,
     validity: str = "active",
+    no_split: bool = False,
     db: Session = None
 ) -> dict:
     """
@@ -172,6 +173,11 @@ def ingest_document(
 
         if not raw_text.strip():
             return {"status": "error", "message": "Tài liệu trống."}
+
+        # Tự động phát hiện dòng chỉ thị no_split trong nội dung file Markdown/Text
+        if "<!-- no_split -->" in raw_text or "no_split: true" in raw_text:
+            no_split = True
+            raw_text = raw_text.replace("<!-- no_split -->", "").replace("no_split: true", "")
 
         # 2. Kiểm tra tài liệu đã tồn tại chưa
         doc = db.query(Document).filter(Document.source == doc_source).first()
@@ -299,8 +305,11 @@ def ingest_document(
         doc.status = "active"
         db.commit()
 
-        # 3. Semantic chunking
-        chunks = semantic_chunk(raw_text)
+        # 3. Semantic chunking / No split
+        if no_split:
+            chunks = [{"text": raw_text.strip(), "metadata": {}}]
+        else:
+            chunks = semantic_chunk(raw_text)
         print(f"[KM] Đã chia thành {len(chunks)} chunks.")
 
         # 4. Generate embeddings & save chunks bằng BATCH để tránh rate-limit

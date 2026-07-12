@@ -45,6 +45,10 @@
                     <option value="active">Kích hoạt ngay (Sinh vector RAG luôn)</option>
                 </select>
             </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin-top: 12px; margin-bottom: 12px;">
+                <input type="checkbox" id="no_split" name="no_split" value="true" style="width: 18px; height: 18px; cursor: pointer;">
+                <label for="no_split" style="margin-bottom: 0; cursor: pointer; font-weight: 500; font-size: 13px;">Không chia nhỏ tài liệu (Nạp nguyên khối làm 1 chunk)</label>
+            </div>
             <div class="form-group" style="margin-bottom: 24px;">
                 <label for="file">Tệp đính kèm (.docx, .pdf, .srt, .txt, .md)</label>
                 <input type="file" id="file" name="file" class="form-control" accept=".docx,.pdf,.srt,.txt,.md" required>

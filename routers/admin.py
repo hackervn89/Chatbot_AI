@@ -235,6 +235,7 @@ async def upload_document(
     description: str = Form(""),
     status: str = Form("draft"),
     effective_date: str = Form(None),
+    no_split: bool = Form(False),
     file: UploadFile = File(...)
 ):
     admin = _require_login(request)
@@ -259,7 +260,8 @@ async def upload_document(
             issuer="other",
             domain="other",
             effective_date=effective_date if effective_date else None,
-            validity="active"
+            validity="active",
+            no_split=no_split
         )
         
         # Redirect with message

@@ -175,7 +175,7 @@ def chunk_text(text: str, chunk_size: int = 1500, chunk_overlap: int = 150) -> l
             
     return chunks
 
-def ingest_document_file(file_path: str, title: str = None) -> dict:
+def ingest_document_file(file_path: str, title: str = None, no_split: bool = False) -> dict:
     """
     Xử lý nạp tài liệu mới từ file path: bóc tách text, sinh vector, và lưu vào CSDL.
     Hỗ trợ định dạng: .pdf, .docx, .srt, .txt
@@ -228,8 +228,16 @@ def ingest_document_file(file_path: str, title: str = None) -> dict:
     if not raw_text.strip():
         return {"status": "error", "message": "Tài liệu trống, không thể trích xuất văn bản."}
         
+    # Tự động phát hiện dòng chỉ thị no_split trong nội dung file Markdown/Text
+    if "<!-- no_split -->" in raw_text or "no_split: true" in raw_text:
+        no_split = True
+        raw_text = raw_text.replace("<!-- no_split -->", "").replace("no_split: true", "")
+
     # 2. Thực hiện chunking
-    chunks = chunk_text(raw_text)
+    if no_split:
+        chunks = [raw_text.strip()]
+    else:
+        chunks = chunk_text(raw_text)
     print(f"[+] Đã chia nhỏ tài liệu thành {len(chunks)} chunks.")
     
     # 3. Ghi vào database và sinh vector
