@@ -60,9 +60,10 @@ def get_embeddings_batch(texts: list) -> list:
 def semantic_chunk(text_content: str, chunk_size: int = None, overlap: int = None) -> list:
     """
     Chia văn bản theo ngữ nghĩa (semantic chunking):
-    - Ưu tiên tách theo heading (###, ##, #) và dòng trống
-    - Fallback: tách theo đoạn với overlap
-    - Mỗi chunk chứa metadata: heading cha (nếu có)
+    - Phân tách văn bản thành các section dựa trên các heading Markdown (#, ##, ###...)
+    - Các section tiêu đề rỗng (chỉ chứa dòng tiêu đề mà không có nội dung) sẽ không tạo chunk riêng,
+      mà được dùng để làm ngữ cảnh phân cấp (context path) cho các section nội dung bên dưới.
+    - Chèn ngữ cảnh tiêu đề cha vào đầu mỗi chunk để tránh mất ngữ cảnh khi tìm kiếm RAG.
     
     Returns: list of dict {'text': str, 'metadata': dict}
     """
@@ -74,70 +75,108 @@ def semantic_chunk(text_content: str, chunk_size: int = None, overlap: int = Non
 
     lines = text_content.split('\n')
     
-    # Giai đoạn 1: Tách thành các section theo heading
+    # Giai đoạn 1: Phân tách thành các section theo heading Markdown
     sections = []
-    current_section = {"heading": "", "lines": []}
+    current_section = None
     
     for line in lines:
         stripped = line.strip()
-        # Phát hiện heading Markdown
         if stripped.startswith('#'):
-            # Lưu section trước
-            if current_section["lines"]:
+            # Đếm số lượng dấu # để xác định level
+            level = len(stripped) - len(stripped.lstrip('#'))
+            heading_text = stripped.lstrip('#').strip()
+            
+            if current_section:
                 sections.append(current_section)
-            # Giữ nguyên dòng heading gốc đưa vào lines của section mới để LLM đọc được tiêu đề
-            current_section = {"heading": stripped.lstrip('#').strip(), "lines": [line]}
+                
+            current_section = {
+                "level": level,
+                "heading": heading_text,
+                "raw_heading": line,
+                "lines": [line]
+            }
         else:
+            if current_section is None:
+                current_section = {
+                    "level": 0,
+                    "heading": "",
+                    "raw_heading": "",
+                    "lines": []
+                }
             current_section["lines"].append(line)
-    
-    if current_section["lines"]:
+            
+    if current_section:
         sections.append(current_section)
 
-    # Nếu không có heading → coi toàn bộ là 1 section
-    if not sections:
-        sections = [{"heading": "", "lines": lines}]
-
-    # Giai đoạn 2: Chia mỗi section thành chunks
+    # Giai đoạn 2: Duyệt qua các section, duy trì cấu trúc phân cấp và sinh chunk
     chunks = []
+    header_hierarchy = {}  # {level: heading_text}
+    
     for section in sections:
-        section_text = '\n'.join(section["lines"]).strip()
-        if not section_text:
+        # Cập nhật cấu trúc phân cấp tiêu đề
+        if section["level"] > 0:
+            header_hierarchy[section["level"]] = section["heading"]
+            # Loại bỏ các tiêu đề cấp thấp hơn (chỉ số level lớn hơn)
+            for lvl in list(header_hierarchy.keys()):
+                if lvl > section["level"]:
+                    header_hierarchy.pop(lvl)
+                    
+        # Kiểm tra xem section này có nội dung thực tế không (loại bỏ dòng tiêu đề và các dòng trống)
+        actual_content_lines = []
+        for line in section["lines"]:
+            if section["raw_heading"] and line == section["raw_heading"]:
+                continue
+            if line.strip():
+                actual_content_lines.append(line)
+                
+        # Nếu section không có nội dung thực tế (chỉ là tiêu đề rỗng), bỏ qua không tạo chunk
+        if not actual_content_lines:
             continue
-
-        # Nếu độ dài toàn bộ section nhỏ hơn chunk_size, lưu trọn vẹn thành 1 chunk
-        if len(section_text) <= chunk_size:
+            
+        # Tạo context prefix từ các tiêu đề cha (các tiêu đề có level nhỏ hơn level hiện tại)
+        context_parts = []
+        for lvl in sorted(header_hierarchy.keys()):
+            if lvl < section["level"]:
+                context_parts.append(f"{'#' * lvl} {header_hierarchy[lvl]}")
+        context_prefix = "\n".join(context_parts) + "\n\n" if context_parts else ""
+        
+        # Nội dung chính của section này (giữ nguyên tiêu đề của chính nó nếu có)
+        section_text = "\n".join(section["lines"]).strip()
+        
+        # Nếu tổng độ dài bao gồm cả context prefix nhỏ hơn hoặc bằng chunk_size, tạo thành 1 chunk duy nhất
+        if len(context_prefix + section_text) <= chunk_size:
             chunks.append({
-                "text": section_text,
+                "text": (context_prefix + section_text).strip(),
                 "metadata": {"heading": section["heading"]} if section["heading"] else {}
             })
             continue
-
-        # Nếu vượt quá chunk_size, mới chia nhỏ theo paragraphs
+            
+        # Nếu vượt quá chunk_size, chia nhỏ theo các đoạn văn (paragraphs)
         paragraphs = [p.strip() for p in section_text.split('\n') if p.strip()]
         current_chunk_lines = []
-        current_len = 0
-
+        current_len = len(context_prefix)
+        
         for para in paragraphs:
-            para_len = len(para)
+            para_len = len(para) + 1  # Cộng 1 cho ký tự xuống dòng
+            # Nếu thêm đoạn văn này vào vượt quá chunk_size
             if current_len + para_len > chunk_size and current_chunk_lines:
-                # Lưu chunk hiện tại
-                chunk_text = '\n'.join(current_chunk_lines)
+                chunk_text = context_prefix + "\n".join(current_chunk_lines)
                 chunks.append({
-                    "text": chunk_text,
+                    "text": chunk_text.strip(),
                     "metadata": {"heading": section["heading"]} if section["heading"] else {}
                 })
-                # Overlap: giữ lại 2 dòng cuối
+                # Overlap: Giữ lại 1 hoặc 2 dòng cuối tùy thuộc số lượng dòng
                 overlap_lines = current_chunk_lines[-2:] if len(current_chunk_lines) >= 2 else current_chunk_lines[-1:]
                 current_chunk_lines = list(overlap_lines) + [para]
-                current_len = sum(len(l) for l in current_chunk_lines)
+                current_len = len(context_prefix) + sum(len(l) + 1 for l in current_chunk_lines)
             else:
                 current_chunk_lines.append(para)
                 current_len += para_len
-
+                
         if current_chunk_lines:
-            chunk_text = '\n'.join(current_chunk_lines)
+            chunk_text = context_prefix + "\n".join(current_chunk_lines)
             chunks.append({
-                "text": chunk_text,
+                "text": chunk_text.strip(),
                 "metadata": {"heading": section["heading"]} if section["heading"] else {}
             })
 
