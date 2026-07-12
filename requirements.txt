@@ -10,3 +10,4 @@ requests
 Pillow
 ddgs
 python-multipart
+jinja2
