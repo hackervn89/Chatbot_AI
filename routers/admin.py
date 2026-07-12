@@ -73,7 +73,7 @@ async def login_page(request: Request):
     admin = _get_current_admin(request)
     if admin:
         return RedirectResponse(url="/admin/dashboard", status_code=302)
-    return templates.TemplateResponse("login.html", {"request": request, "error": ""})
+    return templates.TemplateResponse(request=request, name="login.html", context={"request": request, "error": ""})
 
 
 @router.post("/login")
@@ -105,7 +105,7 @@ async def login_submit(request: Request, username: str = Form(...), password: st
             response.set_cookie("admin_session", session_id, httponly=True, max_age=86400)
             return response
         
-        return templates.TemplateResponse("login.html", {
+        return templates.TemplateResponse(request=request, name="login.html", context={
             "request": request, "error": "Sai tên đăng nhập hoặc mật khẩu"
         })
     finally:
@@ -155,7 +155,7 @@ async def dashboard(request: Request):
             AuditLog.created_at.desc()
         ).limit(10).all()
         
-        return templates.TemplateResponse("dashboard.html", {
+        return templates.TemplateResponse(request=request, name="dashboard.html", context={
             "request": request,
             "admin": admin,
             "stats": stats,
@@ -178,7 +178,7 @@ async def documents_page(request: Request):
     try:
         category = request.query_params.get("category", "")
         docs = get_all_documents(db, category=category if category else None)
-        return templates.TemplateResponse("documents.html", {
+        return templates.TemplateResponse(request=request, name="documents.html", context={
             "request": request, "admin": admin, "documents": docs,
             "current_category": category
         })
@@ -197,7 +197,7 @@ async def document_detail_page(request: Request, doc_id: int):
         detail = get_document_detail(db, doc_id)
         if not detail:
             return RedirectResponse(url="/admin/documents", status_code=302)
-        return templates.TemplateResponse("document_detail.html", {
+        return templates.TemplateResponse(request=request, name="document_detail.html", context={
             "request": request, "admin": admin, **detail
         })
     finally:
@@ -281,7 +281,7 @@ async def chat_sessions_page(request: Request):
         sessions = db.query(ChatSession).order_by(
             ChatSession.last_activity.desc()
         ).limit(50).all()
-        return templates.TemplateResponse("chat_sessions.html", {
+        return templates.TemplateResponse(request=request, name="chat_sessions.html", context={
             "request": request, "admin": admin, "sessions": sessions
         })
     finally:
@@ -301,7 +301,7 @@ async def chat_detail_page(request: Request, session_id: int):
             ChatMessage.session_id == session_id
         ).order_by(ChatMessage.created_at.asc()).all()
         
-        return templates.TemplateResponse("chat_detail.html", {
+        return templates.TemplateResponse(request=request, name="chat_detail.html", context={
             "request": request, "admin": admin,
             "session": session, "messages": messages
         })
@@ -330,7 +330,7 @@ async def audit_logs_page(request: Request):
         
         logs = query.order_by(AuditLog.created_at.desc()).limit(100).all()
         
-        return templates.TemplateResponse("audit_logs.html", {
+        return templates.TemplateResponse(request=request, name="audit_logs.html", context={
             "request": request, "admin": admin, "logs": logs,
             "filter_type": entity_type, "filter_action": action
         })
@@ -348,7 +348,7 @@ async def settings_page(request: Request):
     
     from config import AI_PRIMARY_ENGINE, DEEPSEEK_API_KEY, GEMINI_API_KEY
     
-    return templates.TemplateResponse("settings.html", {
+    return templates.TemplateResponse(request=request, name="settings.html", context={
         "request": request, "admin": admin,
         "ai_engine": AI_PRIMARY_ENGINE,
         "has_deepseek": bool(DEEPSEEK_API_KEY),
