@@ -530,7 +530,7 @@ async def show_logs_page(request: Request):
     admin = _require_login(request)
     if not admin:
         return RedirectResponse(url="/admin/login", status_code=302)
-    return templates.TemplateResponse("logs.html", {"request": request, "admin": admin})
+    return templates.TemplateResponse(request=request, name="logs.html", context={"request": request, "admin": admin})
 
 
 @router.get("/logs/data")
