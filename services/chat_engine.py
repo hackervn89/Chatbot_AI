@@ -316,7 +316,10 @@ def answer_question(
                     except Exception as e:
                         print(f"[Chat Error] Không thể upload ảnh {hinh_key} lên file.io: {e}")
 
-            footnote = f"\n\n(Bạn cần kiểm tra lại thông tin trước khi sử dụng)"
+            # Xóa bỏ câu cảnh báo cũ nếu AI tự sinh từ tri thức để tránh lặp lại
+            reply = re.sub(r'\(?Bạn cần kiểm tra lại thông tin trước khi sử dụng\.?\)?', '', reply, flags=re.IGNORECASE).strip()
+
+            footnote = f"\n\n🤖 Trợ lý ảo - Văn phòng Đảng ủy Công Hải"
             final_reply = reply + image_links_text + footnote
 
             # Save messages

@@ -1058,7 +1058,10 @@ def process_zalo_message(message):
                     except Exception as e:
                         print(f"[Zalo Bot Error] Không thể upload ảnh {hinh_key} lên file.io: {e}")
 
-            footnote = f"\n\n(Bạn cần kiểm tra lại thông tin trước khi sử dụng)"
+            # Xóa bỏ câu cảnh báo cũ nếu AI tự sinh từ tri thức để tránh lặp lại
+            reply_text = re.sub(r'\(?Bạn cần kiểm tra lại thông tin trước khi sử dụng\.?\)?', '', reply_text, flags=re.IGNORECASE).strip()
+
+            footnote = f"\n\n🤖 Trợ lý ảo - Văn phòng Đảng ủy Công Hải"
             send_zalo_message(chat_id, reply_text + image_links_text + footnote)
         else:
             # Nhắc nhở nếu lỗi hệ thống
