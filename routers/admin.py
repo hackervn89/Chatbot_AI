@@ -177,8 +177,7 @@ DEFAULT_DOCUMENT_TYPES = [
 
 DEFAULT_ISSUERS = [
     "Trung ương (TW)",
-    "Tỉnh ủy Ninh Thuận",
-    "Huyện ủy Thuận Bắc",
+    "Tỉnh ủy Khánh Hòa",
     "Đảng ủy xã Công Hải",
     "Chi bộ trực thuộc"
 ]
