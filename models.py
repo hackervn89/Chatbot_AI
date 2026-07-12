@@ -5,7 +5,7 @@ Bao gồm: Documents, Versions, Chunks, ChatSessions, ChatMessages, AuditLogs, A
 import json
 from sqlalchemy import (
     Column, Integer, BigInteger, String, Text, Float,
-    DateTime, Boolean, ForeignKey, UniqueConstraint, Index, JSON
+    DateTime, Date, Boolean, ForeignKey, UniqueConstraint, Index, JSON
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -58,6 +58,15 @@ class Document(Base):
     chunk_count = Column(Integer, default=0)
     is_active = Column(Boolean, default=True)  # Bật/tắt khỏi RAG
     status = Column(String(20), nullable=False, default='active')  # draft, active, archived
+    
+    # Metadata bổ sung cho phân loại nâng cao
+    document_type = Column(String(50), nullable=False, default='other')  # nq, qd, ct, qyd, kl, hd, bc, other
+    issuer = Column(String(50), nullable=False, default='other')  # tw, tinh, huyen, xa, other
+    domain = Column(String(50), nullable=False, default='other')  # to_chuc, kiem_tra, tuyen_giao, dan_van, van_phong, other
+    effective_date = Column(Date, nullable=True)  # Ngày hiệu lực / Ngày báo cáo số liệu
+    is_latest = Column(Boolean, default=True)  # Đánh dấu báo cáo số liệu mới nhất
+    validity = Column(String(50), nullable=False, default='active')  # active, expired, replaced
+    
     created_by = Column(String(100), default='system')
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())

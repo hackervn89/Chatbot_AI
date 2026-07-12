@@ -212,6 +212,11 @@ async def upload_document(
     category: str = Form(CATEGORY_CORE),
     description: str = Form(""),
     status: str = Form("draft"),
+    document_type: str = Form("other"),
+    issuer: str = Form("other"),
+    domain: str = Form("other"),
+    effective_date: str = Form(None),
+    validity: str = Form("active"),
     file: UploadFile = File(...)
 ):
     admin = _require_login(request)
@@ -231,7 +236,12 @@ async def upload_document(
             category=category,
             description=description,
             created_by=admin.username,
-            status=status
+            status=status,
+            document_type=document_type,
+            issuer=issuer,
+            domain=domain,
+            effective_date=effective_date if effective_date else None,
+            validity=validity
         )
         
         # Redirect with message
@@ -301,6 +311,11 @@ async def edit_doc(
     title: str = Form(...),
     category: str = Form(...),
     description: str = Form(""),
+    document_type: str = Form("other"),
+    issuer: str = Form("other"),
+    domain: str = Form("other"),
+    effective_date: str = Form(None),
+    validity: str = Form("active"),
     raw_text: str = Form(...)
 ):
     admin = _require_login(request)
@@ -314,8 +329,43 @@ async def edit_doc(
             doc.title = title
             doc.category = category
             doc.description = description
+            doc.document_type = document_type
+            doc.issuer = issuer
+            doc.domain = domain
+            doc.validity = validity
             
-            if doc.raw_text != raw_text:
+            # Parse effective_date
+            from datetime import datetime
+            eff_date = None
+            if effective_date:
+                for fmt in ("%Y-%m-%d", "%d/%m/%Y"):
+                    try:
+                        eff_date = datetime.strptime(effective_date, fmt).date()
+                        break
+                    except ValueError:
+                        pass
+            doc.effective_date = eff_date
+            
+            # Logic tự động tính toán is_latest cho báo cáo số liệu (bc)
+            if document_type == 'bc' and eff_date:
+                other_reports = db.query(Document).filter(
+                    Document.document_type == 'bc',
+                    Document.domain == domain,
+                    Document.status == 'active',
+                    Document.id != doc.id
+                ).all()
+                
+                is_new_latest = True
+                for r in other_reports:
+                    if r.effective_date:
+                        if r.effective_date > eff_date:
+                            is_new_latest = False
+                        else:
+                            r.is_latest = False
+                doc.is_latest = is_new_latest
+            
+            text_changed = doc.raw_text != raw_text
+            if text_changed:
                 doc.raw_text = raw_text
                 doc.current_version += 1
                 version = DocumentVersion(
@@ -326,13 +376,13 @@ async def edit_doc(
                     changed_by=admin.username
                 )
                 db.add(version)
-                
-                # Nếu đang hoạt động, tự động re-publish để sinh lại embeddings
-                if doc.status == "active":
-                    db.commit()
-                    publish_document(doc_id, actor=admin.username, db=db)
             
             db.commit()
+            
+            # Nếu đang hoạt động và nội dung đổi, re-publish để sinh lại embeddings
+            if doc.status == "active" and text_changed:
+                publish_document(doc_id, actor=admin.username, db=db)
+                
             return RedirectResponse(url=f"/admin/documents/{doc_id}?msg=updated", status_code=302)
         return RedirectResponse(url="/admin/documents", status_code=302)
     except Exception as e:

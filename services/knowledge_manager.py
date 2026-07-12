@@ -110,6 +110,11 @@ def ingest_document(
     description: str = "",
     created_by: str = "admin",
     status: str = "active",
+    document_type: str = "other",
+    issuer: str = "other",
+    domain: str = "other",
+    effective_date: str = None,
+    validity: str = "active",
     db: Session = None
 ) -> dict:
     """
@@ -133,6 +138,20 @@ def ingest_document(
 
     # Source name chuẩn hóa
     doc_source = f"{category}/{filename}"
+
+    # Parse effective_date
+    from datetime import datetime, date
+    eff_date = None
+    if effective_date:
+        if isinstance(effective_date, str):
+            for fmt in ("%Y-%m-%d", "%d/%m/%Y"):
+                try:
+                    eff_date = datetime.strptime(effective_date, fmt).date()
+                    break
+                except ValueError:
+                    pass
+        elif isinstance(effective_date, (date, datetime)):
+            eff_date = effective_date
 
     try:
         # 1. Parse file
@@ -176,6 +195,11 @@ def ingest_document(
             doc.title = title
             doc.raw_text = raw_text
             doc.description = description
+            doc.document_type = document_type
+            doc.issuer = issuer
+            doc.domain = domain
+            doc.effective_date = eff_date
+            doc.validity = validity
             doc.updated_at = func.now()
             action = "UPDATE"
         else:
@@ -187,6 +211,11 @@ def ingest_document(
                 description=description,
                 file_type=file_ext.lstrip('.'),
                 raw_text=raw_text,
+                document_type=document_type,
+                issuer=issuer,
+                domain=domain,
+                effective_date=eff_date,
+                validity=validity,
                 created_by=created_by
             )
             db.add(doc)
@@ -203,6 +232,23 @@ def ingest_document(
             )
             db.add(version)
             action = "CREATE"
+
+        # Logic tự động tính toán is_latest cho báo cáo số liệu (bc)
+        if document_type == 'bc' and eff_date:
+            other_reports = db.query(Document).filter(
+                Document.document_type == 'bc',
+                Document.domain == domain,
+                Document.id != doc.id
+            ).all()
+            
+            is_new_latest = True
+            for r in other_reports:
+                if r.effective_date:
+                    if r.effective_date > eff_date:
+                        is_new_latest = False
+                    else:
+                        r.is_latest = False
+            doc.is_latest = is_new_latest
 
         db.commit()
         db.refresh(doc)
@@ -434,7 +480,25 @@ def publish_document(doc_id: int, actor: str = "admin", db: Session = None) -> d
             db.commit()
             time.sleep(1.0)  # Sleep 1s giữa các batch
             
-        # 4. Cập nhật trạng thái
+        # 4. Logic tự động tính toán is_latest cho báo cáo số liệu (bc) khi publish
+        if doc.document_type == 'bc' and doc.effective_date:
+            other_reports = db.query(Document).filter(
+                Document.document_type == 'bc',
+                Document.domain == doc.domain,
+                Document.status == 'active',
+                Document.id != doc.id
+            ).all()
+            
+            is_new_latest = True
+            for r in other_reports:
+                if r.effective_date:
+                    if r.effective_date > doc.effective_date:
+                        is_new_latest = False
+                    else:
+                        r.is_latest = False
+            doc.is_latest = is_new_latest
+
+        # 5. Cập nhật trạng thái
         doc.status = "active"
         doc.is_active = True
         doc.chunk_count = inserted

@@ -19,23 +19,75 @@
                 <label for="title">Tiêu đề tài liệu</label>
                 <input type="text" id="title" name="title" class="form-control" placeholder="Ví dụ: Quy định nộp Đảng phí 2026" required>
             </div>
-            <div class="form-group">
-                <label for="category">Danh mục tri thức</label>
-                <select id="category" name="category" class="form-control">
-                    <option value="core">Tri thức gốc (Quy định, Điều lệ Đảng cố định)</option>
-                    <option value="updatable">Tri thức cập nhật (Quy trình, Số liệu thay đổi theo thời gian)</option>
-                    <option value="personal">Tri thức cá nhân admin (Ghi chú tự biên soạn)</option>
-                </select>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label for="category">Danh mục chính</label>
+                    <select id="category" name="category" class="form-control">
+                        <option value="core">Tri thức gốc (Quy định, Điều lệ)</option>
+                        <option value="updatable">Tri thức cập nhật (Quy trình, Số liệu)</option>
+                        <option value="personal">Tri thức cá nhân (Ghi chú)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="document_type">Loại văn bản</label>
+                    <select id="document_type" name="document_type" class="form-control">
+                        <option value="nq">Nghị quyết (NQ)</option>
+                        <option value="qd">Quyết định (QĐ)</option>
+                        <option value="ct">Chỉ thị (CT)</option>
+                        <option value="qyd">Quy định (QyĐ)</option>
+                        <option value="kl">Kết luận (KL)</option>
+                        <option value="hd">Hướng dẫn (HD)</option>
+                        <option value="bc">Báo cáo số liệu (BC)</option>
+                        <option value="other" selected>Khác (HDSD, Tài liệu...)</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label for="issuer">Cơ quan ban hành</label>
+                    <select id="issuer" name="issuer" class="form-control">
+                        <option value="tw">Trung ương (TW)</option>
+                        <option value="tinh">Tỉnh ủy</option>
+                        <option value="huyen">Huyện ủy</option>
+                        <option value="xa">Đảng ủy xã</option>
+                        <option value="other" selected>Khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="domain">Lĩnh vực chuyên môn</label>
+                    <select id="domain" name="domain" class="form-control">
+                        <option value="to_chuc">Tổ chức cán bộ</option>
+                        <option value="kiem_tra">Kiểm tra giám sát</option>
+                        <option value="tuyen_giao">Tuyên giáo</option>
+                        <option value="dan_van">Dân vận</option>
+                        <option value="van_phong">Văn phòng</option>
+                        <option value="other" selected>Khác</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label for="effective_date">Ngày hiệu lực / Ngày báo cáo</label>
+                    <input type="date" id="effective_date" name="effective_date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="validity">Trạng thái hiệu lực</label>
+                    <select id="validity" name="validity" class="form-control">
+                        <option value="active" selected>Còn hiệu lực</option>
+                        <option value="expired">Hết hiệu lực</option>
+                        <option value="replaced">Bị thay thế</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group">
                 <label for="description">Mô tả ngắn</label>
-                <textarea id="description" name="description" class="form-control" rows="3" placeholder="Nhập mô tả tóm tắt nội dung tài liệu..."></textarea>
+                <textarea id="description" name="description" class="form-control" rows="2" placeholder="Nhập mô tả tóm tắt nội dung tài liệu..."></textarea>
             </div>
             <div class="form-group">
                 <label for="status">Chế độ nạp tri thức</label>
                 <select id="status" name="status" class="form-control">
-                    <option value="draft" selected>Lưu Nháp (Đọc kiểm tra & biên tập trước khi chạy RAG)</option>
-                    <option value="active">Kích hoạt ngay (Cắt chunks và tạo vector embeddings ngay)</option>
+                    <option value="draft" selected>Lưu Nháp (Biên tập & duyệt trước khi chạy RAG)</option>
+                    <option value="active">Kích hoạt ngay (Sinh vector RAG luôn)</option>
                 </select>
             </div>
             <div class="form-group" style="margin-bottom: 24px;">
@@ -63,10 +115,9 @@
             <thead>
                 <tr>
                     <th>Tiêu đề tài liệu</th>
-                    <th>Danh mục</th>
-                    <th>Phiên bản</th>
-                    <th>Số Chunks</th>
-                    <th>Định dạng</th>
+                    <th>Cơ quan / Lĩnh vực</th>
+                    <th>Loại văn bản / Hiệu lực</th>
+                    <th>Phiên bản / Chunks</th>
                     <th>Trạng thái</th>
                     <th>Ngày cập nhật</th>
                     <th style="text-align: right;">Hành động</th>
@@ -84,13 +135,36 @@
                         </span>
                     </td>
                     <td>
-                        <span class="badge {% if doc.category == 'core' %}badge-core{% elif doc.category == 'updatable' %}badge-updatable{% else %}badge-personal{% endif %}">
-                            {{ 'Tri thức gốc' if doc.category == 'core' else 'Cập nhật' if doc.category == 'updatable' else 'Cá nhân' }}
-                        </span>
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <span class="badge" style="width: fit-content; background-color: rgba(179,0,0,0.05); color: var(--primary-color);">
+                                🏛️ {{ 'Trung ương' if doc.issuer == 'tw' else 'Tỉnh ủy' if doc.issuer == 'tinh' else 'Huyện ủy' if doc.issuer == 'huyen' else 'Đảng ủy xã' if doc.issuer == 'xa' else 'Khác' }}
+                            </span>
+                            <span class="badge" style="width: fit-content; background-color: rgba(0,0,0,0.03); color: var(--text-secondary);">
+                                🏷️ {{ 'Tổ chức cán bộ' if doc.domain == 'to_chuc' else 'Kiểm tra giám sát' if doc.domain == 'kiem_tra' else 'Tuyên giáo' if doc.domain == 'tuyen_giao' else 'Dân vận' if doc.domain == 'dan_van' else 'Văn phòng' if doc.domain == 'van_phong' else 'Khác' }}
+                            </span>
+                        </div>
                     </td>
-                    <td>v{{ doc.current_version }}</td>
-                    <td>{{ doc.chunk_count }}</td>
-                    <td><span class="badge" style="background-color: rgba(255,255,255,0.05);">{{ doc.file_type }}</span></td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <span class="badge" style="width: fit-content; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(0,0,0,0.08);">
+                                📝 {{ 'Nghị quyết' if doc.document_type == 'nq' else 'Quyết định' if doc.document_type == 'qd' else 'Chỉ thị' if doc.document_type == 'ct' else 'Quy định' if doc.document_type == 'qyd' else 'Kết luận' if doc.document_type == 'kl' else 'Hướng dẫn' if doc.document_type == 'hd' else 'Báo cáo số liệu' if doc.document_type == 'bc' else 'Khác' }}
+                            </span>
+                            
+                            {% if doc.document_type == 'bc' and doc.effective_date %}
+                                <span class="badge {% if doc.is_latest %}badge-active{% else %}badge-inactive{% endif %}" style="width: fit-content;">
+                                    📅 {{ doc.effective_date.strftime('%d/%m/%Y') }} {% if doc.is_latest %}(Mới nhất){% else %}(Cũ){% endif %}
+                                </span>
+                            {% else %}
+                                <span class="badge {% if doc.validity == 'active' %}badge-active{% elif doc.validity == 'expired' %}badge-inactive{% else %}badge-draft{% endif %}" style="width: fit-content;">
+                                    ⚡ {{ 'Còn hiệu lực' if doc.validity == 'active' else 'Hết hiệu lực' if doc.validity == 'expired' else 'Bị thay thế' }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <span style="font-size: 13px; color: var(--text-primary); display: block; font-weight: 500;">v{{ doc.current_version }}</span>
+                        <span style="font-size: 12px; color: var(--text-secondary); display: block;">{{ doc.chunk_count }} chunks ({{ doc.file_type }})</span>
+                    </td>
                     <td>
                         {% if doc.status == 'draft' %}
                         <span class="badge badge-draft">Nháp</span>
@@ -125,7 +199,7 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="8" style="text-align: center; color: var(--text-secondary); padding: 32px 0;">Chưa có tài liệu nào được nạp. Hãy nạp tài liệu mới!</td>
+                    <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 32px 0;">Chưa có tài liệu nào được nạp. Hãy nạp tài liệu mới!</td>
                 </tr>
                 {% endfor %}
             </tbody>
