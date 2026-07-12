@@ -37,30 +37,34 @@ IMAGE_MAP_PATH = os.path.join(PROJECT_ROOT, "taovanban_khoidang", "output", "ima
 
 def create_tables_if_not_exists():
     print("[*] Đang khởi tạo các bảng cơ sở dữ liệu...")
-    # Tạo các bảng thông qua SQLAlchemy Base
     models.Base.metadata.create_all(bind=engine)
     print("[+] Khởi tạo bảng thành công.")
 
 def embed_batch(client, texts):
-    """Tạo vector embeddings theo lô (batch) để tối ưu hóa API và tăng tốc độ"""
+    """Tạo vector embeddings theo lô (batch) 768 chiều (tương thích pgvector index)"""
     try:
         response = client.models.embed_content(
             model="models/gemini-embedding-2",
-            contents=texts
+            contents=texts,
+            config={"output_dimensionality": 768}
         )
         return [e.values for e in response.embeddings]
     except Exception as e:
         print(f"[!] Lỗi gọi Gemini Embed API: {e}")
-        # Thử lại từng phần nếu lô bị lỗi
+        # Fallback từng phần
         vectors = []
         for t in texts:
             try:
-                res = client.models.embed_content(model="models/gemini-embedding-2", contents=t)
+                res = client.models.embed_content(
+                    model="models/gemini-embedding-2", 
+                    contents=t,
+                    config={"output_dimensionality": 768}
+                )
                 vectors.append(res.embeddings[0].values)
                 time.sleep(0.1)
             except Exception as ex:
                 print(f"[!] Lỗi embedding chunk đơn lẻ: {ex}")
-                vectors.append([0.0] * 3072) # Vector rỗng phòng hờ
+                vectors.append([0.0] * 768)
         return vectors
 
 def migrate():
@@ -80,37 +84,57 @@ def migrate():
         
     print(f"[*] Đang xử lý di trú {len(chunks_data)} chunks...")
     
-    # Tạo mapping source -> Document ID trong database
-    source_to_doc_id = {}
+    # Xóa sạch các chunks cũ trong database để nạp lại chuẩn 768 chiều
+    print("[*] Đang dọn sạch bảng chunks cũ...")
+    db.query(models.KnowledgeChunk).delete()
+    db.commit()
     
-    # Gom nhóm chunks theo source để tạo Document trước
-    unique_sources = set(c['source'] for c in chunks_data)
-    for src in unique_sources:
-        # Kiểm tra document đã tồn tại chưa
+    # Gom nhóm chunks theo source để tạo Document + raw_text gộp
+    source_to_doc_id = {}
+    source_texts = {}
+    
+    for c in chunks_data:
+        src = c['source']
+        if src not in source_texts:
+            source_texts[src] = []
+        source_texts[src].append(c['text'])
+        
+    print(f"[*] Tổng cộng có {len(source_texts)} tài liệu độc bản cần xử lý.")
+    
+    for src, text_list in source_texts.items():
+        raw_text = "\n\n".join(text_list)
+        title = os.path.basename(src).replace('.docx', '').replace('_', ' ')
+        
         doc = db.query(models.Document).filter(models.Document.source == src).first()
         if not doc:
-            title = os.path.basename(src).replace('.docx', '').replace('_', ' ')
-            doc = models.Document(title=title, source=src)
+            doc = models.Document(
+                title=title,
+                source=src,
+                category="core",
+                file_type="docx",
+                raw_text=raw_text,
+                status="active"
+            )
             db.add(doc)
             db.commit()
             db.refresh(doc)
+        else:
+            doc.raw_text = raw_text
+            doc.file_type = "docx"
+            doc.status = "active"
+            db.commit()
+            
         source_to_doc_id[src] = doc.id
 
     # Tiến hành embed và lưu chunk vào database theo lô (50 chunks mỗi lô)
     batch_size = 50
     inserted_chunks = 0
     
-    # Lấy các chunk chưa tồn tại trong DB để tránh trùng
-    existing_texts = set(r[0] for r in db.query(models.KnowledgeChunk.text).all())
-    
-    chunks_to_process = [c for c in chunks_data if c['text'] not in existing_texts]
-    print(f"[*] Có {len(chunks_to_process)} chunks mới cần tạo vector embeddings.")
-    
-    for i in range(0, len(chunks_to_process), batch_size):
-        batch = chunks_to_process[i:i+batch_size]
+    for i in range(0, len(chunks_data), batch_size):
+        batch = chunks_data[i:i+batch_size]
         texts = [c['text'] for c in batch]
         
-        print(f"  -> Đang sinh vector cho chunks {i+1} đến {i+len(batch)}...")
+        print(f"  -> Đang sinh vector 768-dim cho chunks {i+1} đến {i+len(batch)}...")
         vectors = embed_batch(client, texts)
         
         # Nếu số lượng vector trả về không khớp, thực hiện sinh đơn lẻ từng phần
@@ -119,11 +143,15 @@ def migrate():
             vectors = []
             for t in texts:
                 try:
-                    res = client.models.embed_content(model="models/gemini-embedding-2", contents=t)
+                    res = client.models.embed_content(
+                        model="models/gemini-embedding-2", 
+                        contents=t,
+                        config={"output_dimensionality": 768}
+                    )
                     vectors.append(res.embeddings[0].values)
                 except Exception as ex:
                     print(f"    [!] Lỗi embedding chunk đơn lẻ: {ex}")
-                    vectors.append([0.0] * 3072)
+                    vectors.append([0.0] * 768)
                 time.sleep(0.1)
         
         for idx, c in enumerate(batch):
@@ -132,6 +160,7 @@ def migrate():
             
             chunk_obj = models.KnowledgeChunk(
                 document_id=doc_id,
+                chunk_index=idx,
                 text=c['text'],
                 embedding=vector
             )
@@ -139,7 +168,17 @@ def migrate():
             inserted_chunks += 1
             
         db.commit()
-        time.sleep(0.5) # Tránh rate limit của Gemini API
+        
+        # Cập nhật số chunk tương ứng cho Document
+        for src in unique_sources_in_batch(batch):
+            doc_id = source_to_doc_id[src]
+            cnt = db.query(models.KnowledgeChunk).filter(models.KnowledgeChunk.document_id == doc_id).count()
+            doc = db.query(models.Document).filter(models.Document.id == doc_id).first()
+            if doc:
+                doc.chunk_count = cnt
+        db.commit()
+        
+        time.sleep(1.0) # Tránh rate limit của Gemini API
         
     print(f"[+] Hoàn thành lưu {inserted_chunks} chunks tri thức vào DB.")
     
@@ -152,11 +191,10 @@ def migrate():
         inserted_images = 0
         for src, mappings in image_map_data.items():
             if src not in source_to_doc_id:
-                # Nếu tài liệu có ảnh nhưng chưa có chunk (hiếm gặp), tạo Document trước
                 doc = db.query(models.Document).filter(models.Document.source == src).first()
                 if not doc:
                     title = os.path.basename(src).replace('.docx', '').replace('_', ' ')
-                    doc = models.Document(title=title, source=src)
+                    doc = models.Document(title=title, source=src, status="active")
                     db.add(doc)
                     db.commit()
                     db.refresh(doc)
@@ -165,7 +203,6 @@ def migrate():
             doc_id = source_to_doc_id[src]
             
             for hinh_key, img_rel_path in mappings.items():
-                # Kiểm tra mapping ảnh đã có chưa
                 img_map = db.query(models.ImageMapping).filter(
                     models.ImageMapping.document_id == doc_id,
                     models.ImageMapping.hinh_key == hinh_key
@@ -187,6 +224,9 @@ def migrate():
         
     db.close()
     print("[+] QUÁ TRÌNH DI TRÚ HOÀN TẤT THÀNH CÔNG!")
+
+def unique_sources_in_batch(batch):
+    return set(c['source'] for c in batch)
 
 if __name__ == "__main__":
     migrate()
