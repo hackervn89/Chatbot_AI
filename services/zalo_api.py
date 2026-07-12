@@ -16,12 +16,12 @@ def clean_markdown_for_zalo(text: str) -> str:
     # 1. Chuyển đổi Markdown Link [text](url) -> text: url
     text = re.sub(r'\[([^\]]+)\]\((https?://[^\)]+)\)', r'\1: \2', text)
     
-    # 2. Loại bỏ dấu in đậm **text** -> text
-    text = re.sub(r'\*\*([^*]+)\*\*', r'\1', text)
+    # 2. Loại bỏ dấu in đậm **text** -> giữ lại cho Zalo render Markdown
+    # text = re.sub(r'\*\*([^*]+)\*\*', r'\1', text)
     
-    # 3. Loại bỏ dấu in nghiêng *text* hoặc _text_ -> text
-    text = re.sub(r'\*([^*]+)\*', r'\1', text)
-    text = re.sub(r'_([^_]+)_', r'\1', text)
+    # 3. Loại bỏ dấu in nghiêng *text* hoặc _text_ -> giữ lại cho Zalo render Markdown
+    # text = re.sub(r'\*([^*]+)\*', r'\1', text)
+    # text = re.sub(r'_([^_]+)_', r'\1', text)
     
     # 4. Loại bỏ code inline `code` -> code
     text = re.sub(r'`([^`]+)`', r'\1', text)
@@ -88,7 +88,8 @@ def _send_single_message(chat_id: str, text: str) -> dict:
     url = f"https://bot-api.zaloplatforms.com/bot{ZALO_API_TOKEN}/sendMessage"
     payload = {
         "chat_id": str(chat_id),
-        "text": text
+        "text": text,
+        "parse_mode": "markdown"
     }
     try:
         response = requests.post(url, json=payload, timeout=10)
