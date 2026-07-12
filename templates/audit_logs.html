@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Nhật ký giám sát - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Nhật ký giám sát hệ thống</h1>
+</div>
+
+<div class="card">
+    <!-- Filter Bar -->
+    <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+        <a href="/admin/audit" class="btn" style="padding: 8px 16px; font-size: 13px; background-color: {% if not filter_type and not filter_action %}var(--primary-color){% else %}rgba(255,255,255,0.05){% endif %};">Tất cả</a>
+        <a href="/admin/audit?type=document" class="btn" style="padding: 8px 16px; font-size: 13px; background-color: {% if filter_type == 'document' %}var(--primary-color){% else %}rgba(255,255,255,0.05){% endif %};">Tri thức</a>
+        <a href="/admin/audit?type=chat" class="btn" style="padding: 8px 16px; font-size: 13px; background-color: {% if filter_type == 'chat' %}var(--primary-color){% else %}rgba(255,255,255,0.05){% endif %};">Hội thoại</a>
+        <a href="/admin/audit?type=admin" class="btn" style="padding: 8px 16px; font-size: 13px; background-color: {% if filter_type == 'admin' %}var(--primary-color){% else %}rgba(255,255,255,0.05){% endif %};">Quản trị</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Đối tượng</th>
+                    <th>Hành động</th>
+                    <th>Tác nhân</th>
+                    <th>Chi tiết hoạt động</th>
+                    <th>Địa chỉ IP</th>
+                    <th>Thời gian</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px; color: var(--text-secondary);">#{{ log.id }}</td>
+                    <td>
+                        <span class="badge" style="background-color: rgba(255,255,255,0.05);">{{ log.entity_type }}</span>
+                    </td>
+                    <td>
+                        <span class="badge {% if log.action in ('CREATE','LOGIN') %}badge-updatable{% elif log.action == 'DELETE' %}badge-inactive{% else %}badge-core{% endif %}">
+                            {{ log.action }}
+                        </span>
+                    </td>
+                    <td><strong>{{ log.actor }}</strong></td>
+                    <td style="font-size: 13px; max-width: 400px; word-break: break-all;">
+                        {% if log.details %}
+                        <div style="font-family: monospace; font-size: 12px; background-color: rgba(0,0,0,0.1); padding: 8px; border-radius: 6px;">
+                            {{ log.details }}
+                        </div>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px; color: var(--text-secondary);">{{ log.ip_address or '-' }}</td>
+                    <td style="font-size: 13px; color: var(--text-secondary);">
+                        {{ log.created_at.strftime('%d/%m/%Y %H:%M:%S') if log.created_at else '' }}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 32px 0;">Không tìm thấy bản ghi nhật ký nào.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -458,7 +458,7 @@ def ask_dhtn_qa(chat_id, question, db=None):
         }
         try:
             print(f"[QA] Đang gửi câu hỏi tới DeepSeek (Lịch sử: {len(history)} tin)...")
-            response = requests.post(url, json=payload, headers=headers, timeout=25)
+            response = requests.post(url, json=payload, headers=headers, timeout=10)
             if response.status_code == 200:
                 res_data = response.json()
                 reply = res_data["choices"][0]["message"]["content"].strip()
@@ -466,8 +466,14 @@ def ask_dhtn_qa(chat_id, question, db=None):
                     add_chat_message(chat_id, "user", question)
                     add_chat_message(chat_id, "assistant", reply)
                     return reply, "DeepSeek-V3", relevant_results
+            else:
+                print(f"[QA] DeepSeek trả lỗi HTTP {response.status_code}: {response.text[:200]}")
+        except requests.exceptions.ConnectTimeout:
+            print("[QA] DeepSeek connection timeout (VPS không thể kết nối). Chuyển sang Gemini...")
+        except requests.exceptions.ReadTimeout:
+            print("[QA] DeepSeek read timeout (phản hồi quá chậm). Chuyển sang Gemini...")
         except Exception as e:
-            print(f"[QA] Lỗi gọi DeepSeek Q&A: {e}")
+            print(f"[QA] Lỗi gọi DeepSeek Q&A: {e}. Chuyển sang Gemini...")
             
     # 2. Phương án dự phòng cuối cùng nếu DeepSeek lỗi hoặc hết tiền -> Dùng Gemini
     if GEMINI_API_KEY:

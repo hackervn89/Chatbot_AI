@@ -1,49 +1,43 @@
 import os
 import sys
 import time
-import json
 import threading
 import subprocess
 from fastapi import FastAPI, Depends, HTTPException, Request, BackgroundTasks
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
+
+from config import (
+    OUTPUT_DIR, TEMP_DIR, IMAGES_DIR, STATIC_DIR, SERVER_PORT, ZALO_MODE
+)
 from database import engine, get_db, SessionLocal
 import models
+from routers import webhook, admin
 
 # Cấu hình encoding UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
+sys.stderr.reconfigure(encoding='utf-8')
 
-app = FastAPI(title="Chuyên Viên Ảo FastAPI Server", version="2.0.0")
-
-# Đường dẫn thư mục dự án
-script_dir = os.path.dirname(os.path.abspath(__file__))
-if os.path.basename(script_dir) == "scripts":
-    PROJECT_ROOT = os.path.dirname(script_dir)
-else:
-    PROJECT_ROOT = os.path.join(script_dir, "taovanban_khoidang")
-    
-OUTPUT_DIR = os.path.join(PROJECT_ROOT, "output")
-TEMP_DIR = os.path.join(PROJECT_ROOT, "scripts", "temp")
-IMAGES_DIR = os.path.join(OUTPUT_DIR, "images")
-
-# Tạo thư mục nếu chưa có
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(TEMP_DIR, exist_ok=True)
-os.makedirs(IMAGES_DIR, exist_ok=True)
+app = FastAPI(title="Chuyên Viên Ảo FastAPI Server", version="3.0.0")
 
 # Khởi tạo các bảng database nếu chưa tồn tại
 models.Base.metadata.create_all(bind=engine)
 
-# Phục vụ file tĩnh (ảnh screenshot hướng dẫn)
+# Phục vụ file tĩnh
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 app.mount("/images", StaticFiles(directory=IMAGES_DIR), name="images")
+
+# Đăng ký các routers mới
+app.include_router(webhook.router)
+app.include_router(admin.router)
 
 @app.get("/")
 def home():
     return {
         "status": "online",
-        "message": "Chuyên Viên Ảo Server is running on FastAPI! Zalo Bot đang hoạt động.",
-        "version": "2.0.0"
+        "message": "Chuyên Viên Ảo Server is running on FastAPI! Zalo Bot & Admin Dashboard đang hoạt động.",
+        "version": "3.0.0"
     }
 
 @app.get("/download/{file_id}")
@@ -68,26 +62,6 @@ def download_file(file_id: str, db: Session = Depends(get_db)):
         return FileResponse(file_path)
         
     raise HTTPException(status_code=404, detail="File không tồn tại hoặc đã hết hạn tải xuống.")
-
-@app.post("/webhook/zalo")
-async def zalo_webhook(request: Request, background_tasks: BackgroundTasks):
-    """
-    Webhook tiếp nhận tin nhắn từ Zalo Official Account.
-    Trả về HTTP 200 ngay lập tức trong vòng 2 giây và xử lý ngầm (background task) để tránh lặp tin nhắn.
-    """
-    try:
-        payload = await request.json()
-        
-        # Nhập import động để tránh lỗi vòng lặp import (circular import)
-        from zalo_bot import process_zalo_webhook_payload
-        
-        # Đẩy luồng xử lý tin nhắn vào Background Tasks của FastAPI
-        background_tasks.add_task(process_zalo_webhook_payload, payload)
-        
-        return {"status": "received"}
-    except Exception as e:
-        print(f"[Webhook Error] Lỗi tiếp nhận Zalo Webhook: {e}")
-        return JSONResponse(status_code=400, content={"status": "error", "message": str(e)})
 
 def file_cleaner_task():
     """Background Daemon Thread dọn dẹp các tệp cũ > 24h và DB mapping hết hạn"""
@@ -128,8 +102,7 @@ def file_cleaner_task():
 
 def run_zalo_polling():
     """Chạy Zalo Bot ở chế độ Polling (chỉ dùng khi test cục bộ/development)"""
-    zalo_mode = os.environ.get('ZALO_MODE', 'polling').lower()
-    if zalo_mode == 'polling':
+    if ZALO_MODE == 'polling':
         print("[Zalo Polling] Đang khởi chạy Zalo Bot ở chế độ Polling (Development)...")
         # Chạy zalo_bot.py dưới dạng tiến trình độc lập
         subprocess.run([sys.executable, "zalo_bot.py"])
@@ -148,6 +121,5 @@ if __name__ == "__main__":
     t_zalo.start()
     
     # 3. Chạy web server FastAPI
-    port = int(os.environ.get("PORT", 8080))
-    print(f"[Server] FastAPI Server đang khởi chạy trên port {port}...")
-    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)
+    print(f"[Server] FastAPI Server đang khởi chạy trên port {SERVER_PORT}...")
+    uvicorn.run("main:app", host="0.0.0.0", port=SERVER_PORT, reload=False)

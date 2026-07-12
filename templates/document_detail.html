@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}{{ document.title }} - Chi tiết tài liệu{% endblock %}
+
+{% block content %}
+<div class="page-header" style="margin-bottom: 24px;">
+    <div>
+        <a href="/admin/documents" style="color: var(--text-secondary); text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px;">← Quay lại danh sách</a>
+        <h1 style="font-size: 24px;">{{ document.title }}</h1>
+    </div>
+    
+    <div style="display: flex; gap: 12px;">
+        <form action="/admin/documents/{{ document.id }}/toggle" method="post" style="margin: 0;">
+            <button type="submit" class="btn" style="background-color: {% if document.is_active %}rgba(239, 68, 68, 0.15){% else %}rgba(16, 185, 129, 0.15){% endif %}; color: {% if document.is_active %}var(--danger-color){% else %}var(--accent-color){% endif %};">
+                {{ 'Tạm tắt RAG' if document.is_active else 'Kích hoạt RAG' }}
+            </button>
+        </form>
+        
+        <form action="/admin/documents/{{ document.id }}/delete" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn tài liệu này và toàn bộ các chunks tri thức liên quan? Hành động này không thể hoàn tác.')" style="margin: 0;">
+            <button type="submit" class="btn" style="background-color: rgba(239, 68, 68, 0.8); color: #fff;">Xóa vĩnh viễn</button>
+        </form>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+    <!-- Main Detail and Chunks -->
+    <div>
+        <div class="card">
+            <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;">Thông tin chung</h3>
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <div class="meta-label">Danh mục</div>
+                    <span class="badge {% if document.category == 'core' %}badge-core{% elif document.category == 'updatable' %}badge-updatable{% else %}badge-personal{% endif %}">
+                        {{ 'Tri thức gốc' if document.category == 'core' else 'Cập nhật' if document.category == 'updatable' else 'Cá nhân' }}
+                    </span>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Phiên bản hiện tại</div>
+                    <strong>v{{ document.current_version }}</strong>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Nguồn / File gốc</div>
+                    <span style="font-family: monospace; font-size: 12px; word-break: break-all;">{{ document.source }}</span>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Người tạo</div>
+                    <span>{{ document.created_by }}</span>
+                </div>
+            </div>
+            
+            <div class="meta-item" style="margin-top: 16px;">
+                <div class="meta-label">Mô tả tài liệu</div>
+                <p style="color: var(--text-secondary); line-height: 1.5; font-size: 14px;">{{ document.description or 'Không có mô tả chi tiết.' }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;">
+                Phân rã tri thức ({{ chunk_count }} chunks)
+            </h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                {% for chunk in chunks %}
+                <div style="padding: 16px; background-color: rgba(0,0,0,0.15); border: 1px solid var(--card-border); border-radius: 8px; font-size: 13.5px; line-height: 1.6;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 4px;">
+                        <span>CHUNK #{{ chunk.chunk_index + 1 }}</span>
+                        {% if chunk.metadata and chunk.metadata.heading %}
+                        <span>Tiêu đề: <strong>{{ chunk.metadata.heading }}</strong></span>
+                        {% endif %}
+                    </div>
+                    <p style="white-space: pre-line;">{{ chunk.text }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- History / Versions -->
+    <div>
+        <div class="card">
+            <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;">Lịch sử phiên bản</h3>
+            <div class="version-list">
+                {% for ver in versions %}
+                <div class="version-item">
+                    <div class="version-header">
+                        <strong style="color: var(--primary-color);">Phiên bản v{{ ver.version }}</strong>
+                        <span style="color: var(--text-secondary);">{{ ver.created_at.strftime('%d/%m/%Y %H:%M') if ver.created_at else '' }}</span>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+                        Tóm tắt: {{ ver.change_summary or 'Cập nhật tài liệu' }}
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px; text-align: right;">
+                        Thực hiện: <strong>{{ ver.changed_by }}</strong>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

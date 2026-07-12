@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard{% endblock %} — RAG Knowledge System</title>
+    <meta name="description" content="Hệ thống quản lý tri thức RAG — Admin Dashboard">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/admin.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% if admin %}
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">🧠</div>
+            <span class="logo-text">RAG System</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/admin/dashboard" class="{% if request.url.path == '/admin/dashboard' %}active{% endif %}">📊 Tổng quan</a></li>
+            <li><a href="/admin/documents" class="{% if '/admin/documents' in request.url.path %}active{% endif %}">📄 Tài liệu</a></li>
+            <li><a href="/admin/chats" class="{% if '/admin/chats' in request.url.path %}active{% endif %}">💬 Hội thoại</a></li>
+            <li><a href="/admin/audit" class="{% if request.url.path == '/admin/audit' %}active{% endif %}">📋 Nhật ký</a></li>
+            <li><a href="/admin/settings" class="{% if request.url.path == '/admin/settings' %}active{% endif %}">⚙️ Cài đặt</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="admin-info">
+                <span class="admin-name">{{ admin.display_name }}</span>
+                <a href="/admin/logout" class="logout-link">Đăng xuất</a>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <main class="{% if admin %}main-content{% else %}main-full{% endif %}">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

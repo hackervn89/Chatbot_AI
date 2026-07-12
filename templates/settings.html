@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Cài đặt hệ thống - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Cài đặt hệ thống</h1>
+</div>
+
+{% if msg == 'password_changed' %}
+<div class="success-message">Mật khẩu admin đã được thay đổi thành công!</div>
+{% elif msg == 'wrong_password' %}
+<div class="error-message">Mật khẩu hiện tại không chính xác. Vui lòng thử lại.</div>
+{% endif %}
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <!-- AI Status -->
+    <div class="card">
+        <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;">Cấu hình AI Engine</h3>
+        
+        <div style="display: flex; flex-direction: column; gap: 16px; font-size: 14px;">
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Mô hình chính:</span>
+                <span class="badge badge-core" style="font-size: 12px;">{{ ai_engine.upper() }}</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 12px;">
+                <span style="color: var(--text-secondary);">DeepSeek API Key:</span>
+                <span class="badge {% if has_deepseek %}badge-active{% else %}badge-inactive{% endif %}">
+                    {{ 'Đã cấu hình' if has_deepseek else 'Chưa cấu hình' }}
+                </span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 12px;">
+                <span style="color: var(--text-secondary);">Gemini API Key:</span>
+                <span class="badge {% if has_gemini %}badge-active{% else %}badge-inactive{% endif %}">
+                    {{ 'Đã cấu hình' if has_gemini else 'Chưa cấu hình' }}
+                </span>
+            </div>
+            
+            <div style="margin-top: 16px; padding: 12px; background-color: rgba(255,255,255,0.03); border-radius: 8px; font-size: 12.5px; color: var(--text-secondary); line-height: 1.5;">
+                ℹ️ Hệ thống được cấu hình tự động dự phòng. Khi DeepSeek gặp sự cố kết nối hoặc hết hạn mức sử dụng, các yêu cầu hội thoại sẽ tự động định tuyến thông qua mô hình Gemini dự phòng ngay lập tức để duy trì hoạt động cho bot.
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Change -->
+    <div class="card">
+        <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;">Thay đổi mật khẩu quản trị</h3>
+        
+        <form action="/admin/settings/password" method="post">
+            <div class="form-group">
+                <label for="current_password">Mật khẩu hiện tại</label>
+                <input type="password" id="current_password" name="current_password" class="form-control" placeholder="Mật khẩu hiện tại" required autocomplete="current-password">
+            </div>
+            <div class="form-group" style="margin-bottom: 24px;">
+                <label for="new_password">Mật khẩu mới</label>
+                <input type="password" id="new_password" name="new_password" class="form-control" placeholder="Mật khẩu mới" required autocomplete="new-password">
+            </div>
+            <button type="submit" class="btn btn-primary">Cập nhật mật khẩu</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Tổng quan - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Hệ thống tri thức RAG</h1>
+    <div style="font-size: 14px; color: var(--text-secondary);">
+        Xin chào, <strong>{{ admin.display_name }}</strong>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-label">Tổng số tài liệu</span>
+        <span class="stat-value">{{ stats.total_documents }}</span>
+        <div style="font-size: 11px; margin-top: 8px; color: var(--text-secondary);">
+            {{ stats.active_documents }} tài liệu đang hoạt động
+        </div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Tổng số Chunks tri thức</span>
+        <span class="stat-value">{{ stats.total_chunks }}</span>
+        <div style="font-size: 11px; margin-top: 8px; color: var(--text-secondary);">
+            Đã vector hóa (Gemini Embedding 2)
+        </div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Lượt hội thoại</span>
+        <span class="stat-value">{{ stats.total_sessions }}</span>
+        <div style="font-size: 11px; margin-top: 8px; color: var(--text-secondary);">
+            Tổng số {{ stats.total_messages }} tin nhắn đã xử lý
+        </div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+    <!-- Recent Chats -->
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="font-size: 18px; margin-bottom: 16px;">Hội thoại gần đây</h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Người dùng</th>
+                        <th>Nền tảng</th>
+                        <th>Tin nhắn</th>
+                        <th>Hoạt động cuối</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for chat in recent_chats %}
+                    <tr>
+                        <td>
+                            <a href="/admin/chats/{{ chat.id }}" style="color: var(--primary-color); text-decoration: none; font-weight: 500;">
+                                {{ chat.user_display_name or 'Người dùng Zalo' }}
+                            </a>
+                        </td>
+                        <td><span class="badge badge-core">{{ chat.platform }}</span></td>
+                        <td>{{ chat.message_count }}</td>
+                        <td style="font-size: 12px; color: var(--text-secondary);">
+                            {{ chat.last_activity.strftime('%H:%M %d/%m/%Y') if chat.last_activity else '' }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-secondary);">Chưa có hội thoại nào</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Logs -->
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="font-size: 18px; margin-bottom: 16px;">Nhật ký hệ thống gần đây</h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Đối tượng</th>
+                        <th>Hành động</th>
+                        <th>Người dùng</th>
+                        <th>Thời gian</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in recent_logs %}
+                    <tr>
+                        <td><span class="badge" style="background-color: rgba(255,255,255,0.05);">{{ log.entity_type }}</span></td>
+                        <td>
+                            <span class="badge {% if log.action in ('CREATE','LOGIN') %}badge-updatable{% elif log.action == 'DELETE' %}badge-inactive{% else %}badge-core{% endif %}">
+                                {{ log.action }}
+                            </span>
+                        </td>
+                        <td>{{ log.actor }}</td>
+                        <td style="font-size: 12px; color: var(--text-secondary);">
+                            {{ log.created_at.strftime('%H:%M %d/%m/%Y') if log.created_at else '' }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-secondary);">Chưa có nhật ký nào</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

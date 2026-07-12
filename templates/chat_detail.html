@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Hội thoại với {{ session.user_display_name or 'Người dùng' }} - Chi tiết{% endblock %}
+
+{% block content %}
+<div class="page-header" style="margin-bottom: 24px;">
+    <div>
+        <a href="/admin/chats" style="color: var(--text-secondary); text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px;">← Quay lại danh sách</a>
+        <h1 style="font-size: 24px;">Chi tiết hội thoại</h1>
+    </div>
+</div>
+
+<div class="card" style="padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 12px; margin-bottom: 20px;">
+        <div style="font-size: 14px;">
+            Người dùng: <strong>{{ session.user_display_name or 'Người dùng Zalo' }}</strong> 
+            <span style="color: var(--text-secondary); margin-left: 8px;">({{ session.platform }})</span>
+        </div>
+        <div style="font-size: 13px; color: var(--text-secondary);">
+            Khởi tạo: {{ session.created_at.strftime('%d/%m/%Y %H:%M') if session.created_at else '' }}
+        </div>
+    </div>
+
+    <!-- Chat Bubbles Area -->
+    <div class="chat-container">
+        {% for msg in messages %}
+        <div class="chat-bubble {% if msg.role == 'user' %}chat-bubble-user{% else %}chat-bubble-assistant{% endif %}">
+            <p style="white-space: pre-wrap;">{{ msg.content }}</p>
+            
+            {% if msg.role == 'assistant' %}
+            <div class="chat-meta">
+                <span>Model: <strong>{{ msg.ai_model_used or 'Chưa rõ' }}</strong></span>
+                {% if msg.response_time_ms %}
+                <span>Thời gian: {{ msg.response_time_ms }}ms</span>
+                {% endif %}
+                {% if msg.rag_score %}
+                <span>RAG Score: <strong style="color: var(--accent-color);">{{ msg.rag_score|round(1) }}</strong></span>
+                {% endif %}
+            </div>
+            
+            {% if msg.rag_sources %}
+            <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.03); font-size: 11px;">
+                <span style="color: var(--text-secondary); display: block; margin-bottom: 4px;">Nguồn tri thức tham chiếu RAG:</span>
+                {% for src in msg.rag_sources %}
+                <div style="margin-bottom: 2px;">
+                    📄 <span style="font-family: monospace;">{{ src.source }}</span> (Khớp: {{ src.score }}%)
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
