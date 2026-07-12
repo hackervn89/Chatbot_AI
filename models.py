@@ -5,7 +5,7 @@ Bao gồm: Documents, Versions, Chunks, ChatSessions, ChatMessages, AuditLogs, A
 import json
 from sqlalchemy import (
     Column, Integer, BigInteger, String, Text, Float,
-    DateTime, Boolean, ForeignKey, UniqueConstraint, Index
+    DateTime, Boolean, ForeignKey, UniqueConstraint, Index, JSON
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -17,18 +17,14 @@ from config import IS_POSTGRES
 
 class JSONType(TypeDecorator):
     """Kiểu JSON tương thích cả PostgreSQL (native JSONB) và SQLite (TEXT)"""
-    impl = TEXT
+    impl = JSON
     cache_ok = True
 
     def process_bind_param(self, value, dialect):
-        if value is not None:
-            return json.dumps(value, ensure_ascii=False)
-        return None
+        return value
 
     def process_result_value(self, value, dialect):
-        if value is not None:
-            return json.loads(value)
-        return None
+        return value
 
 
 class SQLiteVector(TypeDecorator):
