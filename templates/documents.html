@@ -29,40 +29,33 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="document_type">Loại văn bản</label>
-                    <select id="document_type" name="document_type" class="form-control">
-                        <option value="nq">Nghị quyết (NQ)</option>
-                        <option value="qd">Quyết định (QĐ)</option>
-                        <option value="ct">Chỉ thị (CT)</option>
-                        <option value="qyd">Quy định (QyĐ)</option>
-                        <option value="kl">Kết luận (KL)</option>
-                        <option value="hd">Hướng dẫn (HD)</option>
-                        <option value="bc">Báo cáo số liệu (BC)</option>
-                        <option value="other" selected>Khác (HDSD, Tài liệu...)</option>
-                    </select>
+                    <label for="document_type">Loại văn bản (tự gõ / gợi ý)</label>
+                    <input type="text" id="document_type" name="document_type" class="form-control" placeholder="Ví dụ: Quy định, Hướng dẫn..." list="suggested-types-list" required>
+                    <datalist id="suggested-types-list">
+                        {% for t in suggested_types %}
+                        <option value="{{ t }}"></option>
+                        {% endfor %}
+                    </datalist>
                 </div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <div class="form-group">
-                    <label for="issuer">Cơ quan ban hành</label>
-                    <select id="issuer" name="issuer" class="form-control">
-                        <option value="tw">Trung ương (TW)</option>
-                        <option value="tinh">Tỉnh ủy</option>
-                        <option value="huyen">Huyện ủy</option>
-                        <option value="xa">Đảng ủy xã</option>
-                        <option value="other" selected>Khác</option>
-                    </select>
+                    <label for="issuer">Cơ quan ban hành (tự gõ / gợi ý)</label>
+                    <input type="text" id="issuer" name="issuer" class="form-control" placeholder="Ví dụ: Ban Bí thư, Tỉnh ủy..." list="suggested-issuers-list" required>
+                    <datalist id="suggested-issuers-list">
+                        {% for i in suggested_issuers %}
+                        <option value="{{ i }}"></option>
+                        {% endfor %}
+                    </datalist>
                 </div>
                 <div class="form-group">
-                    <label for="domain">Lĩnh vực chuyên môn</label>
-                    <select id="domain" name="domain" class="form-control">
-                        <option value="to_chuc">Tổ chức cán bộ</option>
-                        <option value="kiem_tra">Kiểm tra giám sát</option>
-                        <option value="tuyen_giao">Tuyên giáo</option>
-                        <option value="dan_van">Dân vận</option>
-                        <option value="van_phong">Văn phòng</option>
-                        <option value="other" selected>Khác</option>
-                    </select>
+                    <label for="domain">Lĩnh vực chuyên môn (tự gõ / gợi ý)</label>
+                    <input type="text" id="domain" name="domain" class="form-control" placeholder="Ví dụ: Tổ chức cán bộ, Tuyên giáo..." list="suggested-domains-list" required>
+                    <datalist id="suggested-domains-list">
+                        {% for d in suggested_domains %}
+                        <option value="{{ d }}"></option>
+                        {% endfor %}
+                    </datalist>
                 </div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">

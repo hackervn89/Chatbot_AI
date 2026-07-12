@@ -108,40 +108,33 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="edit-document_type">Loại văn bản</label>
-                        <select id="edit-document_type" name="document_type" class="form-control">
-                            <option value="nq" {% if document.document_type == 'nq' %}selected{% endif %}>Nghị quyết (NQ)</option>
-                            <option value="qd" {% if document.document_type == 'qd' %}selected{% endif %}>Quyết định (QĐ)</option>
-                            <option value="ct" {% if document.document_type == 'ct' %}selected{% endif %}>Chỉ thị (CT)</option>
-                            <option value="qyd" {% if document.document_type == 'qyd' %}selected{% endif %}>Quy định (QyĐ)</option>
-                            <option value="kl" {% if document.document_type == 'kl' %}selected{% endif %}>Kết luận (KL)</option>
-                            <option value="hd" {% if document.document_type == 'hd' %}selected{% endif %}>Hướng dẫn (HD)</option>
-                            <option value="bc" {% if document.document_type == 'bc' %}selected{% endif %}>Báo cáo số liệu (BC)</option>
-                            <option value="other" {% if document.document_type == 'other' %}selected{% endif %}>Khác</option>
-                        </select>
+                        <label for="edit-document_type">Loại văn bản (tự gõ / gợi ý)</label>
+                        <input type="text" id="edit-document_type" name="document_type" class="form-control" value="{{ document.document_type }}" list="suggested-types-list" required>
+                        <datalist id="suggested-types-list">
+                            {% for t in suggested_types %}
+                            <option value="{{ t }}"></option>
+                            {% endfor %}
+                        </datalist>
                     </div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                     <div class="form-group">
-                        <label for="edit-issuer">Cơ quan ban hành</label>
-                        <select id="edit-issuer" name="issuer" class="form-control">
-                            <option value="tw" {% if document.issuer == 'tw' %}selected{% endif %}>Trung ương (TW)</option>
-                            <option value="tinh" {% if document.issuer == 'tinh' %}selected{% endif %}>Tỉnh ủy</option>
-                            <option value="huyen" {% if document.issuer == 'huyen' %}selected{% endif %}>Huyện ủy</option>
-                            <option value="xa" {% if document.issuer == 'xa' %}selected{% endif %}>Đảng ủy xã</option>
-                            <option value="other" {% if document.issuer == 'other' %}selected{% endif %}>Khác</option>
-                        </select>
+                        <label for="edit-issuer">Cơ quan ban hành (tự gõ / gợi ý)</label>
+                        <input type="text" id="edit-issuer" name="issuer" class="form-control" value="{{ document.issuer }}" list="suggested-issuers-list" required>
+                        <datalist id="suggested-issuers-list">
+                            {% for i in suggested_issuers %}
+                            <option value="{{ i }}"></option>
+                            {% endfor %}
+                        </datalist>
                     </div>
                     <div class="form-group">
-                        <label for="edit-domain">Lĩnh vực chuyên môn</label>
-                        <select id="edit-domain" name="domain" class="form-control">
-                            <option value="to_chuc" {% if document.domain == 'to_chuc' %}selected{% endif %}>Tổ chức cán bộ</option>
-                            <option value="kiem_tra" {% if document.domain == 'kiem_tra' %}selected{% endif %}>Kiểm tra giám sát</option>
-                            <option value="tuyen_giao" {% if document.domain == 'tuyen_giao' %}selected{% endif %}>Tuyên giáo</option>
-                            <option value="dan_van" {% if document.domain == 'dan_van' %}selected{% endif %}>Dân vận</option>
-                            <option value="van_phong" {% if document.domain == 'van_phong' %}selected{% endif %}>Văn phòng</option>
-                            <option value="other" {% if document.domain == 'other' %}selected{% endif %}>Khác</option>
-                        </select>
+                        <label for="edit-domain">Lĩnh vực chuyên môn (tự gõ / gợi ý)</label>
+                        <input type="text" id="edit-domain" name="domain" class="form-control" value="{{ document.domain }}" list="suggested-domains-list" required>
+                        <datalist id="suggested-domains-list">
+                            {% for d in suggested_domains %}
+                            <option value="{{ d }}"></option>
+                            {% endfor %}
+                        </datalist>
                     </div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">

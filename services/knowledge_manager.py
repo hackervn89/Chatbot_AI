@@ -233,10 +233,16 @@ def ingest_document(
             db.add(version)
             action = "CREATE"
 
-        # Logic tự động tính toán is_latest cho báo cáo số liệu (bc)
-        if document_type == 'bc' and eff_date:
+        # Logic tự động tính toán is_latest cho báo cáo số liệu (nhận diện động qua từ khóa 'báo cáo' hoặc 'bc')
+        is_report = False
+        if document_type:
+            dt_lower = document_type.lower()
+            if "báo cáo" in dt_lower or "bc" in dt_lower:
+                is_report = True
+
+        if is_report and eff_date:
             other_reports = db.query(Document).filter(
-                Document.document_type == 'bc',
+                (Document.document_type.ilike("%báo cáo%") | Document.document_type.ilike("%bc%")),
                 Document.domain == domain,
                 Document.id != doc.id
             ).all()
@@ -481,9 +487,16 @@ def publish_document(doc_id: int, actor: str = "admin", db: Session = None) -> d
             time.sleep(1.0)  # Sleep 1s giữa các batch
             
         # 4. Logic tự động tính toán is_latest cho báo cáo số liệu (bc) khi publish
-        if doc.document_type == 'bc' and doc.effective_date:
+        # 4. Logic tự động tính toán is_latest cho báo cáo số liệu (nhận diện động qua từ khóa 'báo cáo' hoặc 'bc') khi publish
+        is_report = False
+        if doc.document_type:
+            dt_lower = doc.document_type.lower()
+            if "báo cáo" in dt_lower or "bc" in dt_lower:
+                is_report = True
+
+        if is_report and doc.effective_date:
             other_reports = db.query(Document).filter(
-                Document.document_type == 'bc',
+                (Document.document_type.ilike("%báo cáo%") | Document.document_type.ilike("%bc%")),
                 Document.domain == doc.domain,
                 Document.status == 'active',
                 Document.id != doc.id

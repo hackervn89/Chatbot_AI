@@ -167,6 +167,26 @@ async def dashboard(request: Request):
         db.close()
 
 
+# Danh sách gợi ý metadata mặc định chuẩn hóa theo Hướng dẫn số 05-HD/VPTW
+DEFAULT_DOCUMENT_TYPES = [
+    "Nghị quyết (NQ)", "Quyết định (QĐ)", "Quy định (QyĐ)", "Chỉ thị (CT)",
+    "Kết luận (KL)", "Hướng dẫn (HD)", "Báo cáo số liệu (BC)", "Công văn (CV)",
+    "Quy chế (QC)", "Chương trình (CTr)", "Tờ trình (TTr)", "Kế hoạch (KH)",
+    "Thông báo (TB)", "Thông tri (TT)", "Biên bản (BB)"
+]
+
+DEFAULT_ISSUERS = [
+    "Trung ương (TW)", "Tỉnh ủy / Thành ủy", "Huyện ủy / Quận ủy", "Đảng ủy xã / phường",
+    "Đảng bộ cơ sở", "Chi bộ trực thuộc"
+]
+
+DEFAULT_DOMAINS = [
+    "Tổ chức cán bộ", "Kiểm tra giám sát", "Tuyên giáo", "Dân vận",
+    "Văn phòng", "Nội chính", "Tài chính Đảng", "Quản lý đảng viên",
+    "Bảo vệ chính trị nội bộ", "Thi đua khen thưởng"
+]
+
+
 # ==================== DOCUMENTS ====================
 
 @router.get("/documents", response_class=HTMLResponse)
@@ -179,9 +199,22 @@ async def documents_page(request: Request):
     try:
         category = request.query_params.get("category", "")
         docs = get_all_documents(db, category=category if category else None)
+        
+        # Gợi ý động
+        db_types = [r[0] for r in db.query(Document.document_type).distinct().all() if r[0]]
+        db_issuers = [r[0] for r in db.query(Document.issuer).distinct().all() if r[0]]
+        db_domains = [r[0] for r in db.query(Document.domain).distinct().all() if r[0]]
+        
+        suggested_types = sorted(list(set(DEFAULT_DOCUMENT_TYPES + db_types)))
+        suggested_issuers = sorted(list(set(DEFAULT_ISSUERS + db_issuers)))
+        suggested_domains = sorted(list(set(DEFAULT_DOMAINS + db_domains)))
+        
         return templates.TemplateResponse(request=request, name="documents.html", context={
             "request": request, "admin": admin, "documents": docs,
-            "current_category": category
+            "current_category": category,
+            "suggested_types": suggested_types,
+            "suggested_issuers": suggested_issuers,
+            "suggested_domains": suggested_domains
         })
     finally:
         db.close()
@@ -198,8 +231,21 @@ async def document_detail_page(request: Request, doc_id: int):
         detail = get_document_detail(db, doc_id)
         if not detail:
             return RedirectResponse(url="/admin/documents", status_code=302)
+            
+        # Gợi ý động
+        db_types = [r[0] for r in db.query(Document.document_type).distinct().all() if r[0]]
+        db_issuers = [r[0] for r in db.query(Document.issuer).distinct().all() if r[0]]
+        db_domains = [r[0] for r in db.query(Document.domain).distinct().all() if r[0]]
+        
+        suggested_types = sorted(list(set(DEFAULT_DOCUMENT_TYPES + db_types)))
+        suggested_issuers = sorted(list(set(DEFAULT_ISSUERS + db_issuers)))
+        suggested_domains = sorted(list(set(DEFAULT_DOMAINS + db_domains)))
+        
         return templates.TemplateResponse(request=request, name="document_detail.html", context={
-            "request": request, "admin": admin, **detail
+            "request": request, "admin": admin, **detail,
+            "suggested_types": suggested_types,
+            "suggested_issuers": suggested_issuers,
+            "suggested_domains": suggested_domains
         })
     finally:
         db.close()
@@ -346,10 +392,16 @@ async def edit_doc(
                         pass
             doc.effective_date = eff_date
             
-            # Logic tự động tính toán is_latest cho báo cáo số liệu (bc)
-            if document_type == 'bc' and eff_date:
+            # Logic tự động tính toán is_latest cho báo cáo số liệu (nhận diện động qua từ khóa 'báo cáo' hoặc 'bc')
+            is_report = False
+            if document_type:
+                dt_lower = document_type.lower()
+                if "báo cáo" in dt_lower or "bc" in dt_lower:
+                    is_report = True
+
+            if is_report and eff_date:
                 other_reports = db.query(Document).filter(
-                    Document.document_type == 'bc',
+                    (Document.document_type.ilike("%báo cáo%") | Document.document_type.ilike("%bc%")),
                     Document.domain == domain,
                     Document.status == 'active',
                     Document.id != doc.id
