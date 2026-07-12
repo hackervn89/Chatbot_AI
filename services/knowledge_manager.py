@@ -215,24 +215,33 @@ def ingest_document(
         chunks = semantic_chunk(raw_text)
         print(f"[KM] Đã chia thành {len(chunks)} chunks.")
 
-        # 4. Generate embeddings & save chunks
+        # 4. Generate embeddings & save chunks bằng BATCH để tránh rate-limit
+        from services.rag_pipeline import get_embeddings_batch
+        
+        batch_size = 50
         inserted = 0
-        for i, chunk_data in enumerate(chunks):
-            vector = get_embedding(chunk_data["text"])
-            chunk_obj = KnowledgeChunk(
-                document_id=doc.id,
-                chunk_index=i,
-                text=chunk_data["text"],
-                embedding=vector,
-                chunk_metadata=chunk_data.get("metadata", {})
-            )
-            db.add(chunk_obj)
-            inserted += 1
+        
+        for idx in range(0, len(chunks), batch_size):
+            chunk_batch = chunks[idx : idx + batch_size]
+            batch_texts = [c["text"] for c in chunk_batch]
             
-            # Commit theo batch để tránh memory overflow
-            if inserted % 30 == 0:
-                db.commit()
-                time.sleep(0.2)  # Tránh rate limit embedding API
+            print(f"[KM] Đang sinh batch embedding cho {len(batch_texts)} chunks (từ {idx} đến {idx + len(batch_texts)})...")
+            vectors = get_embeddings_batch(batch_texts)
+            
+            for j, chunk_data in enumerate(chunk_batch):
+                vector = vectors[j] if j < len(vectors) else [0.0] * 3072
+                chunk_obj = KnowledgeChunk(
+                    document_id=doc.id,
+                    chunk_index=idx + j,
+                    text=chunk_data["text"],
+                    embedding=vector,
+                    chunk_metadata=chunk_data.get("metadata", {})
+                )
+                db.add(chunk_obj)
+                inserted += 1
+                
+            db.commit()
+            time.sleep(1.0)  # Sleep 1s giữa các batch để an toàn cho Free Tier
 
         # 5. Save image mappings
         img_count = 0

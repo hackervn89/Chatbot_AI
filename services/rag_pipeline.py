@@ -33,6 +33,25 @@ def get_embedding(text_content: str) -> list:
         return [0.0] * EMBEDDING_DIMENSION
 
 
+def get_embeddings_batch(texts: list) -> list:
+    """Tạo batch vector embeddings cho danh sách văn bản (tối đa 100 bản ghi)"""
+    if not texts:
+        return []
+    if not GEMINI_API_KEY:
+        print("[RAG] Warning: GEMINI_API_KEY chưa cấu hình. Trả về vector rỗng.")
+        return [[0.0] * EMBEDDING_DIMENSION for _ in texts]
+    try:
+        client = genai.Client(api_key=GEMINI_API_KEY)
+        response = client.models.embed_content(
+            model=EMBEDDING_MODEL,
+            contents=texts
+        )
+        return [emb.values for emb in response.embeddings]
+    except Exception as e:
+        print(f"[RAG] Lỗi tạo batch embedding: {e}")
+        return [[0.0] * EMBEDDING_DIMENSION for _ in texts]
+
+
 # ==================== CHUNKING ====================
 
 def semantic_chunk(text_content: str, chunk_size: int = None, overlap: int = None) -> list:
@@ -132,6 +151,27 @@ def hybrid_search(db: Session, query: str, top_n: int = None) -> list:
         return _sqlite_keyword_search(db, query, top_n)
 
 
+def _prepare_tsquery(query_str: str) -> str:
+    """Chuẩn hóa query thành tsquery format dùng toán tử OR (|) để tăng độ khớp"""
+    if not query_str:
+        return ""
+    # Làm sạch ký tự đặc biệt
+    query_str = re.sub(r'[^\w\s]', ' ', query_str)
+    words = [w.strip().lower() for w in query_str.split() if len(w.strip()) > 1]
+    
+    if not words:
+        return ""
+        
+    # Lọc stop-word tiếng Việt phổ biến ở đầu câu hỏi
+    stopwords = {"hướng", "dẫn", "chi", "tiết", "làm", "sao", "để", "quy", "trình", "cách", "như", "thế", "nào", "cho", "tôi", "hỏi", "hệ", "thống"}
+    filtered_words = [w for w in words if w not in stopwords]
+    
+    if not filtered_words:
+        filtered_words = words
+        
+    return " | ".join(filtered_words)
+
+
 def _postgres_hybrid_search(db: Session, query: str, top_n: int) -> list:
     """PostgreSQL Hybrid Search: pgvector + Full-Text Search + RRF"""
     try:
@@ -139,8 +179,10 @@ def _postgres_hybrid_search(db: Session, query: str, top_n: int) -> list:
         query_vector = get_embedding(query)
         vector_str = f"[{','.join(map(str, query_vector))}]"
         
+        # Chuẩn hóa tsquery dạng OR
+        tsquery_val = _prepare_tsquery(query)
+        
         # RRF (Reciprocal Rank Fusion) kết hợp dense + sparse
-        # RRF score = 1/(k+rank_dense) + 1/(k+rank_sparse), k=60 (constant)
         sql_query = text("""
             WITH dense_search AS (
                 SELECT 
@@ -156,12 +198,12 @@ def _postgres_hybrid_search(db: Session, query: str, top_n: int) -> list:
                 SELECT 
                     kc.id,
                     ROW_NUMBER() OVER (
-                        ORDER BY ts_rank_cd(to_tsvector('simple', kc.text), plainto_tsquery('simple', :query)) DESC
+                        ORDER BY ts_rank_cd(to_tsvector('simple', kc.text), to_tsquery('simple', :tsquery)) DESC
                     ) as rank_sparse
                 FROM knowledge_chunks kc
                 JOIN documents d ON kc.document_id = d.id
                 WHERE d.is_active = true
-                    AND to_tsvector('simple', kc.text) @@ plainto_tsquery('simple', :query)
+                    AND to_tsvector('simple', kc.text) @@ to_tsquery('simple', :tsquery)
                 ORDER BY rank_sparse
                 LIMIT 50
             )
@@ -186,7 +228,7 @@ def _postgres_hybrid_search(db: Session, query: str, top_n: int) -> list:
 
         results = db.execute(sql_query, {
             "vector": vector_str,
-            "query": query,
+            "tsquery": tsquery_val,
             "top_n": top_n
         }).fetchall()
 
