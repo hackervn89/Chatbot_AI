@@ -57,6 +57,7 @@ class Document(Base):
     current_version = Column(Integer, default=1)
     chunk_count = Column(Integer, default=0)
     is_active = Column(Boolean, default=True)  # Bật/tắt khỏi RAG
+    status = Column(String(20), nullable=False, default='active')  # draft, active, archived
     created_by = Column(String(100), default='system')
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())

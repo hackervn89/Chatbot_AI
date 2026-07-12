@@ -10,14 +10,22 @@
     </div>
     
     <div style="display: flex; gap: 12px;">
-        <form action="/admin/documents/{{ document.id }}/toggle" method="post" style="margin: 0;">
-            <button type="submit" class="btn" style="background-color: {% if document.is_active %}rgba(239, 68, 68, 0.15){% else %}rgba(16, 185, 129, 0.15){% endif %}; color: {% if document.is_active %}var(--danger-color){% else %}var(--accent-color){% endif %};">
-                {{ 'Tạm tắt RAG' if document.is_active else 'Kích hoạt RAG' }}
+        {% if document.status == 'draft' %}
+        <form action="/admin/documents/{{ document.id }}/publish" method="post" style="margin: 0;">
+            <button type="submit" class="btn btn-primary" style="background-color: var(--primary-color);">
+                Duyệt & Kích hoạt RAG
             </button>
         </form>
+        {% else %}
+        <form action="/admin/documents/{{ document.id }}/toggle" method="post" style="margin: 0;">
+            <button type="submit" class="btn btn-secondary" style="color: {% if document.is_active %}var(--danger-color){% else %}var(--success-color){% endif %};">
+                {{ 'Tắt RAG' if document.is_active else 'Bật RAG' }}
+            </button>
+        </form>
+        {% endif %}
         
         <form action="/admin/documents/{{ document.id }}/delete" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn tài liệu này và toàn bộ các chunks tri thức liên quan? Hành động này không thể hoàn tác.')" style="margin: 0;">
-            <button type="submit" class="btn" style="background-color: rgba(239, 68, 68, 0.8); color: #fff;">Xóa vĩnh viễn</button>
+            <button type="submit" class="btn btn-secondary" style="color: var(--danger-color); border-color: rgba(220,38,38,0.2);">Xóa vĩnh viễn</button>
         </form>
     </div>
 </div>
@@ -54,29 +62,69 @@
             </div>
         </div>
 
+        <!-- Form Biên Tập Tri Thức Trực Tiếp -->
         <div class="card">
             <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;">
-                Phân rã tri thức ({{ chunk_count }} chunks)
+                Biên tập nội dung tri thức
+            </h3>
+            <form action="/admin/documents/{{ document.id }}/edit" method="post">
+                <div class="form-group">
+                    <label for="edit-title">Tiêu đề tài liệu</label>
+                    <input type="text" id="edit-title" name="title" class="form-control" value="{{ document.title }}" required>
+                </div>
+                <div class="meta-grid" style="margin-bottom: 0px;">
+                    <div class="form-group">
+                        <label for="edit-category">Danh mục</label>
+                        <select id="edit-category" name="category" class="form-control">
+                            <option value="core" {% if document.category == 'core' %}selected{% endif %}>Tri thức gốc</option>
+                            <option value="updatable" {% if document.category == 'updatable' %}selected{% endif %}>Tri thức cập nhật</option>
+                            <option value="personal" {% if document.category == 'personal' %}selected{% endif %}>Tri thức cá nhân</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Trạng thái tri thức</label>
+                        <input type="text" class="form-control" value="{{ 'Nháp (Đang chờ duyệt)' if document.status == 'draft' else 'Hoạt động (Đã nạp RAG)' }}" disabled>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-description">Mô tả ngắn</label>
+                    <input type="text" id="edit-description" name="description" class="form-control" value="{{ document.description or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="edit-raw-text">Nội dung văn bản thô (Biên tập tại đây)</label>
+                    <textarea id="edit-raw-text" name="raw_text" class="form-control" rows="15" style="font-family: monospace; font-size: 13px; line-height: 1.5;" required>{{ document.raw_text }}</textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+
+        {% if document.status != 'draft' %}
+        <div class="card">
+            <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;">
+                Phân rã tri thức RAG ({{ chunk_count }} chunks)
             </h3>
             
             <div style="display: flex; flex-direction: column; gap: 16px;">
                 {% for chunk in chunks %}
-                <div style="padding: 16px; background-color: rgba(0,0,0,0.15); border: 1px solid var(--card-border); border-radius: 8px; font-size: 13.5px; line-height: 1.6;">
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 4px;">
+                <div style="padding: 16px; background-color: #f8fafc; border: 1px solid var(--card-border); border-radius: 8px; font-size: 13.5px; line-height: 1.6;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; border-bottom: 1px solid var(--card-border); padding-bottom: 4px;">
                         <span>CHUNK #{{ chunk.chunk_index + 1 }}</span>
                         {% if chunk.chunk_metadata and chunk.chunk_metadata.heading %}
                         <span>Tiêu đề: <strong>{{ chunk.chunk_metadata.heading }}</strong></span>
                         {% endif %}
                     </div>
-                    <p style="white-space: pre-line;">{{ chunk.text }}</p>
+                    <p style="white-space: pre-line; color: var(--text-primary);">{{ chunk.text }}</p>
                 </div>
                 {% endfor %}
             </div>
         </div>
+        {% endif %}
     </div>
 
     <!-- History / Versions -->
-    <div>
+        <!-- Lịch sử phiên bản -->
         <div class="card">
             <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;">Lịch sử phiên bản</h3>
             <div class="version-list">
@@ -96,6 +144,69 @@
                 {% endfor %}
             </div>
         </div>
+
+        <!-- Khối AI Thẩm Định Mâu Thuẫn Tri Thức Nháp -->
+        {% if document.status == 'draft' %}
+        <div class="card" style="border: 1px solid rgba(179, 0, 0, 0.2); background-color: rgba(179, 0, 0, 0.02);">
+            <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid rgba(179, 0, 0, 0.1); padding-bottom: 8px; color: var(--primary-color);">
+                ✨ AI Thẩm định & Phân tích
+            </h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5;">
+                AI sẽ tiến hành đọc tài liệu nháp này và so khớp đối chiếu với các tri thức hiện có nhằm phát hiện các mâu thuẫn nghiệp vụ hoặc chồng lấn (giờ giấc, quy trình, quyền hạn).
+            </p>
+            <button id="btn-analyze" onclick="runAiAnalysis()" class="btn btn-block btn-primary">
+                Bắt đầu phân tích AI
+            </button>
+            
+            <div id="analysis-result" style="display: none; margin-top: 16px; padding: 16.px; background: #ffffff; border: 1px solid var(--card-border); border-radius: 8px; font-size: 13px; line-height: 1.5; color: var(--text-primary);">
+                <!-- Kết quả phân tích hiển thị ở đây -->
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
+
+{% block scripts %}
+<script>
+async function runAiAnalysis() {
+    const btn = document.getElementById('btn-analyze');
+    const resultDiv = document.getElementById('analysis-result');
+    
+    btn.disabled = true;
+    btn.innerText = 'Đang thẩm định tri thức nháp...';
+    resultDiv.style.display = 'none';
+    
+    try {
+        const response = await fetch('/admin/documents/{{ document.id }}/analyze', {
+            method: 'POST'
+        });
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            resultDiv.style.display = 'block';
+            
+            // Format markdown thô sang HTML đơn giản
+            let formattedText = data.analysis
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/### (.*?)(<br>|$)/g, '<h4 style="color: var(--primary-color); margin-top: 12px; margin-bottom: 6px;">$1</h4>')
+                .replace(/## (.*?)(<br>|$)/g, '<h3 style="color: var(--primary-color); margin-top: 16px; margin-bottom: 8px;">$1</h3>');
+                
+            resultDiv.innerHTML = `
+                <div style="font-weight: 700; color: var(--primary-color); margin-bottom: 8px; border-bottom: 1px solid var(--card-border); padding-bottom: 4px;">Kết quả thẩm định của AI (${data.model}):</div>
+                <div style="max-height: 350px; overflow-y: auto; padding-right: 4px;">${formattedText}</div>
+            `;
+        } else {
+            alert('Lỗi: ' + data.message);
+        }
+    } catch (e) {
+        alert('Lỗi kết nối server: ' + e);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = 'Bắt đầu phân tích AI';
+    }
+}
+</script>
+{% endblock %}
 {% endblock %}

@@ -9,7 +9,7 @@ import shutil
 from datetime import datetime
 
 from fastapi import APIRouter, Request, Depends, Form, UploadFile, File
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy import func as sql_func
@@ -26,7 +26,8 @@ from models import (
 )
 from services.knowledge_manager import (
     ingest_document, toggle_document, delete_document,
-    get_all_documents, get_document_detail
+    get_all_documents, get_document_detail, publish_document,
+    analyze_document_draft
 )
 from services.audit_logger import log_action
 
@@ -210,6 +211,7 @@ async def upload_document(
     title: str = Form(...),
     category: str = Form(CATEGORY_CORE),
     description: str = Form(""),
+    status: str = Form("draft"),
     file: UploadFile = File(...)
 ):
     admin = _require_login(request)
@@ -228,7 +230,8 @@ async def upload_document(
             title=title,
             category=category,
             description=description,
-            created_by=admin.username
+            created_by=admin.username,
+            status=status
         )
         
         # Redirect with message
@@ -266,6 +269,77 @@ async def delete_doc(request: Request, doc_id: int):
     
     delete_document(doc_id, actor=admin.username)
     return RedirectResponse(url="/admin/documents?msg=deleted", status_code=302)
+
+
+@router.post("/documents/{doc_id}/publish")
+async def publish_doc(request: Request, doc_id: int):
+    admin = _require_login(request)
+    if not admin:
+        return RedirectResponse(url="/admin/login", status_code=302)
+        
+    result = publish_document(doc_id, actor=admin.username)
+    if result["status"] == "success":
+        return RedirectResponse(url=f"/admin/documents/{doc_id}?msg=published", status_code=302)
+    else:
+        return RedirectResponse(url=f"/admin/documents/{doc_id}?msg=error&detail={result['message']}", status_code=302)
+
+
+@router.post("/documents/{doc_id}/analyze")
+async def analyze_doc(request: Request, doc_id: int):
+    admin = _require_login(request)
+    if not admin:
+        return JSONResponse({"status": "error", "message": "Unauthorized"}, status_code=401)
+        
+    result = analyze_document_draft(doc_id)
+    return JSONResponse(result)
+
+
+@router.post("/documents/{doc_id}/edit")
+async def edit_doc(
+    request: Request, 
+    doc_id: int, 
+    title: str = Form(...),
+    category: str = Form(...),
+    description: str = Form(""),
+    raw_text: str = Form(...)
+):
+    admin = _require_login(request)
+    if not admin:
+        return RedirectResponse(url="/admin/login", status_code=302)
+        
+    db = get_db_session()
+    try:
+        doc = db.query(Document).filter(Document.id == doc_id).first()
+        if doc:
+            doc.title = title
+            doc.category = category
+            doc.description = description
+            
+            if doc.raw_text != raw_text:
+                doc.raw_text = raw_text
+                doc.current_version += 1
+                version = DocumentVersion(
+                    document_id=doc.id,
+                    version=doc.current_version,
+                    raw_text=raw_text,
+                    change_summary="Chỉnh sửa nội dung trực tiếp qua Dashboard",
+                    changed_by=admin.username
+                )
+                db.add(version)
+                
+                # Nếu đang hoạt động, tự động re-publish để sinh lại embeddings
+                if doc.status == "active":
+                    db.commit()
+                    publish_document(doc_id, actor=admin.username, db=db)
+            
+            db.commit()
+            return RedirectResponse(url=f"/admin/documents/{doc_id}?msg=updated", status_code=302)
+        return RedirectResponse(url="/admin/documents", status_code=302)
+    except Exception as e:
+        db.rollback()
+        return RedirectResponse(url=f"/admin/documents/{doc_id}?msg=error&detail={str(e)}", status_code=302)
+    finally:
+        db.close()
 
 
 # ==================== CHAT SESSIONS ====================

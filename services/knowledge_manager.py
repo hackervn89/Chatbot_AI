@@ -112,12 +112,11 @@ def ingest_document(
     category: str = CATEGORY_CORE,
     description: str = "",
     created_by: str = "admin",
+    status: str = "active",
     db: Session = None
 ) -> dict:
     """
-    Nạp tài liệu mới vào hệ thống RAG.
-    
-    Pipeline: Parse file → Semantic chunk → Generate embeddings → Lưu DB
+    Nạp tài liệu mới vào hệ thống RAG (hỗ trợ lưu nháp hoặc hoạt động ngay).
     
     Returns: {"status": "success/error", "message": "...", "details": {...}}
     """
@@ -210,6 +209,43 @@ def ingest_document(
 
         db.commit()
         db.refresh(doc)
+
+        # Nếu là tài liệu nháp (draft), chỉ lưu file/image và không tạo chunks/embeddings ngay
+        if status == "draft":
+            doc.status = "draft"
+            doc.chunk_count = 0
+            doc.is_active = False  # Chưa kích hoạt cho RAG
+            db.commit()
+            
+            # Lưu image mappings
+            img_count = 0
+            for hinh_key, img_path in image_mappings.items():
+                db.add(ImageMapping(document_id=doc.id, hinh_key=hinh_key, img_rel_path=img_path))
+                img_count += 1
+            db.commit()
+            
+            # Audit log
+            log_document_action("CREATE_DRAFT" if action == "CREATE" else "UPDATE_DRAFT", doc.id, actor=created_by, details={
+                "title": title, "category": category, "file_type": file_ext
+            }, db=db)
+            
+            print(f"[KM] Đã tạo nháp tài liệu {title} (ID={doc.id}). Đợi duyệt.")
+            return {
+                "status": "success",
+                "message": "Nạp tài liệu nháp thành công! Vui lòng duyệt tại Dashboard.",
+                "details": {
+                    "doc_id": doc.id,
+                    "title": title,
+                    "chunks": 0,
+                    "images": img_count,
+                    "version": doc.current_version,
+                    "status": "draft"
+                }
+            }
+
+        # Nếu nạp trực tiếp (active)
+        doc.status = "active"
+        db.commit()
 
         # 3. Semantic chunking
         chunks = semantic_chunk(raw_text)
@@ -349,3 +385,147 @@ def get_document_detail(db: Session, doc_id: int) -> dict:
         "chunks": chunks,
         "chunk_count": len(chunks)
     }
+
+
+def publish_document(doc_id: int, actor: str = "admin", db: Session = None) -> dict:
+    """Kích hoạt tài liệu nháp: Cắt chunks → Tạo vector embeddings → Lưu CSDL"""
+    should_close = db is None
+    if db is None:
+        db = get_db_session()
+        should_close = True
+        
+    try:
+        doc = db.query(Document).filter(Document.id == doc_id).first()
+        if not doc:
+            return {"status": "error", "message": "Không tìm thấy tài liệu."}
+            
+        if doc.status == "active" and doc.chunk_count > 0:
+            return {"status": "error", "message": "Tài liệu này đã hoạt động rồi."}
+            
+        print(f"[KM] Đang phát hành tài liệu: {doc.title} (ID={doc.id})")
+        
+        # 1. Xóa các chunks cũ nếu có
+        db.query(KnowledgeChunk).filter(KnowledgeChunk.document_id == doc.id).delete()
+        
+        # 2. Cắt chunks ngữ nghĩa
+        chunks = semantic_chunk(doc.raw_text)
+        
+        # 3. Tạo vector embeddings bằng BATCH để tránh rate-limit
+        from services.rag_pipeline import get_embeddings_batch
+        from config import EMBEDDING_DIMENSION
+        
+        batch_size = 50
+        inserted = 0
+        
+        for idx in range(0, len(chunks), batch_size):
+            chunk_batch = chunks[idx : idx + batch_size]
+            batch_texts = [c["text"] for c in chunk_batch]
+            vectors = get_embeddings_batch(batch_texts)
+            
+            for j, chunk_data in enumerate(chunk_batch):
+                vector = vectors[j] if j < len(vectors) else [0.0] * EMBEDDING_DIMENSION
+                chunk_obj = KnowledgeChunk(
+                    document_id=doc.id,
+                    chunk_index=idx + j,
+                    text=chunk_data["text"],
+                    embedding=vector,
+                    chunk_metadata=chunk_data.get("metadata", {})
+                )
+                db.add(chunk_obj)
+                inserted += 1
+                
+            db.commit()
+            time.sleep(1.0)  # Sleep 1s giữa các batch
+            
+        # 4. Cập nhật trạng thái
+        doc.status = "active"
+        doc.is_active = True
+        doc.chunk_count = inserted
+        doc.updated_at = func.now()
+        db.commit()
+        
+        # 5. Ghi Audit log
+        log_document_action("PUBLISH", doc.id, actor=actor, details={
+            "title": doc.title, "chunks": inserted
+        }, db=db)
+        
+        return {
+            "status": "success",
+            "message": f"Kích hoạt tài liệu thành công! Đã nạp {inserted} chunks vào hệ thống RAG.",
+            "details": {"doc_id": doc.id, "chunks": inserted}
+        }
+        
+    except Exception as e:
+        db.rollback()
+        print(f"[KM] Lỗi kích hoạt tài liệu: {e}")
+        return {"status": "error", "message": str(e)}
+    finally:
+        if should_close:
+            db.close()
+
+
+def analyze_document_draft(doc_id: int, db: Session = None) -> dict:
+    """Gọi AI phân tích tài liệu nháp: tóm tắt, FAQ, phát hiện mâu thuẫn tri thức"""
+    should_close = db is None
+    if db is None:
+        db = get_db_session()
+        should_close = True
+        
+    try:
+        doc = db.query(Document).filter(Document.id == doc_id).first()
+        if not doc:
+            return {"status": "error", "message": "Không tìm thấy tài liệu."}
+            
+        # Lấy một số tài liệu hoạt động khác cùng mảng để so sánh
+        other_docs = db.query(Document).filter(
+            Document.id != doc.id,
+            Document.is_active == True,
+            Document.category == doc.category
+        ).limit(3).all()
+        
+        other_contexts = ""
+        if other_docs:
+            other_contexts = "\n\nDưới đây là một số tài liệu tri thức cũ đang hoạt động trong hệ thống để đối chiếu:\n"
+            for od in other_docs:
+                other_contexts += f"- Tiêu đề: {od.title}\n  Nội dung tóm lược: {od.raw_text[:1000]}...\n\n"
+                
+        # Build prompt
+        system_prompt = (
+            "Bạn là chuyên viên phân tích chất lượng dữ liệu tri thức của hệ thống RAG thuộc Khối Đảng. "
+            "Nhiệm vụ của bạn là đọc tài liệu mới gửi đến và đối chiếu với các tài liệu cũ "
+            "nhằm phát hiện các mâu thuẫn nghiệp vụ hoặc chồng chéo (giờ giấc, quy trình, quyền hạn)."
+        )
+        
+        user_message = (
+            f"Tài liệu mới cần phân tích:\n"
+            f"Tiêu đề: {doc.title}\n"
+            f"Nội dung:\n{doc.raw_text[:4000]}\n"
+            f"{other_contexts}\n"
+            f"Hãy đưa ra báo cáo phân tích theo cấu trúc sau (viết bằng định dạng Markdown tiếng Việt):\n"
+            f"1. **Tóm tắt nội dung chính**: (2-3 câu ngắn gọn)\n"
+            f"2. **Phát hiện mâu thuẫn tri thức**: (Chỉ rõ điểm mâu thuẫn/chồng chéo hoặc ghi 'Không phát hiện mâu thuẫn' nếu tri thức đồng bộ)\n"
+            f"3. **Gợi ý 3 câu hỏi FAQ mẫu kèm câu trả lời ngắn**."
+        )
+        
+        from services.ai_engine import call_ai
+        reply, model_name, _ = call_ai(
+            system_prompt=system_prompt,
+            user_message=user_message,
+            temperature=0.3
+        )
+        
+        if not reply:
+            reply = "Không thể gọi AI phân tích tại thời điểm này. Vui lòng kiểm tra lại cấu hình API Key."
+            
+        return {
+            "status": "success",
+            "analysis": reply,
+            "model": model_name
+        }
+        
+    except Exception as e:
+        print(f"[KM] Lỗi AI phân tích: {e}")
+        return {"status": "error", "message": str(e)}
+    finally:
+        if should_close:
+            db.close()
