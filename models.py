@@ -15,17 +15,6 @@ from config import IS_POSTGRES
 
 # ==================== CUSTOM TYPES ====================
 
-class JSONType(TypeDecorator):
-    """Kiểu JSON tương thích cả PostgreSQL (native JSONB) và SQLite (TEXT)"""
-    impl = JSON
-    cache_ok = True
-
-    def process_bind_param(self, value, dialect):
-        return value
-
-    def process_result_value(self, value, dialect):
-        return value
-
 
 class SQLiteVector(TypeDecorator):
     """Lưu vector embeddings dưới dạng JSON text cho SQLite fallback"""
@@ -106,7 +95,7 @@ class KnowledgeChunk(Base):
     chunk_index = Column(Integer, default=0)  # Thứ tự trong tài liệu
     text = Column(Text, nullable=False)
     embedding = Column(VectorColumnType, nullable=False)
-    chunk_metadata = Column(JSONType, default=dict)  # Heading, page number...
+    chunk_metadata = Column(JSON, default=dict)  # Heading, page number...
     created_at = Column(DateTime, server_default=func.now())
 
     document = relationship("Document", back_populates="chunks")
@@ -141,7 +130,7 @@ class ChatMessage(Base):
     content = Column(Text, nullable=False)
     ai_model_used = Column(String(50), default='')  # Model AI đã dùng
     rag_score = Column(Float, default=0.0)  # Điểm RAG cao nhất
-    rag_sources = Column(JSONType, default=list)  # Danh sách nguồn
+    rag_sources = Column(JSON, default=list)  # Danh sách nguồn
     response_time_ms = Column(Integer, default=0)  # Thời gian phản hồi
     created_at = Column(DateTime, server_default=func.now())
 
@@ -157,7 +146,7 @@ class AuditLog(Base):
     entity_id = Column(Integer, default=0)
     action = Column(String(30), nullable=False)  # CREATE, UPDATE, DELETE, REINDEX, SEARCH, CHAT
     actor = Column(String(100), default='system')  # admin, system, zalo_user_xxx
-    details = Column(JSONType, default=dict)  # Chi tiết thay đổi
+    details = Column(JSON, default=dict)  # Chi tiết thay đổi
     ip_address = Column(String(45), default='')
     created_at = Column(DateTime, server_default=func.now())
 
