@@ -238,7 +238,7 @@ Quy tắc định dạng tin nhắn Zalo/Telegram (CỰC KỲ QUAN TRỌNG để
 - KHÔNG sử dụng các tiêu đề ký tự Markdown như #, ##, ###, ----.
 - KHÔNG sử dụng dòng trống liên tiếp (ví dụ: không dùng \n\n). Mỗi phân đoạn hoặc bước chỉ ngăn cách bằng đúng một dấu xuống dòng (\n) để tin nhắn không bị giãn cách quá rộng và lê thê trên điện thoại.
 - Sử dụng các biểu tượng biểu cảm (emoji) hành chính như 🔹, 📌, ⚠️, ✅ ở đầu mỗi bước hoặc đầu dòng lưu ý để tạo điểm nhấn trực quan thay vì dùng gạch đầu dòng Markdown (- hoặc *).
-- Sử dụng chữ in đậm bằng ký tự ** (ví dụ: **Nhấn Ghi lại**) để làm nổi bật các tên nút bấm, chức năng hoặc trạng thái quan trọng, giúp người dùng dễ dàng lướt đọc nhanh.
+- Sử dụng chữ in đậm bằng ký tự **...** để làm nổi bật tất cả các từ quan trọng (như tên nút bấm, chức năng, vai trò, phần mềm, menu, hoặc lưu ý). Ví dụ: **Ghi lại**, **Gửi trình**, **Lãnh đạo**, hệ thống **Điều hành tác nghiệp (ĐHTN)**, menu **Văn bản đi**, trạng thái **Chờ xử lý**, **Lưu ý:**. Bạn BẮT BUỘC phải thực hiện bôi đậm để tin nhắn chuyên nghiệp và dễ đọc lướt trên ứng dụng chat.
 
 Dưới đây là Bộ Kiến Thức Nghiệp Vụ để bạn tham chiếu:
 === BẮT ĐẦU BỘ KIẾN THỨC ===
