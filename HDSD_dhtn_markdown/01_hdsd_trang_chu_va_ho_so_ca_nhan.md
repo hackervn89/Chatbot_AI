@@ -52,6 +52,17 @@ Các bước thực hiện:
 
 ## II. Thao tác trên menu Hồ sơ cá nhân
 
+### Quy trình Đăng nhập vào hệ thống Điều hành tác nghiệp (ĐHTN)
+Mô tả: Hướng dẫn người dùng đăng nhập tài khoản cá nhân và xác thực bảo mật khi truy cập hệ thống.
+Các bước thực hiện:
+1. Truy cập vào trang web đăng nhập của hệ thống Điều hành tác nghiệp (ĐHTN).
+2. Nhập thông tin tài khoản (Tên đăng nhập và Mật khẩu) được cấp.
+    *   *Lưu ý về mật khẩu mặc định*: Khi nhận bàn giao tài khoản mới từ người quản trị, thông tin mật khẩu mặc định bắt buộc vui lòng **liên hệ cán bộ phụ trách** để nhận. Người dùng bắt buộc phải thay đổi mật khẩu này ngay trong lần đăng nhập đầu tiên để bảo mật tài khoản.
+3. Trong lần đăng nhập đầu tiên hoặc khi đăng nhập trên thiết bị mới, hệ thống yêu cầu xác thực bằng mã OTP gửi về số điện thoại đăng ký SIM CA.
+    *   *Quy định lưu OTP đăng nhập (Mốc 30 ngày)*: Trạng thái xác thực OTP này sẽ được hệ thống tự động ghi nhớ và duy trì hiệu lực tối đa trong vòng **30 ngày**.
+    *   *Lưu ý về trình duyệt*: Thời hạn 30 ngày này được áp dụng độc lập cho từng trình duyệt web. Nếu bạn đăng nhập bằng trình duyệt Google Chrome và xác thực OTP thành công, bạn sẽ không cần nhập lại OTP trên trình duyệt Chrome trong 30 ngày. Tuy nhiên, nếu bạn chuyển sang đăng nhập bằng trình duyệt Mozilla Firefox hoặc sử dụng chế độ ẩn danh, hệ thống sẽ yêu cầu xác thực lại OTP mới và tính mốc 30 ngày riêng cho trình duyệt đó.
+4. Nhấn nút "Đăng nhập" để hoàn tất truy cập giao diện Trang chủ của hệ thống.
+
 ### Quy trình sử dụng tính năng Trợ giúp và tải tài liệu hướng dẫn
 Mô tả: Cung cấp cho người dùng các công cụ trợ giúp bao gồm tải tài liệu hướng dẫn sử dụng (HDSD), tra cứu phím tắt nhanh, thông tin hỗ trợ kỹ thuật và quét mã tải ứng dụng di động.
 Các bước thực hiện:

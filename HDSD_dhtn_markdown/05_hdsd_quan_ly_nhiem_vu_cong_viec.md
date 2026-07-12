@@ -107,6 +107,14 @@ Các bước thực hiện:
    - "Cấp giao nhiệm vụ": Hệ thống mặc định hiển thị theo cấp của tài khoản đăng nhập, người dùng có thể kích chọn để thay đổi cấp giao từ danh sách thả xuống.
    - "Người giao nhiệm vụ": Hệ thống tự động điền tên người đăng nhập, có thể chọn lại Lãnh đạo khác nếu được phân quyền trợ lý.
    - "Thời hạn hoàn thành": Chọn ngày, tháng, năm bắt buộc phải báo cáo kết quả hoàn thành công việc.
+        *   *Quy tắc đánh giá KPI dựa trên Thời hạn hoàn thành nhiệm vụ*:
+            *   Khi giao nhiệm vụ, việc thiết lập trường "Thời hạn hoàn thành" (Deadline) là bắt buộc để hệ thống kích hoạt tính năng tự động đo lường hiệu suất công việc (KPI).
+            *   *Trường hợp không thiết lập hạn xử lý*: Chuyên viên thực hiện nhiệm vụ sẽ mặc định luôn được tính là xử lý trong hạn (không bị tính chậm muộn KPI).
+            *   *Trường hợp thiết lập hạn xử lý cụ thể*: Hệ thống sẽ tự động đối chiếu ngày báo cáo hoàn thành thực tế với hạn xử lý cấu hình để phân loại KPI:
+                *   **Hoàn thành đúng hạn**: Báo cáo hoàn thành được phê duyệt trước hoặc đúng ngày hẹn.
+                *   **Hoàn thành quá hạn**: Báo cáo hoàn thành được phê duyệt sau ngày hẹn.
+                *   **Chưa xử lý quá hạn**: Nhiệm vụ đã vượt quá ngày hẹn nhưng Chuyên viên chưa cập nhật báo cáo hoàn thành.
+            *   Bảng xếp hạng KPI này sẽ được hệ thống tự động tổng hợp vào mỗi ngày Thứ Bảy hàng tuần để báo cáo trực quan cho Lãnh đạo kiểm soát đơn vị nào hoàn thành xuất sắc và đơn vị nào đang chậm muộn công việc.
    - "Đơn vị/Cá nhân chủ trì": Nhấn vào nút chọn để mở cây đơn vị và cá nhân. Người dùng tích chọn duy nhất một Đơn vị hoặc một Cá nhân chịu trách nhiệm chính (chỉ cho phép chọn duy nhất 1 chủ trì).
    - "Đơn vị/Cá nhân phối hợp": Người dùng có thể tích chọn một hoặc nhiều Đơn vị, cá nhân tham gia hỗ trợ thực hiện.
 4. Cấu hình các thông tin bổ sung:

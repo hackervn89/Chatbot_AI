@@ -226,6 +226,9 @@ Các bước thực hiện:
 2. Bước 2: Hệ thống hiển thị hộp thoại nổi (popup) "Ý kiến chỉ đạo".
 3. Bước 3: Người dùng nhập nội dung chỉ đạo xử lý chi tiết vào ô nhập liệu (ví dụ: giao Văn phòng chủ trì phối hợp với Ban Kế hoạch thực hiện báo cáo trước ngày quy định...).
 4. Bước 4: Nhấn nút "Ghi lại" để lưu ý kiến. Nội dung chỉ đạo của Lãnh đạo sẽ được ghi nhận vào dòng lịch sử xử lý và tự động hiển thị trong luồng công việc để tất cả các đơn vị, cá nhân nhận xử lý văn bản tiếp theo đều nhìn thấy và tuân thủ thực hiện. Nhấn nút "Đóng" để hủy bỏ thao tác quay về màn hình chi tiết.
+*   **Mẹo thao tác nhanh bằng Ý kiến chỉ đạo mẫu trên thiết bị di động**:
+    *   Để tiết kiệm thời gian gõ phím của Lãnh đạo khi duyệt văn bản nhanh trong các cuộc họp hoặc khi đang đi công tác, Lãnh đạo không cần nhập ý kiến chỉ đạo thủ công từ bàn phím.
+    *   *Cách thực hiện*: Nhấp chọn nút "Ý kiến mẫu" ngay bên cạnh ô nhập liệu để hệ thống hiển thị danh sách các mẫu ý kiến chỉ đạo đã cấu hình sẵn (ví dụ: "Kính chuyển Đồng chí Phó Bí thư chỉ đạo thực hiện", "Giao Văn phòng chủ trì thực hiện trước ngày..."). Lãnh đạo chỉ cần thực hiện 3 lần nhấp chọn (3 clicks) trên màn hình máy tính bảng (iPad) hoặc điện thoại di động để hoàn tất phê duyệt chỉ đạo và gửi đi tức thời.
 
 ### Quy trình tạo nhiệm vụ đơn vị từ văn bản đến
 Mô tả: Cho phép Lãnh đạo hoặc Trợ lý lãnh đạo tạo và giao nhiệm vụ trực tiếp cho các phòng ban, chuyên viên trực thuộc xử lý dựa trên căn cứ nội dung của văn bản đến.

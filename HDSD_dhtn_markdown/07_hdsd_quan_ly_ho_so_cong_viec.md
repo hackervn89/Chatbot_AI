@@ -88,6 +88,9 @@ Các bước thực hiện:
    - **Tải tệp đính kèm mới lên**: Nhấn chọn nút "Chọn file" (hoặc Tải lên), hệ thống mở cửa sổ chọn tệp tin từ máy tính cá nhân, chọn file cần gán và nhấn Open để tải file lên.
    - **Tải tài liệu từ hồ sơ về máy tính**: Nhấn chọn nút "Tải về" (biểu tượng hình mũi tên hướng xuống có gạch ngang dưới chân) tại dòng tài liệu tương ứng để tải tệp tin về thiết bị cá nhân.
    - **Xóa tài liệu khỏi hồ sơ**: Nhấn chọn nút "Xóa" (biểu tượng hình thùng rác màu đỏ), hệ thống hiển thị thông báo xác nhận. Người dùng nhấn nút "Đồng ý" để hoàn tất gỡ bỏ tệp tin, hoặc chọn nút "Hủy bỏ" để đóng thông báo và giữ lại file.
+*   **Quy tắc quản lý hồ sơ công văn lưu trữ theo chuẩn Thư viện Trung ương**:
+    *   *Bắt buộc đếm tổng số trang*: Trước khi tiến hành kết thúc và đóng khóa một hồ sơ công việc trực tuyến trên hệ thống, người dùng bắt buộc phải kiểm tra, đếm tổng số trang tài liệu thực tế của toàn bộ các văn bản, phiếu trình đính kèm bên trong hồ sơ và nhập con số này vào trường "Tổng số trang" của biểu mẫu hồ sơ. Hệ thống sẽ tự động xác thực; nếu trường này bị bỏ trống hoặc bằng 0, hệ thống sẽ đóng băng và không cho phép thực hiện thao tác Đóng/Kết thúc hồ sơ.
+    *   *Tự động tạo tệp biểu mẫu lưu trữ*: Khi hồ sơ được đóng thành công, hệ thống Điều hành tác nghiệp (ĐHTN) sẽ tự động biên dịch toàn bộ siêu dữ liệu (metadata) của hồ sơ để tự động tạo ra hai tệp văn bản chuẩn theo mẫu của Cục Văn thư Lưu trữ Trung ương bao gồm: **Bản mục lục hồ sơ công văn** và **Tờ kết thúc hồ sơ**. Người dùng phải đợi từ 1 đến 3 phút để hệ thống hoàn tất biên dịch tự động trước khi tải hai file biểu mẫu này về máy.
 
 ### Quy trình bàn giao hồ sơ công việc
 Mô tả: Hỗ trợ người dùng chuyển giao quyền sở hữu và quản lý một hồ sơ công việc cho một cán bộ/nhân sự khác trong hệ thống. Sau khi bàn giao và được tiếp nhận thành công, hồ sơ sẽ chuyển hoàn toàn sang tài khoản của người nhận.
