@@ -207,6 +207,32 @@ def normalize_abbreviations(query: str) -> str:
     return normalized
 
 
+def is_chitchat(query: str) -> bool:
+    """Nhận diện nhanh các câu chào hỏi, cảm ơn, xã giao ngắn không chứa nghiệp vụ"""
+    q = query.strip().lower()
+    q = re.sub(r'[^\w\s]', '', q).strip()
+    
+    chitchat_patterns = [
+        r'^xin chào$', r'^chào$', r'^chào bạn$', r'^chào bot$', r'^chào trợ lý$',
+        r'^hello$', r'^hi$', r'^gút chóp$', r'^good$', r'^ok$', r'^okay$', r'^dạ$',
+        r'^cảm ơn$', r'^cám ơn$', r'^thank$', r'^thanks$', r'^cảm ơn bạn$', r'^tạm biệt$',
+        r'^bye$', r'^bạn là ai$', r'^tên bạn là gì$', r'^ai đây$'
+    ]
+    
+    for pattern in chitchat_patterns:
+        if re.match(pattern, q):
+            return True
+            
+    # Nếu câu hỏi quá ngắn (dưới 2 từ) và không chứa từ khóa nghiệp vụ đặc thù
+    words = q.split()
+    if len(words) <= 2:
+        nghiep_vu_keywords = {"đảng", "phí", "trình", "phần", "mềm", "văn", "bản", "ký", "duyệt", "dự", "thảo", "hồ", "sơ", "nhiệm", "vụ", "tác", "nghiệp", "đhtn", "lãnh", "đạo", "phòng"}
+        if not any(w in nghiep_vu_keywords for w in words):
+            return True
+            
+    return False
+
+
 # ==================== HYBRID SEARCH ====================
 
 def hybrid_search(db: Session, query: str, top_n: int = None) -> list:
@@ -219,6 +245,11 @@ def hybrid_search(db: Session, query: str, top_n: int = None) -> list:
     top_n = top_n or SEARCH_TOP_K
     
     if not query.strip():
+        return []
+
+    # Nhận diện và bỏ qua RAG đối với chitchat xã giao
+    if is_chitchat(query):
+        print(f"[RAG] Phát hiện câu hỏi xã giao/chitchat: '{query}'. Bỏ qua RAG search.")
         return []
 
     # Chuẩn hóa viết tắt trước khi truy vấn vector và full-text search
