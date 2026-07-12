@@ -25,7 +25,8 @@ def get_embedding(text_content: str) -> list:
         client = genai.Client(api_key=GEMINI_API_KEY)
         response = client.models.embed_content(
             model=EMBEDDING_MODEL,
-            contents=text_content
+            contents=text_content,
+            config={"output_dimensionality": EMBEDDING_DIMENSION}
         )
         return response.embeddings[0].values
     except Exception as e:
@@ -44,7 +45,8 @@ def get_embeddings_batch(texts: list) -> list:
         client = genai.Client(api_key=GEMINI_API_KEY)
         response = client.models.embed_content(
             model=EMBEDDING_MODEL,
-            contents=texts
+            contents=texts,
+            config={"output_dimensionality": EMBEDDING_DIMENSION}
         )
         return [emb.values for emb in response.embeddings]
     except Exception as e:

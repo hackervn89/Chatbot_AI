@@ -40,6 +40,25 @@ def home():
         "version": "3.0.0"
     }
 
+@app.get("/health")
+def health_check():
+    """Health check endpoint cho monitoring (UptimeRobot, Grafana, etc.)"""
+    from sqlalchemy import text
+    db = SessionLocal()
+    try:
+        db.execute(text("SELECT 1"))
+        db_status = "healthy"
+    except Exception as e:
+        db_status = f"unhealthy: {e}"
+    finally:
+        db.close()
+    
+    return {
+        "status": "ok" if db_status == "healthy" else "degraded",
+        "database": db_status,
+        "version": "3.0.0"
+    }
+
 @app.get("/download/{file_id}")
 def download_file(file_id: str, db: Session = Depends(get_db)):
     """Tải file Word kết quả thông qua file_id bảo mật lưu trong DB"""

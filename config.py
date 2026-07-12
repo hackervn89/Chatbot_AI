@@ -69,7 +69,7 @@ GEMINI_MODELS = [
 
 # Embedding model
 EMBEDDING_MODEL = "models/gemini-embedding-2"
-EMBEDDING_DIMENSION = 3072
+EMBEDDING_DIMENSION = 768  # Giảm từ 3072 → 768 để tương thích pgvector HNSW index (max 2000 dims)
 
 # ==================== ZALO BOT ====================
 ZALO_API_TOKEN = os.environ.get('ZALO_API_TOKEN', '')
