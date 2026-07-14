@@ -1,0 +1,19 @@
+# Cline Ignore list to optimize token usage
+.git/
+venv/
+.venv/
+__pycache__/
+.gemini/
+taovanban_khoidang/references/graphrag_db/
+taovanban_khoidang/output/
+output/
+temp/
+.env
+*.db
+*.srt
+*.docx
+*.pdf
+*.zip
+*.log
+checkpoint/
+.agent_bridge/

@@ -16,3 +16,7 @@ taovanban_khoidang/references/TTHC/
 temp/
 app.log
 
+# Agent bridge files (local communication between Cline and Antigravity)
+.agent_bridge/
+CLINE_INSTRUCTIONS.md
+scripts/agent_bridge.py

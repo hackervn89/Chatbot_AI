@@ -1,0 +1,12 @@
+# Quy tắc tối ưu hóa và làm việc với codebase Chuyên viên ảo
+
+## 1. Tối ưu hóa Token
+- Hãy đọc `MAPCODE.md` và `PROJECT_OVERVIEW.md` ở đầu phiên làm việc để hiểu cấu trúc dự án. Không sử dụng lệnh grep hay scan toàn bộ thư mục nếu không cần thiết.
+- Tuyệt đối tuân thủ file cấu hình `.clineignore` để tránh đọc các tệp tin nhị phân lớn hoặc thư mục tạm.
+- Khi thực hiện thay đổi, chỉ đọc các tệp tin có liên quan trực tiếp hoặc được người dùng chỉ định.
+
+## 2. Quy tắc phát triển và Quy chuẩn Codebase
+- Giữ nguyên các chú thích (comments) bằng tiếng Việt hiện có trong mã nguồn.
+- Viết code có cấu trúc rõ ràng, sử dụng xử lý bất đồng bộ (async/await) cho tất cả các tác vụ I/O (API calls, Database queries, File operations) để tránh nghẽn FastAPI event loop.
+- Không thay đổi cấu trúc bảng cơ sở dữ liệu hiện có trừ khi có yêu cầu rõ ràng.
+- Mọi API bên ngoài (như DeepSeek) phải được bọc trong cơ chế Retry tự động (sử dụng tenacity) và xử lý lỗi cụ thể.
