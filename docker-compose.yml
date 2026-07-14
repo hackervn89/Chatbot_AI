@@ -1,4 +1,3 @@
-
 services:
   db:
     image: pgvector/pgvector:pg16
@@ -14,7 +13,7 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U chatbot_user -d chatbot_db"]
+      test: [ "CMD-SHELL", "pg_isready -U chatbot_user -d chatbot_db" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -35,8 +34,11 @@ services:
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
       - ZALO_API_TOKEN=${ZALO_API_TOKEN}
       - SERVER_DOMAIN=${SERVER_DOMAIN}
-      - ADMIN_PHONE_NUMBERS=${ADMIN_PHONE_NUMBERS}
+      - ADMIN_ZALO_IDS=${ADMIN_ZALO_IDS}
+      - ZALO_MODE=${ZALO_MODE}
+      - ZALO_WEBHOOK_SECRET=${ZALO_WEBHOOK_SECRET}
       - PYTHONUNBUFFERED=1
+
     volumes:
       - ./taovanban_khoidang/output:/app/taovanban_khoidang/output
       - ./taovanban_khoidang/references:/app/taovanban_khoidang/references
