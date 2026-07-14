@@ -13,3 +13,6 @@ temp_git/
 # Heavy manual reference directories
 taovanban_khoidang/references/HDSD DHTN/
 taovanban_khoidang/references/TTHC/
+temp/
+app.log
+

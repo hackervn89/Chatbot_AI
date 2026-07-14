@@ -1,0 +1,3013 @@
+﻿1
+The first part of my presentation
+will be the presentation part of the system.
+The second part is the Q&A part.
+If the presentation part of my system,
+if you want to take a break,
+I will take a break when I finish the presentation
+in the system part.
+I will finish the presentation
+and I will go to the Q&A part.
+As you already know,
+I am instructing you to access to the link
+w The first way is to go to w The second way
+is to access w However, this side will be less efficient.
+This is the system of the party's implementation of activities. . .
+There is a login page like this
+and there is an application download link
+of the app versions,
+including both mobile phones
+and iPads and tablets for each iOS and Android version
+of the application.
+When you log in to the login page,
+you install the app to the correct purpose of the app version,
+that is,
+to use it at all times, everywhere.
+When we go to school, when we go home,
+when we go to work, etc.
+And on the support screen,
+there is a hotline line,
+like the hotline line
+for customer care of netizens.
+When I call, there will be
+a hotline team of us,
+always recording the system.
+However, when the whole country calls,
+sometimes the hotline will be busy.
+Like those netizens who call
+the hotline of netizens,
+there are more likes,
+but it is still lagging.
+Next, you have the mobile number hotline.
+This mobile number may sometimes be me holding the phone,
+sometimes it may be a few other people holding the phone,
+we will divide it into subordinates.
+However, you guys just call
+this phone number except when the machine is busy,
+but where it will usually listen
+and the person holding the hotline
+will answer it more deeply.
+Third, the question that is often asked Then
+you click on it,
+it will have a common question
+file like this.
+Then you can find the questions
+that you are interested in.
+In this part, there are also more than 100 questions
+that the whole country is most familiar with, most used.
+Then you can also take the initiative.
+to help with the questions
+we often get. Besides,
+you will be able to log in with the citizen's residence here.
+is the account that you have received and the default password.
+is 6 number 2, a small a big plus.
+You can change the password after you have received
+and entered the code.
+And when you forget the password,
+you can click "Forget password"
+and enter your account name
+and enter the code.
+The code will return the OTP code
+to your phone.
+In addition, you can click ... by VNAD account,
+you will log in VNAD on your phone
+and you will enter or you log in by by VNID's username and password.
+After that, you will also be directed
+to the employment management software.
+Those are the ways to log in.
+There are two ways to log in.
+After the instructions,
+you will log in to the system.
+I will log in to the system.
+I am installing a TET account of Cam Ranh Party.
+According to what you are entering,
+I will enter OTV. With the first entry,
+you will enter the OTP
+and this OTP will be saved on a 30day period.
+Please note that it is 30 days.
+And on a period, for example,
+if you are entering on Chrome,
+then the username tab
+will be saved on 30 days.
+If you enter Firefox,
+it will also be saved for 30 days.
+After entering, you will have a main page like this.
+And at the right corner of the screen,
+in the Help section, Yeah.
+If I talk too fast, please slow down.
+In the Help Store,
+there is a guide to use all modules.
+For all modules, such as how to log in,
+There will be instructions for each role in this zip.
+There will be a leader
+and a postman in each role.
+Also a postman and a postman on mobile.
+This is a postman and a postman on the web.
+Then the documents will be somewhere,
+some of them will be long read,
+then you will listen to the interview,
+then one Today is the second session,
+so it will be easier for you to read the documents.
+And on the team,
+I will also send you videos of each step
+for you to practice.
+When there is a real document,
+you practice every day,
+then every day when you come to the agency,
+you have to open the system
+and do it as a habit,
+then you will get used to it gradually.
+In this page, you can drag and drop the cards like this.
+On the left side,
+you can see the menu bar.
+That's the main page and the login page.
+Today, there will also be managers in the district.
+I will introduce each role.
+For example, I will go to the basic role of the manager.
+After that came the role of secretary,
+then came the role of leader,
+and then came the role of expert.
+For the role of...
+Regarding the role of system management
+I will go to the management role first.
+For each of you who have been in charge of a farm,
+You will have to do this part very carefully
+because if you don't, it will go wrong.
+Of course, the original version
+can still go and I will adjust it for you,
+but if you can do it
+right from the beginning,
+it will still be better.
+That is, you will be part of the unit.
+Khanh Hoa, I see that I have not created
+all the ministries here,
+but in all the provinces across the country,
+I have created all the ministries here.
+To do what? First of all,
+from the party committee down
+to the ministries, to the ministries,
+and the documents will also be sent to the ministries,
+to the first ministries, for example.
+When you go to the ministry,
+you hold your phone,
+There is also a document,
+but it is not printed on paper.
+That is also one thing,
+and it is also a transfer of numbers to the departments.
+For example, in Hanoi,
+you have created a very complete part of it.
+At the beginning,
+I just do these steps first,
+then I will go to part 2,
+where I create units.
+The way to create units is like this.
+You go to the management menu and unit management.
+Yeah. How to create a unit management,
+you go to the unit management management menu.
+This is the unit management menu,
+and when you create a new one,
+you will go to the plus button
+to add a new one. You click Add New
+at the right corner of the screen.
+Here, you will enter the name of the unit.
+For example, here I will have the building boards,
+some units will have a political center, right?
+Then I will enter the political center.
+For example, I will not stay.
+This is the political center of Cam Danh, for example.
+And you can enter the official date.
+You can enter the official date
+from the time you come back.
+But don't enter from tomorrow to the next day
+or the next day or the next day.
+Please don't leave it
+because I am working on it.
+I will enter the name code
+of the political center.
+For example, the name code
+of the political center is A00.00.
+For example, the real name code
+of the political center is A00.05.
+I can't get it.
+When you enter the code into the system,
+you will be notified
+by this national telecom.
+There will be an API sent
+to the telecom that will notify this unit
+to use the code
+sent to the telecom on the party's business management software.
+However, with the previous condition,
+you have to cut the name code
+that has been published on the old Iofit software,
+for example,
+which is being published in the Khánh Hoa love book.
+And then what?
+For example, if you enter the number 1,
+it will appear on the party building board.
+If you enter the name,
+it will appear on Cam Danh Ward.
+You don't need to enter a lot of structure words.
+If you want to register
+for the National Registration,
+you will enter this part.
+However, I will not encourage you to enter this part
+because it is not possible
+to send a lot of documents
+to the Registration Office after entering.
+You can only enter once for the administrative
+admin of the province.
+Then you click on "Save".
+You chose the father unit,
+which is the Party of the Indifference Party.
+You can save it.
+then there will be a unit It
+was created in the Party Committee of Cam Ranh Ward.
+This is the political center of Cam Ranh Ward, right?
+And that is the unit management part.
+The new way is like that and the new details
+are like that.
+When it comes to managing users,
+you will go to management and managing users.
+Next, I will create a clip
+and then I will delete it Next,
+you will go to the user management section,
+which is also the same
+as the unit management.
+You will have the new plus section.
+Please note that here
+I will guide you carefully
+about the user management section
+because the personnel come in
+or the personnel do the transportation, etc.
+will be managed by the management
+of the district office.
+You will add a new user. For the leaders,
+it is customary for you to enter the citizen
+registration of the leader.
+You have to enter the name of the school.
+For example, I am Nguyen Thi Thu Trang,
+so I enter Nguyen Thi Thu Trang.
+must enter when you enter here
+is the name is written normally,
+the system will automatically specify
+the flower
+and when you sign up for this leader,
+you have to put the name
+correctly like this,
+then the AI will catch the correct signature of the leader.
+The password is that you have to put 1 number 2,
+it's small, it's big, This is the end of the user management part.
+Next is the user discrimination part.
+One person can do many roles.
+For one person to do one role,
+then you leave one role.
+For example, this is the leader
+and the deputy secretary of the party committee.
+For example, you put it like that
+and you put the original unit
+and you don't choose to receive the unit document
+because the party will have a document
+to receive the unit document
+and transfer it to the leaders.
+As for the users, the head of the units,
+the building board also has a document.
+If the unit does not have a document,
+the unit's document
+will be included in the management.
+For example, if the building board, the agency,
+the inspection committee,
+the national defense committee
+and the office all have documents,
+then you will not enter the management part.
+As for you, for example,
+the document of the party committee
+and the document of the office,
+The main role of the staff is the office staff, right?
+then you can let the experts
+Now you choose the original unit
+in this expert section
+because this expert member is the original unit of the member.
+And the role of literature is just experience, right?
+And it is also not absolutely not selected in This
+is the unit version.
+Because if you choose to preside here,
+the document is not about the unit's document,
+but about the individual
+of the member of the document.
+I see that in many units,
+the admin is placed like this.
+This morning, I have a list,
+I see that the district committee members,
+most of the functions of the document
+are being left to preside.
+Then you guys delete this presiding
+to help me.
+Because when the letter receives the document,
+I will talk more about it later,
+it will not be in the unit's document,
+but it will be in the personal document.
+For example, today this student is a letter,
+but tomorrow the other student is a letter,
+today Mr. Trang is a letter,
+tomorrow Mr. Tai is a letter,
+then I just need to add Mr. Tai here
+and I create a role for the letter,
+I will still receive the old
+and new unit document of the unit.
+Anyone who gets out of this role
+will not see it anymore.
+Those who have entered the personal version
+for the role of a professional
+or a leader will stay with me forever.
+For example, today I am the deputy director of the room,
+I received 1,000 copies.
+Tomorrow I will be the head of the room,
+I will still receive
+the new copies of the head of the room
+and keep the old copies
+of the deputy director of the room.
+As for the unit's copy,
+anyone who is the expert of the unit
+will see it and get out of that role
+will not see it anymore.
+There will be a difference between the unit
+and the individual version.
+After that, we come to You can save it.
+If your username is already on the system,
+you can save it
+and the system will tell you
+that the username
+is already on the system.
+If you are creating new users,
+you can save it here.
+That's how to create a new user.
+Give us a look.
+The most important thing in creating a new user
+is the structure of the unit and role.
+Look, don't you know?
+For example, in the future,
+you will add more party members, right?
+Vân Vân, then another deputy secretary,
+at the same time as the secretarygeneral of the ministry or party, right?
+Then I will be a person
+who has many roles.
+This system is also a strong point.
+Different from the previous system,
+you will not have to change roles here.
+Change each role one
+and every time there is a version
+to a specific role, I see the roles
+that I have to change,
+I have to change over
+and over again to see.
+Now, the system that has many roles
+will be displayed here.
+That is a new step for users.
+For example, in this morning, you guys...
+that the rooms will not have a letter,
+then you will form a directive
+to receive a copy of the unit as your room.
+As for the members of the Ward Council,
+later, if any of the agencies
+have children units,
+for example, the previous day
+was the National Assembly, for example,
+in this there will be the population,
+for example, the population units
+will have a young secretary, for example,
+then the secretary
+will receive a copy of the As for the Committee of the Committee of the Committee of the Committee of the Committee of the That
+is the opening of the system
+and the management of users.
+For the management of the unit,
+for the management of the field,
+I will also go through it
+for you to see a little bit.
+And you have some suggestions for the unit.
+However, I also rely on a The most basic of all the provinces
+in the country and the central government,
+I have already shaped it for Khanh Hoa,
+both coming and going of the Party
+of the commune and the states.
+For example, Luong Van Man Den, the commune party,
+I am shaping here.
+Here I am shaping all the communes,
+I have 6 communes and 1 district.
+However, later,
+if any of the communes want to separate,
+Why do you want to separate
+and why do you want to share with the management of the office?
+If you want to share with the management of the office,
+please separate the fields.
+If you want to share with the management of the office,
+please separate the fields.
+If you want to share with the management of the office,
+please separate the fields.
+If you want to share with the management of the office,
+please separate the fields.
+If you want to share with the management of the office,
+please separate the fields.
+I will pull the circle down
+and I will shape the unit.
+Note that the unit does not have a role and service form.
+And I give the definition of this letter to which notes?
+The back is the square notes,
+so I will add them here.
+I give the letter and define the roles inside this square note
+and choose the path for those notes
+And you can see that the letter
+is being transferred to 123456, right?
+Now you guys said
+that the letter was not selected to the professional,
+that is, this line,
+this line to the professional.
+I will delete it and save it as "Van Thu
+will not see it".
+And now I'm still letting
+Van Thu see the members.
+Candela Luongo Gardens, we can be you.
+For those of you who are not familiar with it,
+it should not be affected.
+Because with these cells,
+we have some rules. Those are the notes
+that we have drawn,
+but when the data is running in reality,
+we cannot delete them.
+We cannot delete them
+because each of these notes
+is born as an ID. When you add a new note,
+you will see how many notes it will be.
+It has all the numbers.
+It's called a pair of shoes with numbers.
+I will not delete this one.
+Because when the letter
+was sent to Mr. Tranh Van Phong of the Party,
+it was in this note number 1.
+I deleted it,
+I gave birth to a note number 22 again,
+then the version did not jump from number 1
+to number 23. So I don't delete,
+but I delete this action,
+I delete it comfortably,
+I save it comfortably.
+Then I want to change,
+when I don't want to change, I delete it.
+When I want to change, I open it up,
+I add it. What?
+Then you can delete it easily.
+Because the note is digital,
+but the action is not digital.
+So some of the rules
+are not familiar to me.
+Later, if you delete it,
+the office worker will not see
+anyone to change
+because I have been deleted.
+It will be back to zero on the system
+That's about the land management.
+If the administration runs on the same field,
+it will be reasonable for the administration of the province.
+In the whole country,
+there must be a province
+for the administration of the province.
+That province is welltrained.
+Some provinces have their own fields.
+But after that,
+the leader has to go back to the common field.
+In my opinion, you should put it together
+and you will manage it.
+That's the management part.
+There is one more part in the management part.
+That is, you will sculpt the image management part for the user.
+For example, the leader of my ward,
+Mr. Bi Thu, Deputy Bi Thu, for example.
+Here, Mr. Bi Thu,
+please help me with the number 10. Uh huh.
+you will always go to the top of my room
+and always face the chiefs down here.
+Or you can put the number 15 too. 15.
+And the vice presidents will put the number 16.
+I will leave this for you,
+but you can also leave it,
+but I will follow this rule.
+All other rooms are the same, Mr. Bi Thu.
+is 15. The vicechairs will be number
+16 There are some communes
+that have experience like this,
+so you guys are right to sculpt
+like this What are you guys
+doing with the number of people who use it?
+So that the deputies and vice deputies
+must always be above the leaders?
+Yes, for example, the office leader is in this,
+I am leaving the members as number 31,
+then later it will always be below the members.
+As for the members of the staff,
+please leave it as it is.
+This number is very large, I was born,
+the system will automatically like this
+and it will automatically arrange the alphabet,
+but whoever I type the number,
+it will only change the number
+and I will change it according to a general rule
+for the whole province.
+If so, it will be true in all cases.
+That's how to create a user profile
+and you will have to enter to create a signature for the leader.
+For example, here, the secretary of Cam Ranh Ward
+has no signature.
+The management will usually be the one
+who creates the signature for the leader.
+Then you will choose a signature.
+A signature that has already been cut.
+If the signature is suitable
+and has the PNG design and the white background
+has been removed, you will paste it in
+and you will write it down here.
+So either the leader or the user
+can go to their personal profile.
+After that, there is also a new signature image.
+However, with the leader,
+the management or the office usually have to support, right?
+I will create a signature.
+The next step is to create a logo for the letter.
+The manager can create a logo
+for all units of the unit.
+For example, if you are the manager of the office,
+you will be able to create a logo
+for the entire office.
+For example, for the logo of the office,
+you will create a logo like this.
+And you will create two logos.
+The first logo is the unit logo
+and the second logo.
+You go to manage the manager,
+manage the logo image, can you see it?
+If you don't have the unit number here,
+you will add the unit number here.
+If you don't have the confirmation number,
+you will add the confirmation number here.
+Usually, if you are a new unit,
+you will add two numbers at a time.
+You can choose any type of mode
+and choose "only day"
+to work I will add another one.
+After adding,
+I will create the image of this symbol.
+For the unit symbol,
+I set the height to 110.
+The font and width are set to the same.
+I set the image to the symbol.
+As for the confirmation symbol,
+I set it to 50 and 680 here.
+If you tick something,
+it will display the corresponding symbol here.
+You put it like this,
+it will match the mark on the water tank.
+Or if you haven't put your signature in yet,
+you can choose to add a new one.
+And you choose these two characters.
+This is the unit number. Confirmation.
+I take the example
+so I don't save it anywhere.
+And I choose the type 1.
+I choose the day of operation.
+And you just have to reread it.
+After that, it comes to the drawing of the mark,
+as I just guided you.
+Do you remember the standard of the mark?
+After you have drawn all the marks,
+I will make a rule
+before you use the formal method,
+and I will leave it for you.
+And even if you cut the mark and it is blurred,
+if you see any mark that is blurred,
+it is not guaranteed on the computer,
+I will also clarify it for you.
+That is the shape of the mark.
+Next, we will go to the structure of this logo.
+Both Văn Thư and Quản trị Hệ Thống
+can do it.
+Văn Thư can also manage the logo
+of the unit and manage the group.
+Văn Thư will have these two parts:
+managing the group
+and managing the image of the unit logo.
+I will show you how to create a group.
+Go to group management
+and add a new plus sign.
+For example, you create a group.
+the staff, the ward, the camp,
+you will be a group. personal group,
+this is the personal group, right?
+And you add the individuals of the Cam Ranh Party
+to have the versions that you send once
+to a group and that's it.
+You can choose to hug,
+except for those who are usually late.
+Can you give me an example?
+then you will choose It would be a...
+And you guys in the application area,
+you can use it for yourself,
+you create your own group,
+or you use it for all units. If all units,
+you will define which unit to use.
+Organization here. no to you,
+then you As for the next group,
+I think the most important group
+is the communication unit.
+For example, 66... the People's Committee, for example.
+Well... What do you think? Why do that?
+For example, you are a communication unit, right?
+And at this time,
+you will choose all units of the People's Committee of the commune.
+And you must know the name of the first time
+so that you can find it quickly.
+And you can find it by name,
+I see that sometimes it is wrong.
+For example, the People's Committee
+sometimes has the People's Committee
+to write the normal,
+the People's Committee
+to write the flower, right? Thank you.
+You can't find it like this, right?
+I have to hit it.
+So I have to know the correct name,
+and the code only has one address, right?
+and teal.
+I think it's hard to find this name.
+I don't know. Ummm... Vibhanyin Zen.
+Phuong, lay up. Phuong.
+Cam Ranh here, right?
+That's the name of the flower,
+the name of the hair. Then you choose it.
+You choose all the rooms.
+This is the code. If you choose this code,
+it will always come out.
+Choosing a name is sometimes difficult.
+Find a code that matches the name of the unit. Mwah!
+Phuong Do Vinh.
+For example, you create a group
+and once like this, then you save it.
+Later, when it comes to the part,
+I will guide you to change the group like this,
+it is very convenient.
+This is the convenient part of the management
+and the letter to create a group,
+then I will guide you to the whole series
+of the management part.
+This is the group management.
+Next, I will show you the main modules of the system.
+including each role.
+You just finished the management role, right?
+Now I will come to the writing role.
+I will go to the error path
+that I just created.
+Yes, please enter the email address.
+On the screen,
+you are looking at the main screen
+of Mr. Van Thu. With the main screen
+of Mr. Van Thu,
+you will have the part of Van Van
+waiting for the order to wait for the number.
+Van Van comes to wait for acceptance
+It will be different from other users
+who have those two parts.
+And other users will not have those two parts,
+but only wait for the process to go down.
+Everything is from waiting to processing
+and to these areas.
+Here, each user has a simple homepage.
+If you want to see a simple
+or complete page, you can see it.
+And you will have your own personal profile.
+And you will add a new signature. Wow.
+That's right.
+It's not that I have to take care of them more,
+but I will be the one to do so.
+You can choose the day of the event.
+As you can see,
+I have added a signature photo for myself, right?
+Next, I am the secretary of the unit.
+I will have two parts:
+group management and unit management.
+Group management I have just introduced,
+and unit management management
+I have just introduced from Mr. Quang Tri, right?
+This is Phuong Cam Thanh.
+Please note that when you add the letter of the Party
+of the Republic of Vietnam,
+He going to eat.
+I pressed the button of the opposition party.
+When you add a sign,
+you have to click on the corresponding square
+to create a square.
+In this corresponding ward,
+you just add the unit number
+by the plus sign here.
+If you do not add the number of the building board,
+the agency will also come here
+and the office will also come here.
+For the office number,
+you type it into the office
+and you add the number.
+That is, which unit number must be typed
+into the corresponding unit to add.
+Like... Please click here
+and add the office's logo. Huh?
+For those of you who are the management of the party,
+you will be able to add it like that.
+If not, you can add the letters of each unit.
+If you attach only your letter to this unit,
+you will only display each unit
+to add a mark. There are many ways for me
+to do management.
+I can guide everyone or you.
+For example, in the administration,
+you are an admin,
+you will create a profile
+for a member in the office.
+of this unit of the National Defense Committee,
+then you will enter the system
+and you will only see each unit
+to add this part. Next, on the homepage,
+you can see that there are all the modules like this.
+You can enter from the text module
+to all like this. It is also the same
+as the text module here.
+Normally, you will go directly
+to the system part.
+Here, you can see that the text is waiting . . . .
+This is the sixth row. As you can see,
+if there is an internal version
+from other units sent to me,
+then in the party body sent to me,
+for example, the party party sent me . .
+That's it.
+How will you receive the communication board?
+I have two sources.
+The communication source is here.
+The paper source will be added here.
+The communication source will be added to the +.
+You will receive As you can see,
+we will be able to delete
+all the information in the online version,
+but the internal version
+will not be deleted
+because the internal version
+is the only one on the whole system.
+Therefore, we are following the 204 plan,
+which is to save on DB,
+on the infrastructure,
+on the power supply.
+For the online version,
+from other systems and from other servers,
+when it comes to me,
+it is my own version, right?
+then I will be deleted.
+And the internal version
+from other units sent to me
+is not my original version,
+but I only receive one original version, right?
+And we are the original unit,
+so we have the right to delete that original version,
+and I will not have the right
+to delete it for the internal version.
+The internal version will be deleted.
+As you can see, Lien Thong sometimes doesn't give you the type of the document.
+In this case, you won't be able to log in.
+You have to choose the type of the document.
+You have to read the document
+and know the type.
+I will have to choose "Cong Van" here
+and you choose the address of the address,
+the number of that address
+will jump out of the address.
+And the way to create another address of Van Thu,
+I will talk about this part first.
+The way to create a document,
+you go to the title section,
+go to the title section of the document,
+and you will add a new document here.
+Here, for example,
+I added a new test document
+to the Let me look at the paper for you.
+1 year or 5 years,
+you choose the type of year, right?
+And you enter the version of the notebook.
+For example, on the 15th,
+you run the real thing.
+On the 14th, you go to the number... 550,
+then for example,
+you type in the current version number
+so that when you enter the system,
+it will start from the number
+to 551 and then continue.
+And you guys, please resign in.
+select the operating unit for this table,
+this table will be the table
+of The Party is in a state of war.
+You can rewrite it.
+That's how you create a single folder.
+Usually, there is only one folder when you come.
+When you leave,
+you can divide it into multiple folders
+according to your own decision.
+Or you can create a single folder.
+It depends on your mission.
+You can create one or more folders
+You have to choose the right type of bamboo to eat.
+According to that task, 1 year or 5 years,
+usually I will do 5 years, right?
+And I choose, I choose, I create a test,
+then I create 1 year for it to be fast.
+Then you guys in the D version
+of this notebook to the number 200, then for example,
+1999, the next will be to get the number 200,
+then you will type the current number
+that you just entered the notebook of the evening of the 14th.
+There, and in the D version,
+it will have 2 forms.
+The first form is that you take a total of 1 notebook.
+but they are different types,
+then you will type in the number level
+according to the type. And for version 5,
+you enter the number 5,
+the report comes to number 77,
+then you type in the number 77,
+the instruction comes to number 15,
+then you type in the number 15.
+When you go to the version of this book,
+and this type will jump to number 6,
+this type will jump to number 78,
+and this type will jump to number 15.
+Then you will shape it like that.
+If you want to create a test folder,
+you will create a common folder like this.
+For those of you who save many different types of folders separately,
+you create many folders, right?
+And you don't give the number
+according to the type,
+but you give the number
+according to the folder,
+then you put it like this.
+I just showed you
+how to create a notebook.
+And when the system that you have created a unit
+is the Party, of different units.
+That's the "Documents" section.
+When you click "Accept",
+you will see that when you accept this document,
+you select the "Documents" section.
+This is the "Office" section.
+If you send it to the office,
+but you haven't created a "Test" document for the office,
+it will not display.
+For example, this one.
+This one is also for the office.
+Nothing for the piano.
+Because I have just created an activity unit as a unit.
+For example, I have created a folder for this one
+and there is a test folder,
+then I will enter the folder like this.
+And the current number will jump to the next number
+and you will click to receive the mark, right?
+And for those of you
+who enter the folder by paper,
+you will enter the plus sign here.
+The first thing you need to do
+is to connect to the scan machine
+and install the driver of the scan machine.
+Put the file into the scan machine and click
+Scan File.
+The system will return a driver file connected
+to the scan machine
+and the system together.
+You will download it and install it.
+It only takes 2 steps to complete.
+For those of you who don't have a scan machine,
+you can go scan somewhere else.
+If you scan the file,
+you can select the file.
+If you select the file,
+the AI will put all the parameters in,
+as I introduced last time.
+If you are the secretary of two units,
+you will only select the unit
+for you to enter the test.
+For example, here I have a test here, right?
+If you type the number 550,
+it will continue to 551.
+There is one more thing
+in creating this notebook,
+which is when you want to enter the default,
+then you type in the default letter,
+you guys write it down. Right.
+When you guys... Go to this unit.
+then the notebook will automatically put you in
+and you don't have to choose.
+That is, if you have a few notebooks,
+you should put them in a certain place.
+And it will be placed in the menu for you
+so you don't have to click to choose.
+If you have many different types of paper,
+you should not put it in a certain place.
+Let me add this tail
+so that I don't have to worry about the name.
+It looks like the real name.
+You can see that the OCA of AI
+will automatically drag the fields in, right?
+You just choose the individual or unit
+that you transfer to.
+You can see that I am choosing to the members
+of the committee and the leaders.
+And I have not designated to transfer to a professional.
+This is a different role,
+not a professional one.
+Do you have many members in your party?
+There are a lot of them.
+For example, I see that there is...
+Ah, this is Mr. Ted.
+Later, please arrange the leaders
+to the top of the screen.
+Let's avoid the number 31.
+All the rural and rural areas
+are following the same rules.
+After you have entered the document,
+you can choose to transfer it to the office
+of the test ward.
+I will try to rewrite it.
+I have successfully entered the paper.
+As you can see, the system will notify you
+that you have successfully entered the folder
+and when you enter the folder,
+it will go to the folder
+that has been processed.
+And as I said earlier,
+many of the members of the Party
+and the Municipal Party of Phuong
+are letting Mr. Van
+Thu preside over the draft.
+The draft will not be included
+in this unit draft,
+but will be included in this individual draft.
+And if it is included in the individual draft,
+it will not run in line with the line
+that the administrative admin is shaping.
+"Đến đã xử lý" . As you can see,
+in the real notebook,
+there are 9 text files,
+and in the test file,
+there is 1 text file.
+And here you have the right
+to view the notebook,
+or view the group of types,
+or view the file according to time.
+Now I will log in to the user of Dong Chi Chanh office.
+Yeah, they have got the fair.
+I am working with many users,
+so I will have to log in many times,
+but you only have to log in once.
+In 30 days, you can see that Mr. Tranh,
+I have guided you to enter the document in two ways, electronic and online, right?
+Now you will enter the document
+and transfer it to the leader.
+Now I will guide the leader
+to process the document.
+The leader will see
+that there is a document waiting to be processed. . . . . .
+I will click directly on the "Come"
+button You can see that the leader
+has received a document
+that is dark black, right?
+When a leader reads this document file,
+it will be light black.
+And with other systems,
+I will have to turn off,
+go out, and change. With the new system,
+I will be able to change it here.
+Or this is a conclusion announcement,
+you will create a task here.
+For example, I go to a transfer tree.
+I'll let you guys
+make your comments But every time you enter,
+you have to enter like this,
+it's a bit of a waste of time, isn't it?
+Then you can put this opinion
+in Let's create some models.
+For example, I choose these two models,
+then every time I choose, I switch.
+When the office manager comes to work
+or is sitting in a meeting,
+you will select the model
+and operate it on mobile or iPad.
+I don't have to type anymore, right?
+Sometimes I can't follow the meeting,
+for example, then I choose the model,
+I change it,
+it will only be 3 times click,
+it's very fast, right?
+And if you give the processing time
+here to the professional,
+then later when the professional
+will have to perform before this time
+and it will perform KPI according to this processing time.
+As for the leader who does not submit
+the processing deadline,
+the expert always performs within the deadline.
+It's just that it has not been performed
+within the deadline
+or it has been performed within the deadline.
+It has been completed within the deadline.
+If there is a processing deadline,
+it will assess KPI.
+If this deadline has not been performed,
+it will be that it has not been performed
+beyond the deadline.
+If the deadline has been completed,
+it will be that it has been completed beyond the deadline.
+and you will transfer it to the staff
+or the leaders who can come to the office
+will transfer it to the deputy
+secretary of the office
+to ask for advice, right?
+This is where I will enter the samples
+as "ask for advice" What for we do, Momma?
+For example, I would like to move down to the expert page quickly.
+For the leader who has accepted the request for the answer,
+the member who has accepted it
+must want to complete this document,
+want to complete this task,
+the leader must have a document to answer.
+If the leader does not accept the request for the answer,
+then I just need to report
+that the task is completed and I will add the draft
+if I want, or I will add the draft
+if I want.
+I will switch to the 9th channel to perform.
+That is the leader when receiving a document,
+then for the leader to deliver the document,
+it will also go to the document
+that has been processed.
+And here, if the leader sees that the leader
+has delivered it wrong,
+then the leader goes to the document
+that has been processed
+and the leader goes in to see the details.
+And the leader has a part here,
+the list has been sent, I sent it,
+and the list is sent to other people. .
+with the main lines here, right?
+Or you can see this list as well.
+If you are familiar with the form,
+you can see it in that form.
+If you are familiar with the form of the map,
+you can see it in the form of the list.
+Here you can see all the properties of a document.
+You can download it or print it out.
+Or for this document,
+you want to verify whether the document
+to your department is correct or not.
+As you can see here, the system has determined
+that the digital certificate status
+is effective
+and that the digital certificate
+is correct for the Government Digital Information Port
+and is not changed
+and approved at the time of registration.
+This is a complete digital document.
+As you can see, this is the paper version
+of the government library.
+You can see the red and black letters,
+but it will have a confirmation mark.
+This is the part that I have just shown you,
+adding a new confirmation mark.
+One is the unit mark,
+the other is the confirmation mark.
+This is the confirmation mark.
+And below this will be the unit layer.
+Oh. Is that right?
+The unit number is locked in the part of the registered leader,
+and the confirmation number is locked in that part, right?
+And when the leader wants to withdraw,
+there is a withdrawal button here.
+If the leader transfers to many people here,
+then the leader will have a withdrawal button for all.
+Or withdraw 23 people,
+then click on 23 people,
+then click on withdraw here.
+If there is 1 person here,
+then it will click like that.
+I will go back to the user of the staff member
+and I will guide the staff members
+to perform all the operations.
+For the leader,
+just receive the document and transfer
+and hand over the document,
+there will be a part
+that is more compact than the professional.
+And of course, the leader who wants to carry out
+that document is also okay,
+just like a professional.
+yeah yeah The leader
+or the expert receives a message
+waiting to be handled here, right?
+Then I click directly on it.
+As you can see, when there is a task,
+it will appear here, right? Huh?
+Number 2373, you have just transferred from the office
+to the professional worker.
+As you can see,
+the experts here will be able to perform
+in this quick action code.
+Or the experts will enter the In the details section,
+it will be full of more notes.
+I will explain each note for you to see.
+For example, here, don't just take this one,
+but want to attach a separate tag so
+that later you can find it easily.
+Then you attach a separate tag.
+This is important, for example.
+That's right. Some of you often mention
+that this is important.
+This is very important.
+And then normal, etc. Click on "Record".
+You have marked this document.
+It is important.
+After that, you search for the tag.
+The important thing is that all the documents
+you are pasting are important.
+Just like you pasted the tag on Facebook.
+Next, this document is an invitation.
+You will create a meeting.
+This document will be the summary
+of this meeting schedule.
+For example, this is the invitation
+from the province of Uy
+to the meeting today, right?
+And the local authorities will enter the schedule for the leader, right?
+And the participants will enter the schedule
+like that,
+then you will explain more carefully
+about the schedule.
+The next step is to save personal documents.
+You can create a list of titles.
+The title of the title is "Title" Tình nguyện gửi,
+văn bản tình nguyện chẳng hạn.
+Then you enter the recorded content
+and you click on the record button,
+then you will see that
+after saving the personal documents,
+you will turn it off.
+After saving the personal documents,
+you will see in the personal documents section,
+I don't want.
+And you want to find the titles
+that you are looking for, right?
+And you want to find the titles
+that you are looking for?
+Another title is the office version
+of Tinh Nguyen.
+For example, you have created
+these two titles
+and now you are looking for the office version
+of Tinh Nguyen, of course, it will not be seen anymore, right?
+Right, let's go go.
+All of them come out, right?
+That's the personal layout.
+It's like a green folder.
+A 3storey, 2storey, 1storey folder.
+You usually put it where you sit, right?
+Who does administrative work,
+You can see that when you click on the tag,
+all the tags will be on the top.
+And when you search for the important tags, Yeah.
+There are two versions, right?
+One is just an important one.
+These are just some of the important versions
+that you need to take note of.
+This is a way for each person
+to save their own letters.
+You can find the search engine in any page.
+When you open the search engine,
+you can search from the beginning of the month to the end of the month.
+There are many versions
+that I have received.
+You can open the search engine to search.
+When you don't search for the search engine,
+you can search quickly.
+There are three search areas.
+The first one is here.
+The second one is here.
+And the third one is here.
+There are four search areas.
+And the third area is in the search
+for improvement, the fourth area.
+This is the first area.
+This is the second area.
+This is the third area.
+And this is the fourth area.
+For example, here I am looking for the version number 2373.2.
+I can search like that.
+I want... I still remember some of those signs,
+even though in the finished version,
+after a few months of use,
+there will be a lot of versions, right?
+I can search quickly here
+or search quickly here.
+Uhhuh Quickly here, if you type the number,
+it will only find the correct column
+of this symbol number.
+If you type the correct column,
+it will find all 4 cases
+of the symbol number,
+the type of the text, the content,
+the ID of the text,
+and the person who signed it.
+It will be in 5 conditions like this.
+Back to Mr.
+When you receive the document number 2373,
+you will have the task to save the documents, right?
+When this document belongs to the field of documents
+that you are in charge of,
+you will save the documents and on the side of the list of documents,
+you have created the list of documents to save,
+then now I will collect the documents in the list of documents, right?
+If you don't have it,
+I will you will add a file from this page.
+It's the same as the file management module here.
+Add a file link with each other.
+This file list is for you to add a file,
+right It's the same as when you go to the file list module
+and add a new one. After adding a new one
+to the file list,
+you will put these templates in.
+It's the same as when you choose
+the template and save it in the file.
+The next one is the most commonly used action.
+What is it?
+It's the report completed when you have finished it.
+I have a phone,
+so the internet is a bit slow.
+When you have finished reporting,
+you will click "Finish".
+In case you do not have the function of your task,
+you will return it, right?
+I have already guided you to the processing document.
+I will see who will transfer the document.
+And when you click "Finish",
+You will enter the content of the report
+to complete and you can choose
+the attached file
+or choose the answer document if you want.
+As for this document
+that the leader handed over to me, for example,
+Tránh Văn Phòng handed over to the specialist
+who has a request to answer here,
+there is the word "Có" here.
+When you click "Finish"
+the answer sheet will be required
+to have a red star here.
+Because there is an answer request,
+there must be a "Go" sheet to be issued.
+Answering the question,
+we can complete the question.
+Next, you will have two most commonly used ones.
+You will usually use this one to see
+if the document is 1, complete 2, create a draft
+is 3, create a draft of the version is 4,
+because the experts will not transfer to anyone else,
+so they will not use the transfer of the version.
+Some of the useful features are this head.
+And the parts to execute the version
+will be in the next section.
+So now I will go in and create a draft
+from this document to register the document.
+I will always guide you
+to go through the document, right?
+Here, you just click on "Create a template",
+then the template will automatically come to you.
+It's also similar to the case where you will choose
+from the page
+and you will choose the page to answer.
+The same goes for documents.
+Not only we can use AI,
+but all experts can use AI.
+That's the automatic information transfer part.
+You choose a document,
+you create a document outside, right?
+The system will automatically OCA the document.
+Come in here, can you see?
+Then you will sign up to the office
+to avoid the office.
+Please note that there are two phases
+and phases that I will guide you carefully.
+One is the phase, the second is the phase.
+What is the phase?
+When you sign up to avoid the office
+to sign up to publish the document.
+then you will choose to sign,
+and if you choose to cancel,
+then go to the top, choose again,
+then you choose, right?
+And here, this part of the form is that office members
+can also sign that they are on leave.
+I will turn off this part.
+There will be a note.
+This is just a miracle. Here it is.
+Trinh Nguyen, the office manager.
+It's not right here yet.
+There are two of them.
+It's just the rupture.
+The rupture is the next step.
+The rupture is coming down to Van Thu.
+I have to leave the rupture here.
+Hey. I will create a new draft
+and select the draft again.
+This lady here, I will... Select the office worker.
+Here you can see that the registration will be stopped here, right?
+When the registration will be issued by the office
+or issued by the head of the party,
+then at that time
+When you sign, the office will select the unit to be issued
+as the party or the office.
+If the office is wrong,
+the document can also be edited,
+so you don't have to worry
+that if you choose the wrong office,
+it will be turned off.
+And if you sign up on the regular basis,
+you choose to review,
+then this place will light up, right?
+You have two ways to edit.
+The first way is that you just like this,
+you edit, press the edit button,
+and then the office
+will choose which deputy secretary
+to sign up for.
+Or you can choose from the beginning.
+And if you choose the wrong one,
+you can also choose again
+to avoid the office. Don't worry,
+the system is very open.
+I will guide you more carefully later.
+You can choose like this.
+you will sign, right?
+Of course, this is a simple form of registration,
+but in fact, there may be many documents
+that you have to sign
+and have to ask for advice
+from many people, right?
+Then the "ask for advice" part here,
+you can ask for advice
+from the deputy secretary of the office.
+At the same time,
+here you have two actions.
+The first action is to ask for advice.
+The second action is to sign.
+What is asking for advice?
+When you click on asking for advice,
+it will point to this area.
+And when you click Sign in,
+then it will go to this whole area
+and this whole area means
+that both sign and ask for an opinion
+and the person who signs these two people
+will not depend on the person who asks for an opinion.
+If you press the sign button,
+In other words, the main action
+is to sign the contract,
+and the person will be able to receive the consent
+for the consent.
+If you want to submit an opinion,
+it means that you have submitted an opinion first,
+then you have just signed it.
+When you submit an opinion
+to Ms. Truc Giang,
+she will give you an opinion
+and you will complete this draft.
+At this time, if you click on submit an opinion,
+the draft will be saved like this.
+It will automatically save it like this
+and it will be in the position of asking
+for an opinion here.
+And when you give your opinion,
+In the description,
+Ms. Truc Giang gives her opinion below.
+Ms. Truc Giang gives her opinion.
+If you have an opinion,
+it will be in this area.
+And when you have completed the reservation,
+you will go to the registration button here.
+You go to fix it, then change the new file
+if you have changed, right?
+Then you click register.
+And the fact that you register,
+it will go to both areas.
+I will skip this part of this opinion
+so as not to come to the real account of Ms. Giang.
+If you click register,
+it will be like that. And for those of you
+who have the main action,
+but in the Central Chamber of Commerce
+and in other provinces,
+it is often used to save
+and create a receipt.
+That is, this contract,
+you are handed over
+and created a contract. However, you,
+with the order of the unit, must
+If you want to register with a receipt,
+you have to use the function to rewrite
+and recreate this receipt,
+then it will go back to the page.
+You guys go to my receipt.
+If you save this document,
+Then you go to my checklist,
+you create a checklist,
+you will enter all these information fields
+and you choose the draft
+that you have just saved.
+This is a straight line that you create.
+to create a review.
+If this happens, it will take two steps.
+Instead, we will do it quickly,
+which is to rewrite and create a review.
+The system will automatically link
+to a review menu
+and will automatically link all the specific fields of this draft.
+Here, right?
+The whole review registration part.
+You can sign in,
+but I don't have USB today,
+so I'll leave it on the side.
+You can send it.
+Comrade Phò Bì Thư, Thường Trực, right?
+Tang Yifeng.
+As you can see, the name "Cam Ranh"
+will appear here. There.
+I added a new political center unit,
+I put Phuong Cam Ranh, right?
+Here is the old unit that you created,
+the party of Phuong Cam Ranh,
+you are putting Cam Ranh.
+Later, if I want to fix the word Phuong Cam Ranh,
+it will have an additional part here.
+In the evaluation part,
+it will be filled out like this.
+When you click to save the process,
+you only have to enter
+the sent information
+and the summary information, comments, and so on,
+then the following documents,
+then the comments,
+This is a sample of the approval
+of the Central Government.
+The whole country will follow
+and the part to whom,
+that person will display the signature of that person.
+For example, when you log in to the office,
+you will only display the signature here.
+When you log in to the deputy
+secretary of the committee,
+you will only display it here.
+Then you will do the same thing
+as before As you can see,
+the person in charge
+is Mr. Tranh Van Phong, right?
+The person in charge
+will be able to monitor all the fields
+that you are in charge.
+Now I will go to the office.
+And I'm just changing the... After uploading,
+you can see that the expert
+is editing a edit ticket to the leader, right?
+Then it will be in the edit ticket menu.
+And now I will edit Wait,
+let me cut the image. Yeah. At that time,
+I edited it by the draft,
+but I rerecorded and created the draft, right?
+There are also drafts that you will edit
+directly from the draft
+and no longer rerecord
+and create the draft.
+I will create another file
+and I will delete this title
+for it to be different.
+I am taking the same version
+I also choose to go to Mr. Tran Ngan
+Phong's office to review.
+and select "Sign in" Click "Sign in" As you can see,
+Mr. Tranh's office
+will receive a document waiting for processing.
+One is waiting to be processed,
+and the other one is waiting to be processed.
+It depends on the nature of each document
+that you will perform different actions.
+For example, when you are sure with the document,
+you are just checking the signature,
+then you check it directly
+with the document and check it directly.
+And you have to ask for advice from the leaders,
+other units,
+or the leader requires that all the documents
+must be checked through the checkbox,
+then you check at the checkbox.
+For checking at the checkbox,
+the leader will check directly at the checkbox.
+The manager will go in and read this.
+When it comes to the professional role,
+you see in the editing section,
+the manager has already read it, right?
+I just read it, Tránh Văn Phòng
+has just read it.
+Then you will follow the reading status.
+Here, the reading mode.
+Here, the office manager has read it.
+Yes, but I haven't handled it yet.
+I haven't handled it yet,
+but I have read it.
+And now I will browse in the office
+of the office secretary,
+what will be the status?
+You have two ways,
+you can browse quickly here
+and you can enter your opinion here.
+After you enter,
+it will also go to this part inside.
+Just like that,
+and you can choose the file outside
+or inside as well. And all these parts,
+whether you enter it outside or inside,
+it will also go down in this section.
+The suggestion for handling is all down at the bottom.
+If you want to redo it,
+please click on the "Redo" button.
+If you want to redo it,
+please click on the "Redo" button.
+You can see that after redoing it,
+it will go to the processing menu.
+As you can see,
+there will be an opinion section at the bottom.
+And there is also a whole section below.
+And now, here, the member has agreed, right?
+And now, to the member, Phó Bí Thư.
+I will also be able to follow
+the same page with my fellow students.
+Now, the person who is being handled
+is Deputy Secretary Thu, not the office worker.
+I will log in as Phó Bí Thư.
+As you can see, Mr. Tránh Văn Phòng
+has just approved the approval.
+He will go to the processing part, right?
+And now, Mr. Phó Bí
+Thư has approved the approval,
+he will go to the approved part.
+That is, the last person will go to the approved part.
+Mr. Bi Thu will receive the ticket here.
+As you can see,
+the procedure is the same as in the office.
+I will also go to this section
+and I will also enter my opinion
+as quickly as possible in my section
+and select the asylum file if you want.
+And you click sign in.
+Today I am giving the Central Library
+also has a conference to borrow the USB,
+so I don't need an USB to come back.
+Then you guys click on the registration,
+or you want to add someone else
+to ask for an opinion,
+then you guys, for example,
+the deputy secretary said
+that you need to ask for an opinion
+on the secretary
+or other deputy secretaries,
+you can register here. Add more people.
+Xin yi kien ở đây. Đúng ạ.
+In the case of Mr. Tránh
+Văn Phòng has already approved.
+In Van Man Di, you have to continue to pass to Phaw Hi
+Thu street. You have to pass quickly here.
+or you can read the file.
+There are many ways, but the most correct
+and common way is to read the file
+and do the analysis inside
+because you have the content.
+You read it, then you can do the analysis
+or reject it inside, right?
+And as I mentioned earlier,
+you can change the signature of the office worker.
+For example, this is not the field of this deputy secretary.
+I will change the signature
+to another deputy secretary,
+then here you will click on the comment button
+and click on the signature. Now I'm going to do the construction
+without going to your account.
+Here, you can see that after you sign the approval form,
+I will leave it here.
+So, the schedule will be in here.
+And now I'm doing the "Luong Dua
+Thao", right?
+"Cafe Duyet Song" from the office.
+At this time, there will be three versions
+waiting to be processed in Phò Bi Thư.
+As you can see, if the document is already read,
+the color is dark, if it is not read,
+the color is light black,
+and if it is not read,
+the color is dark black.
+Usually, the leader will read this document file
+and this is very important
+and the departments will be stuck a lot.
+As you can see, the system has announced
+that it cannot determine the location of the signature, right?
+Although I have entered the signature here,
+but it is wrong.
+For example, my name is Nguyen Thuy Thu Trang.
+If it is Nguyen Van Trang,
+it will not match the name
+and AI will not catch
+the right signature of me.
+You have to put the correct name, Phó Bí
+Thư Tết This is the name of my colleague,
+I just put the name Tet,
+but my real name is no one is the name like this, right?
+Please read it. In the office picture,
+if you see it wrong,
+you can fix it online right away
+or go to the leader, you can fix it,
+or the person in the Thank you. ,
+I just need a name without flowers,
+it's here, you can see it right away.
+The right name is the signature,
+the signature automatically fills in here.
+At this time, it's just a review of the signature,
+it hasn't been approved yet,
+it hasn't been designated as a signature,
+it's just a picture of the signature
+and it's automatically customized according
+to the right definition of the standard of the standard of these brothers and sisters.
+If a document that doesn't appear on the signature
+For example, this document does not have the word "register".
+But if you still want to register,
+you still have a way.
+That is, you click here
+and you click on "register, sign up, add",
+then you click on "add".
+But I will not encourage this case
+because it is clear that AI is mistaken for the name,
+compared to the entry name,
+then it will make a mistake.
+And the AI usually catches this on 99%.
+Except for these cases,
+in addition to the Word version,
+you can see the name
+of the person who registered,
+but in this part,
+there is also the People's Committee of Khanh Hoa District,
+but you have already covered that word,
+but it is still a column in this signature,
+it can never be on this signature. I don't recommend you
+to pull your leg here.
+When the signature is correct,
+the leaders will come in, read it
+and see the signature like this, right?
+Viewed in my place,
+it can be large or small,
+depending on your preference.
+After that, you will do the signature
+here, right?
+If USB is not plugged in here,
+it will tell you that there is no suitable USB.
+And if you plug it in,
+this place will go to the bit4 table
+and you will enter the code
+of If you sign in,
+you will have a successful registration.
+That is for the leaders
+that I have just guided you
+to include both the "come"
+and "go" documents.
+The "come" document is the way to process the "come" document.
+Receive the "come" document
+and wait for the process.
+How to transfer the process
+and how to have the following benefits.
+Plus the "come" document
+to be transferred to the "done" document.
+Plus the "go" document to be processed.
+Here, if the leader goes to the "come" document,
+Trang Chu, Van Man Di,
+Chờ Sửa Lý is also Van Man Di,
+Chờ Ký Duyệt. As for the pages
+that have been implemented by the leaders,
+they will be implemented.
+If the leaders sign themselves
+or the leaders of the higherups,
+they will go to the leadership of me
+to create the leadership.
+Next, after the leader has finished signing,
+I will guide you to the text field
+to submit the number and issue the text.
+Yeah, he going to.
+When the leader has signed the number,
+it will go to the "Waiting for the number" section.
+I'm still waiting for the grade.
+of Mr. Van Thu Here, my user is attached to the text
+of many test units.
+There are many versions.
+You will click on "Wait for the number".
+It is the same as the "GoAround" section.
+There are a lot of documents
+waiting for the level number.
+There are three actions.
+The first action is if this document is done
+by the leader quickly in the operation,
+but does not click here
+and does not know that it lacks a signature,
+then it will go down and it will not have
+the signature of the leader.
+Similar to this document.
+Although the document is down,
+there is no signature of the leader.
+When this document is not appropriate, right?
+Then the document will have two ways.
+The first way is to return it to the leader.
+And the second way is here.
+This fellow has not signed
+any documents yet. Add another document.
+The second option is that
+the leader can also go to the "Dã phê duyệt" section.
+There is a "register" button.
+For example, in this version,
+the leader does not have a signature,
+then the leader can click on "register"
+and then go back to the processing field
+to fix the correct name
+or fix the content, etc.
+There are many cases
+where the leader has signed,
+but there are 1 or 2 pages
+that have not been fixed,
+then the leader can go to the processing part
+or have approved.
+For middle leaders, for example, Mr. Tránh Văn Phòng or Mr. Phó Bí Thư, but they sign on Mr. Bí
+Thư to approve the approval,
+then Mr. Phó Bí
+Thư is also in the processing.
+Island located.
+I will type it back to the person
+who will receive it in the processing section of that person.
+The second action is when
+the leader is done signing,
+but calls Vân Thư
+and says that he will not publish it anymore,
+or waits to publish another version,
+it is wrong content, etc.
+Then you will reject the number
+and you will enter the reason for the rejection, right?
+Next, you will perform the most common action,
+which is the number action.
+When you press the number,
+you will choose this number Here, 1811.
+You have two actions.
+The first action is to enter the number.
+The second action is to enter the number
+and enter the password.
+The second action is to enter the number.
+Entering the number means that after entering
+the number,
+you enter the password and send it.
+And the action to enter the number
+is that you enter the number
+and leave it in the menu
+that has entered the number
+and leave it there.
+You haven't sent it to anyone.
+You haven't entered the password
+and haven't sent it.
+I'm going to perform the first step,
+which is to grade and fill in the form.
+As you can see here,
+the system will automatically view
+the document number.
+Please note that this first page
+will not be available when you finish publishing.
+Because this page is for the middleclass leaders
+who have a list of opinions.
+Then the leader will see
+right on the first page
+that there are those who are in the field
+and have opinions.
+Just for the sake of signing the list.
+When the template is finished,
+there will be no more pages left,
+only this template. As you can see,
+the number of template symbols
+will automatically fill in, right?
+So we're going to And as you can see,
+the year is already there,
+but usually if the season
+is set to the old year
+and the new year is set to the old year,
+then you should practice the habit of not leaving the year
+here so that when the system is automatically set,
+it will automatically fill this year here.
+For this table,
+if it is appropriate and has the leader's sign here,
+you will do it. If there is a signature,
+you will pull the sign in here, right?
+And for this table that has the subordinate,
+including the number of workers,
+etc. below, if you need a number,
+you can click on the plus sign in this number.
+This number here,
+you drag it down to the number part.
+of the date of the paper,
+the day of the public, the month, etc.
+You pull it in and you pull the sign
+to close the gap line
+at this corner, right?
+Then you do the marking.
+This is the electronic marking action
+for the digital leader board.
+After you finish marking,
+it will turn on the popup screen
+to see who you want to transfer.
+Like this.
+The popup screen will be the same as this one.
+It will always turn on this screen.
+This is... See,
+it will turn on automatically
+It will always turn on this screen
+and you will forward it to individuals,
+units and groups of units
+or telecommunications units or telecommunications groups Then
+you will perform, for example,
+you choose individuals,
+units in all parties,
+or you choose the group
+that you have created at the beginning of the management.
+I will guide you to create a group.
+For example, you choose this individual group.
+For this group of individuals,
+there are a few people,
+you can... For example, normally the group will choose
+to transfer to all four of them.
+But you don't want to transfer
+to the second member. The third one,
+please click here.
+Ah, it doesn't change here.
+Then it will automatically crack like this.
+And you click agree.
+Although this document is transferred to this group,
+it only transfers to the first and fourth candidates.
+That's all.
+And you enter your opinion and click enter.
+Nếu muốn toàn đối với... You
+can choose the telecommunication group here.
+You have created a telecommunication group here.
+Group 12S here, right?
+Then you will create that group
+and similarly for group 12,
+you do not change for the first 5 units,
+then you click on do not change,
+then you will change for the remaining 8 units in the back,
+right The advantage of creating a network group
+is that we can create
+a group that we can use forever.
+And every time you use it,
+you don't have to find each network code
+or each name, right?
+When you create a group,
+you can see the network code of the units.
+You don't have to find each unit anymore,
+even though you only need to change one.
+I don't need to remember the address of this Hanoi City Public Service Station, right?
+I don't need to transfer all the employees here,
+I just need to transfer them to the Public Service Station.
+Or I go to this group, I see this address,
+then I go out and choose a separate unit.
+I find this address.
+It's even faster if you have to check the address of the Hanoi Public Security Service.
+then you can switch groups,
+individuals and units
+to use TAP again here.
+Or you can use it on the transfer screen. Here.
+That is the issue of the publication of electronic documents.
+At this time, I have guided you to the part
+that I will forward to the units and individuals, right?
+For the units and individuals,
+you will choose or group,
+or to the mobile unit.
+Besides choosing here,
+you can type your name here to find.
+And there is a problem
+that I need to note for you guys.
+That is, today I finished early,
+then later you will have some operations
+on the machine that you bring today.
+Then you guys just do the operations,
+I will do it with you guys.
+And if you want something,
+I will solve it. .
+Completely different 92.525.
+foreign foreign When it is published,
+it will be sent to the document
+waiting to be processed by the individual.
+As for the documents
+that have already been sent,
+it will be sent to the individual
+to be recognized.
+That is, it will go into the same folder.
+And you can see that the host and
+To know, it will have a different sign.
+The main character is CT.
+To match, it will be PH.
+To know, it will be in a separate row.
+You can see that these are the main characters.
+Wherever there is the word PH,
+it is a match. If you have any questions,
+please feel free
+to ask them in the Q&A section below.
+You will be issued with the digital document, right?
+After the registration,
+you will enter the number.
+As for the paper document,
+you will be issued like this.
+You will enter the "Go" document.
+This is the finished document.
+Or you can go to the "Wait for the level" section as before,
+then at the corner of this screen,
+there is a new "+" section,
+then you will perform the new "+" section,
+and similarly to the "Come" section,
+you will have Select the attached file,
+and the system will automatically OCA the files.
+but you only have to enter the operating unit and the folder.
+Similarly, if you want to write a letter,
+you have two options.
+I choose to write a letter
+You can change the direction from the "Go" folder to the "Publish"
+folder here,
+or you can go to the "Go" folder and wait for the level number here.
+Then I will also go to the "Add New" tab.
+I will choose a document
+that the leader has just signed,
+but I have not entered the number in the release.
+That is, in this part of the document,
+there are many cases, right?
+There is the first case.
+first is that you choose the version
+that you have signed up for this number,
+sign up on the outside
+and then you put it in,
+then the sign is the black one
+and it will not be compatible with the electronic one,
+then I will sign up for confirmation
+on this corner, right? For this version,
+but it is just signed up,
+I have not signed up for the number,
+I have not signed up for this part,
+then I can completely put it in so
+that I can sign up for the electronic sign up here
+and I don't need to sign up for confirmation anymore.
+A version only needs to be signed up for a sign,
+it is confirmed.
+For example, For example, if there is a page
+that does not have
+a red mark on the bottom,
+then you can make a red mark on it.
+Here you will choose the unit
+for you to publish, right?
+Depending on this page,
+if you choose the unit,
+you will be able to get the document, right?
+Then I will choose and
+I will choose the corresponding folder.
+For example, if you choose TestD,
+the system will always have Validate,
+the next number in the folder is 200,
+because when you enter the current number
+of this test folder to number 199,
+do you remember?
+When it reaches number 200,
+I will enter the number
+200 here and save it.
+As you can see, for the paper version,
+it will be a little bit different from the electronic version.
+If you click Save,
+it will not turn on the screen
+for you to choose to transfer,
+but if you click Save,
+it will go to the version
+that has reached the number.
+You have just saved a test number, right?
+And you will, for this document,
+if you are here, if you scan the document
+that has a mark here,
+you will make a confirmation mark on it.
+Then you will do it like this.
+You go in and close the confirmation mark.
+This unit, I have not written a letter yet,
+I will temporarily put a sign here.
+Later, Nha Trang Party members
+will go to fix the sign to close the door.
+I don't know. I don't have a camera
+to hide my face.
+I'm going to take the password from the office
+and I'm going to turn it off.
+I will test it later.
+I will go in and select "Confirm"
+The first thing you do
+is to create a code. For the unit code,
+you put the image here.
+And you put this as 110.
+You save it and then you go to the template
+to put the confirmation mark,
+to put the entire image and information
+and the number of signatures it
+already has on the document,
+then you don't need to fill in the number of signatures here, right?
+If you leave the tick, you can sign it,
+or if you want to display anything,
+you can tick it up. If you have an email,
+you can also tick it up. It's okay.
+Number 50. I set 680 as the best size.
+We have done a lot of research
+and compared this size to the paper pattern
+that you have drawn
+and it will match with the signature.
+I will mark it again.
+The first mark is the unit mark.
+For this table that is not hidden yet, I will close the mark here.
+Can you see the number here?
+It's blank, right?
+Can you pull it in here for me?
+Because this number,
+can you see the blue line here?
+There's a number hidden in there. .
+When we go to PDF,
+we don't see it, but in fact,
+there is a number there.
+We will drag it in.
+And we drag the mark like this.
+And we confirm that the marking is done.
+That is the unit marking.
+When we send this mark to the unit,
+they will come in here
+and they will verify that this mark
+is the correct one of the unit.
+Then it will be OK.
+As for the unit authentication,
+you will perform authentication.
+For example, there is a red mark here.
+You will pull this red mark
+to come out here, right?
+And you do the authentication like this
+and it's done.
+For two authentication tasks For each case, you have guided me very well.
+I've explained it to you carefully.
+As for the complete button,
+sometimes you type in this,
+but you type in this wrong, it's okay.
+It will go to the version
+that has been released.
+Because you guys don't want to send it away,
+you guys have a lot of copies, you guys
+have numbered them and then you guys
+put them in
+and it's already published, right?
+Not for anyone to change.
+Then I still go to this menu,
+I close the code
+plus I change it as usual,
+I send it away as usual.
+This is the process of publishing
+the paper version.
+What is the process of publishing
+the paper version?
+From all of these menus,
+you all have a plus sign.
+When you have finished upgrading,
+it will go to the upgrade.
+After upgrading, you will find the version
+that you have just finished working on.
+And it often has a fault like this, guys.
+For the paper, it often has a fault like this.
+But I support the water,
+so I listen to the phone a lot about this case.
+I always guide you guys.
+Let's take a look at one of the documents.
+Later on,
+our support team will definitely help you
+a lot with this. I put this document in.
+At the time of March,
+August, it was the most interesting case.
+Here, in this part,
+you will usually put the number of your hand
+and write your hand on this part, right?
+It's the day, why is it August here?
+Ah, March, but you write this number 3,
+it's close to When
+the AI receives this number,
+it is the number 8. It's only March,
+but the release date is August.
+For example, here is 9/8.
+Yes, the actual date of this document
+is July 9th,
+but it was received on August 9th.
+The actual time is March 9th,
+but you wrote the word.
+Sometimes it's too beautiful,
+it's stuck up. The AI will receive it.
+If you don't fix it,
+you will have to fix it.
+If you don't fix it,
+you will have to save it.
+Here, you will come here
+and choose the number.
+At this time, it will be 201, right?
+I did it just like... If you are wrong,
+you will not see that version here. Why?
+Because it only appeared
+here until August.
+So you said that after I finished the grade,
+it kept flying away.
+That is a school that is suitable for the whole country.
+Normally, you will find it here
+and it will come out. Do you see it?
+It will come out on August 8th.
+Then you go in and fix it on the day
+This is only the present.
+It will only be displayed. If you go back,
+you will see that it is always here,
+but I still go back to the level.
+As you can see,
+it will be displayed on the right day.
+Of course, the next day,
+starting from tomorrow,
+it will not be displayed,
+because it will be displayed on the next day.
+This is the case of the number
+and the number of letters.
+I have just shown you the menu,
+the "come", "go" and "open" versions.
+What is "open"?
+If you want to open the version
+for other people,
+you will go to the "open" version.
+For Van Van Di,
+When publishing the document
+or when entering the document
+or when the document is published,
+you also have a public document.
+But when you receive it
+and you want to publish it later,
+it is also possible. It has all functions.
+I still have my phone with me.
+but I'll be chugging
+You will go into the implementation,
+there is a note
+that reads the details of the document, right?
+The 2373 document has just passed the test.
+There is the public part of the document.
+You go into the public section,
+you will select the public area and you ... For example,
+you can choose all the members in this office.
+This is a guide to the version
+from the central government
+sent to the provinces
+and then sent to the communes.
+Instead of choosing to transfer the version to many people,
+you can use the public function.
+When you click on the record button,
+it will go to the public version
+of all users in the Cam Ranh District Office in this public version menu.
+Thank you.
+Similarly, there are two public versions here.
+And next is the menu
+You should take the responsibility first.
+For example, Deputy Secretary
+or Secretary of the Deputy Secretary Hello everyone,
+welcome to my channel. As you can see,
+this member has not been assigned
+from the top leadership,
+from the committee office,
+from the committee,
+or you have not handed over to any unit,
+then you will perform
+in the task management section,
+the task list.
+Here, you will perform new tasks.
+and click "New". If you are a secretary
+and you hand over the task to the leader,
+you have to select the correct name
+of the leader here, right?
+Not the one who hand over the task to the units.
+Enter the task.
+and you choose the day of completion,
+for example,
+you choose the day of completion
+until tomorrow to finish,
+then this task will always tell you
+that it is about to expire.
+Here, you can choose individual or unit.
+For example, I choose to hand over
+to my colleague.
+For example, I hand over to the unit,
+which is the office is a personal colleague,
+then it will be handed over
+to the individual of this colleague,
+then it will enter.
+If you choose to hand over the unit to the office,
+the office leader will see this task.
+In the owner's section,
+The leader of that unit
+will look the same.
+If this task comes from a certain version,
+you can select it from the search icon to that version.
+But Deputy Secretary, since this morning,
+I created a new account,
+so there is no new version. Okay.
+For example, in this case,
+according to the conclusion notice,
+you will receive 3 tasks.
+You will perform 3 more tasks here.
+Task 2, Task 3. Hey.
+Now, I will perform a task.
+When you go to the main page,
+you will see that there is always
+a delivery service here, right?
+And it's about to arrive. Hey.
+and it's going to be this color.
+Click on it and you will see the task
+that I am delivering is coming.
+I'm handing over to my colleagues.
+And you can see below
+the group of units handed over,
+the group of units received.
+or a list group like the one before. Right? See?
+Or the same state as before. Here,
+you are handing over to the office, right?
+The main unit will be in the office unit.
+And now if you go to the list of tasks,
+I am delivering to a personal colleague,
+it is not in the delivery task tab of this unit,
+it is in the personal delivery task tab.
+Let me do it again, task 2.
+I will select "Personal"
+I will do the same thing again.
+I will do the same thing again
+As you can see, it's not here, right?
+Even though it's a new success,
+it will be here.
+It's a personal mission, right?
+This is the second mission.
+And when you go to the main page,
+you will see that there are two missions.
+One mission is in progress,
+one mission is about to be completed.
+Yeah. A task is being carried out,
+a task is about to be completed,
+a personal task is being carried out.
+Now I will go to the comrade
+and the unit to receive this task
+to perform the operation.
+This is the staff member
+who received the task
+that was delivered directly
+by the deputy secretary, right?
+Then you will have a task to receive.
+In the morning, I created 2 tasks,
+now 1 more task is 3 tasks. OK.
+Nhiệm vụ này em vừa mới giao
+đây đúng không ạ? As you can see,
+my delivery time is 16:20
+and I just made it.
+Now you will have the update button.
+For the task that you are not assigned,
+you will only have three levels:
+are performing,
+closed proposal and completed.
+As for the office worker,
+I have 3 accounts in total Yes,
+you see that the task of receiving
+the unit is about to arrive
+is the task that If
+you have to finish the knife tomorrow, please click directly on it.
+The mission received by the unit
+will be in the unit tab,
+the mission received by the individual
+will be in the individual tab.
+When updating the progress of the mission
+that has a deadline,
+you will have an additional deadline proposal.
+Because if there is a deadline,
+whether short or long,
+it is close to the deadline.
+If you have not completed it,
+you also have a deadline proposal requirement.
+For me, I will perform two tasks.
+You can see that this is the task.
+Nhiệm vụ của lãnh đạo giao này
+and say Nghia Vu. Here you are.
+Your mission is I'm going to hand over to the unit.
+The deadline is coming, right?
+As you can see, the deadline is from 9th to 10th.
+Now, I will go to the office.
+I would like to suggest that the deadline
+is 31st and the result
+is 50%, for example.
+But I can't find them for help.
+Nhiều đơn vị.
+such as the board, the committee, etc.
+You have to report in real time.
+It depends on the beginning of the work.
+After updating, then you can go
+to the leader to open this task.
+There will be a waiting section.
+As you can see,
+it is still on the 10th of July.
+Now, if you refuse,
+you will force the person
+to be handed over.
+The office will still have to follow this limit.
+You can see that After finishing,
+the line at July 10 will always jump to July 31.
+Can you see that? It depends on the leader
+whether he agrees to postpone or not.
+And for those of you
+who have received this task,
+this task is no longer on the horizon,
+but it is being carried out.
+The horizon is still very far away.
+And for this task,
+this is the unit received,
+the unit performed.
+If the unit is already placed like this,
+I don't know who is the main head
+of this unit to perform, right?
+Then you will perform the attachment of the head.
+For example, I attached it to Mr. Tranh's office
+for this test, for example.
+Then it will always have the head to perform
+so that Mr. Phó Bí
+Thư knows who is handing it over.
+You will do so.
+Next, you will go to the expert,
+you will update the progress of this,
+it is completed. Nghe em hoàn thành thực
+tế hôm nay chẳng hạn
+If the update is complete,
+you can add file or report. Click update.
+Then I went to the deputy secretary.
+Sẽ thấy một cái nhiệm
+vụ giao đi cho cá nhân cũng sẽ
+chờ phê duyệt. Nhiệm vụ giao đi,
+nhiệm vụ giao cho cá nhân.
+The test 2 is also waiting to be approved
+and on the outside,
+you can see that the specialist
+has completed and has entered
+If you have completed the task,
+you can go to the task list
+or the task waiting menu.
+It will list the tasks
+that are waiting for you to complete.
+There are two actions here:
+"Complete" or "Decide".
+then I will enter the reason to refuse.
+Of course, he had to go back
+to that colleague and do it again, right?
+It's about the implementation,
+not the completion.
+There was a completion task here.
+Now, I would like to resume this task.
+When it's done, it will close that task.
+In fact, there are many cases like that, right?
+At this time, the owner will have a task.
+I have reported that it has been completed
+and it is being implemented.
+Now the leader has to cancel that task. Intervention.
+At this time, this task is assigned to the staff, right?
+And now it's time for the staff member.
+That mission has been completed, right?
+It won't be reacted At this moment,
+the mission has been completed.
+The leadership has decided
+that it has completed the mission.
+Next, as the leader,
+you can see this menu.
+According to the KVI business management,
+as I said at the beginning,
+with you as the secretary
+and the general manager of the ward,
+you will see all the members of the ward,
+all the members of the ward
+and all the members within the units.
+About the situation of each member,
+each unit, all the units of the Party.
+Follow the unit.
+According to the individual,
+according to the unit,
+or you can see it in the list.
+That's statistics. and open the plus sign,
+we will see the following 5 versions.
+What are these four versions?
+Here you can see that if the version comes
+and the leader changes it If there is a limit
+and the limit is too much,
+the nonexecutive professional will ask Quá hạn chưa xử lý,
+đúng không ạ?
+Còn nếu mà chuyên viên hoàn thành đúng hạn
+thì nó là đây ạ.
+Và không giao hạn thì nó sẽ
+là trong hạn mà chưa xử lý, đúng không ạ?
+Có giao hạn mà quá hạn đấy
+mới hoàn thành thì
+nó sẽ là đề là hoàn thành quá hạn.
+Many provinces and counties
+are using this KVI menu
+to assess the number of staff
+in their provinces and counties.
+Many provinces have implemented this.
+Here, the leaders from the central government
+can also see the same picture
+from the central government
+to the local government,
+to the highlevel commune and subdistrict.
+In addition, the system management staff can
+the report.
+As for the system management system of the commune,
+it can also receive reports.
+The report on the situation of handling the document of your unit
+to make weekly reports.
+For example, in Hanoi or some provinces or central provinces
+every week, you will also use this report.
+Here, we have a meeting
+with the leader of the Central Committee Office of the Party,
+Mr. Phó Chánh Hưng or Mr. Hải Ninh.
+I usually have to submit this report
+to see how the situation of handling
+the transfer of numbers
+in the Central Committee is like,
+each department one by one,
+then I have to submit this report
+whether to use the whole process or not,
+or sign it with a piece of paper
+and then put it on the system, right?
+And if there is a document coming,
+is it processed or not?
+Or is it all too late?
+Or are there a lot of documents
+that have not been processed?
+We all use this report
+to report to the leader during the meeting.
+Every week, we all have to meet every Saturday.
+It's been a while since the last report.
+Can you see it? I'm not admitting
+and they don't know what you As for the coming documents,
+for example,
+the organization has 48 coming documents
+and only one document coming to the paper route.
+And there are 11 online documents,
+there are 36 documents
+sent from the internal agencies of the Party, right?
+I know everything.
+For example, the Office of the Provincial Committee
+has a total of 25 documents issued,
+but issued 25 paper documents
+because I was using secret documents
+last time, right? Then this test unit,
+you guys are testing,
+so you guys use all the numbers,
+so it's one hundred percent.
+For example, at the time when Mr. Ngoc
+came to Hanoi, he was very close
+to this comprehensive report
+and every week I had to print out
+the report
+that was for you to run the units,
+you had to use all the numbers, right?
+Which unit will be arranged from high
+to low or from the bottom to the top?
+Which unit is high
+above or low above? BING! That's it.
+The admin can see and submit the report
+and choose from day to day within a month.
+For example, from June 2nd to July 2nd,
+we will automatically calculate within a month.
+From day to day,
+you can calculate one more week,
+but at most not a month.
+Then you submit the report.
+As for the admin of each district,
+they will be able to see each district
+in the area above.
+Those are some of the features
+that I will introduce to you.
+Next, I will introduce you to the management of the meeting schedule.
+Yeah. You will go to the meeting schedule menu.
+For users who have been shaped
+as a meeting manager,
+like the user at the beginning,
+I guided you to shape the meeting management role menu.
+there will be more menus than other members.
+Other members only have these three modules.
+These are the three main modules
+that everyone has in the system.
+As for other members,
+there will be Those who manage the meeting
+will have the structure, the output,
+and the report of the meeting.
+And the leader list, the official list,
+and the meeting list.
+What is this meeting list?
+Everyone has to create a meeting list.
+And the meeting list
+will be who has the structure and role
+of the meeting list. Here, for example,
+I have a structure for the staff member.
+foreign foreign foreign foreign Yeah,
+but really hope.
+The first thing you have to do
+is to create the name
+of the meeting rooms in your unit.
+Then you go to the new tab
+and create a meeting room.
+And you choose the management meeting room, right?
+Choose the owner unit of the party or the party office.
+When you choose this owner unit,
+it will go to the meeting room manager of that unit.
+The meeting schedule. Here is the scale,
+who goes to the real room,
+whether there is a broadcast bridge or not.
+Then you can do it.
+For units that you don't want to have an extra schedule,
+you just let everyone's meeting room
+be automatically scheduled,
+then it will automatically
+But it will not be the right time
+that I want to meet and follow
+the leader's instructions.
+then you will do it again.
+When you create a meeting,
+you click on the new meeting,
+then you will choose the meeting
+that you created here, right?
+It will automatically display the meetings,
+many meetings, many meetings,
+it will display all of them here
+for you to choose.
+And you have a function that checks the time of the meeting.
+For example, here there is room 1, room 2, room 3.
+In that room, room 1 is all busy here.
+Then you will not be able to choose here anymore.
+And you just choose room 2, room 3.
+The time is busy here.
+Can you tell us about the topic of this meeting?
+And you choose the time of the meeting, right?
+We will meet at 5:00 pm.
+The system will automatically set the time of 2 o'clock.
+After 1 hour of meeting,
+you will go to fix.
+For example, if you study at your internal unit,
+you will choose the management meeting room
+and you choose the meeting room
+of your unit to manage.
+For example, if you are the mayor of Phuong,
+you will go to the meeting room
+of the city council office today.
+For those who go to the meeting,
+they are not managed, right?
+And hit the meeting.
+This is the second floor of the office, right?
+And this meeting room,
+when you type this meeting list,
+it will type by itself, right?
+Because I will go to class anywhere.
+And if the meeting room is managed,
+then I will choose the meeting room
+from my own resources.
+And you will choose the documents.
+For example, today I have three guide documents.
+4 instructions for you.
+For example, this meeting schedule,
+admin will create it from yesterday.
+After that, after completing this meeting schedule,
+you will be sent a message to the phone.
+You will be invited to attend a meeting with this content,
+at this time, this location, where, right?
+And you open it, open it,
+open it, open it.
+the details of the meeting,
+there will be this document
+and the person in charge of the meeting
+will want this document.
+After the meeting is over,
+the time is 19:00 of today.
+This document will be returned,
+then click on the return button
+and I will select the individual
+and the unit to participate.
+For example, here I will invite the individual members.
+I am creating for Phuong Cam Danh, right?
+I'm gonna create my own github
+I choose three students.
+I choose a student who has a meeting
+in the unit that must have a host.
+For example, today the admin of the City Office
+of the meeting must have the host as the director of the office
+or the director of the number transfer office.
+If you go to another meeting,
+you don't have to choose the host,
+you will hit the host down here.
+For example, now the ward members
+choose to go to another meeting,
+you will hit the host down here.
+And for this meeting document,
+number 2373,
+you want only the host to receive it Now
+I will carry out a new meeting
+And when you add new roles
+that do not have the power to summon,
+there will be no summon button here.
+And if you have the power to summon,
+there will be an additional summon button.
+As you can see, there is a test meeting schedule
+that I created this morning.
+Now, I will add another schedule.
+Learn about the number transfer project After that,
+when you download the homepage,
+there will be another session
+on this number transfer project, right?
+This session... In the morning,
+it's the schedule for today,
+and the upcoming schedule
+is only for the upcoming meetings.
+As for the schedule for this morning,
+it will not be on this side anymore.
+For those of you who go to other meetings,
+I have just guided you, right?
+You choose a meeting that is not managed,
+and you select the meeting room of the Office of the Committee.
+And you choose another participant.
+And you will select the person in charge
+here is the Office of the Office of the Ministry of Finance,
+For example, I take the example like that, right?
+Then you still enter the dates as usual here.
+The time, the participants, etc.
+of your unit as usual, right?
+Invite individuals, invite units.
+It's just that I don't choose the person in charge as my unit.
+Because I don't go to class in my unit,
+but I'm the leader, right?
+There are two cases
+that create such a schedule.
+The next part is the file management module.
+After that, there will be a guide to work with you
+on the system
+if you want to continue to operate.
+Otherwise, there will be a Q&A section.
+We will arrange a session for you to operate.
+Or you can just record the videos
+you operate and send them to the group.
+We will help answer them.
+All users will have a file list module.
+For this file name menu,
+the leader and the word of the unit
+will have the right
+to add a new one for the unit,
+and the individual
+will add the name of the individual.
+You will go to the file list
+and you will have to create a new application.
+For example, this unit has not been named as an application yet.
+In the morning,
+I just filed for the board of directors.
+Now, I change this user to a party member,
+then this unit will not have an application name.
+Then I will still create the application title as usual.
+For example, a colleague of the Party,
+Phuong, is an office specializing
+in visiting documents, right?
+Choose a file name
+that does not have a name
+that the document has not been When it's done,
+I will create my own name for myself.
+Because many people from the beginning
+of the year
+have created their own personal titles to save.
+That is, it will also create the title of the application
+according to the title of the application
+that I have divided,
+but the title of the application
+for annual work
+is not the beginning of the year
+that has been registered immediately, right?
+In the middle of the year,
+it was registered and in the middle of May,
+May, June, it was entered.
+At the beginning of the year,
+I actively created a set of documents
+and I gave them to the staff.
+to the beginning of the year,
+then by the end of the year
+I will put the amount of documents in it.
+If you don't do it by the end of the year,
+it will give you a full selection of documents,
+it will be a lot and it will be long, right?
+I will choose the density
+and the storage time.
+For example, this account is scheduled
+to be stored for 10 years.
+I will do the same again.
+I have just completed the recording of the file title.
+There is still no document or file inside.
+Please click to see the details.
+for you to collect the file into that file set.
+For example, you will choose from the list,
+you will be in the "All" tab.
+You can choose this one at a time.
+Or you can go to each tab.
+You can also choose, for example,
+this file is only the ones
+that you scan from the machine,
+then you will enter it here, right?
+Enter the fields, the more you enter,
+the more beautiful your file is.
+I will do it again.
+For the page that is uploaded from the paper,
+you have to go to the page number.
+You will have to count
+the pages and type them in.
+Because when you finish the application,
+you must have the total number of pages.
+Otherwise, the system will not let it end.
+The system will automatically count
+how many pages you have in this section.
+There are three cases for the document menu.
+The first case is that you are handed over
+as the head of this document,
+but you are also handed over as a partner,
+then you can share with that person
+For example, if I share the information with the office,
+and I give the office the right to view it,
+then in the file list of the office,
+there will be a set of files
+named "File 3M" but there will be no right
+to add new files to it, but only to view.
+If I give the right to edit,
+it will be added new to it.
+It's like a person is creating a document.
+That's the first case.
+The second case is if you are in charge of 3 files,
+But if you quit your job, change your job
+or go back to love,
+you will hand over the job
+to someone else, right? If you don't sign,
+the other person won't have all the data of that document,
+because they won't be able to receive the document,
+the document,
+or the document and the document.
+I quit my job,
+Then you will click on the end of the file
+to transfer it to the history folder, right?
+Yes, this is me trying to click on the end of the file
+and the system has reported
+that the end is over.
+However, these two notes
+are not lit because the system is automatically changing
+the file name inside.
+to automatically generate the samples
+according to the regulations of the Central Library.
+Here, the notification system
+is uploading data
+and saving these two files.
+Later, after the compilation,
+it will automatically generate two files,
+one is the file list
+and the other is the end result.
+will have to wait from 1 to 3 minutes
+for the system
+to generate the data into the sample table.
+And after you have finished formatting
+the system here, the system will have this file
+upload button.
+The inside and outside of the file
+will be visible
+When you click the upload button,
+it will automatically upload the file.
+The system will create a form
+to submit the application.
+After submitting the application,
+the system will automatically create a form
+to submit the application.
+That means the system will automatically do everything.
+I will follow the steps of the process of saving documents and letters.
+My work documents are in my diary.
+This is the employment management menu,
+the work documents,
+the history of the history,
+the history of the history,
+which Trung Quang is using for a few more days,
+it will be deployed throughout the country.
+History of writing,
+according to the writing process.
+In the case that the system
+has completed all the data,
+but you still need to edit this file,
+it is still missing a lot of files inside,
+you can open the lock to fix it here.
+When you have downloaded it,
+it will be locked like this.
+The sample of the Central Committee
+of the Department of Literacy
+put in all the data in that case,
+we were all forced to do it automatically.
+We were all forced to do it
+automatically inside the samples,
+so it took a little longer to compile the data.
+And if you look at the details of this application,
+you can see all the details
+of this application title.
+It's like the white A4 paper
+that you are pasting on the blue folder.
+Every year, when you finish your documents,
+you have to save them in a boxed blue folder, right?
+And you paste the label on the outside.
+What is the document?
+From how many copies to how many?
+And from which year, right?
+The title of this document,
+you do exactly the same.
+And inside, you will put the paper in the blue folder like this,
+then I will put the electronic version
+in this electronic file.
+I will move to another part,
+I will be back in a moment. Please note
+that there is one more case
+that I want to note.
+In the part of the received document to know,
+when you receive the received document
+to know, then you read the document,
+then it is hidden inside,
+but many people in the country report
+that there is no more document here. Why?
+Because when you open the search engine,
+you will see that the status
+is that the system
+only captures the documents
+that are not yet read, and the documents
+that have been read It
+will be hidden inside
+and you will select the search status
+and it will come out.
+If you want to know more,
+you can click on "Read" and click on "Find" button.
+When the screen light is on,
+it's very fast Today the internet is slow.
+For example, if you go to your user,
+there will be a lot of documents to know.
+You just need to read one
+and it will be hidden.
+In the menu, you can see
+that there are about 6 pictures.
+Click on it. If you read the whole book,
+it's only 85 pages. Hello.
+This is page 54.
+There are 2 pages for personal information.
+You read one and it's 83, right?
+Here, 85 is left because there are two individual versions.
+When you click on it,
+you will not see D83.
+Now I want it to appear more.
+I will select all the versions
+that have been read. If you don't read it,
+it will be a lot here. You see 88, right?
+It's not lost,
+but it will include the ones
+that have been read, the dark black ones,
+the ones that have not been read.
+As far as I know,
+usually your users will be .
+83 when you open it to know, you say
+I have 83 and this outside
+is currently 85, it is not correct,
+so that is for cases where you are literate,
+there are two tables like this,
+then you pay attention to me
+and those who only have one role,
+then it is only a personal document,
+then it will not have a whole level,
+it will only have a list to go down.
+I'll show you a bit more sound.
+I have just given you a brief overview
+of the party's information system.
+Khanh Hoa is the last one to be implemented.
+I hope that Khanh Hoa
+will be the last one to be implemented,
+so our food and beverage team
+will be more prioritized,
+and we will have more support.
+I hope you will have a good harvest today.
+Now it's time to discuss and answer your questions.
+Do you have any comments?
+If you are sitting on the computer,
+please take the steps so far.
+If you have a document,
+please create a test document
+and transfer it to the staff in your unit
+so that you have the data.
+After that, I will perform the operation.
+And I will help you to remove these test papers later.
+Could you please enter the name
+of the test version?
+There is a tail behind is test
+For the official calendar
+and the leader calendar,
+you can see that after you have chosen
+to create a meeting,
+you go to the official calendar
+and you will see that the official calendar
+will automatically be included.
+As for the units that use the list,
+you will have the function to view online lists here.
+User manage meeting list
+has the function to view online lists.
+For example, when you go to the units,
+you will often see the list outside the TV screen,
+outside the list.
+There is the word running.
+As in the central,
+all the corridors will be marked with this list of office leaders.
+What is the leader's weekly calendar?
+You will be able to see all the leaders' calendar.
+I don't have... Bye.
+You will see that the office manager
+has a weekly schedule.
+If you use this function,
+you can click on the public section of the unit's structure.
+If you have received a large amount,
+you can ask about the next steps.
+I will guide you later.
+You can choose a week or a day here.
+This is for your own convenience,
+so that when you come to my office,
+you will know that the leader
+is having these meetings
+that are not in the unit.
+And some Hanoi units are tracking KPI
+outside the calendar to let the units
+know which units are on top
+and which units are on the bottom,
+so that the units can try harder to transfer the numbers.
+Do you have any questions?
+Please be strong.
+If you have any questions about the parts
+that you don't understand,
+or any tasks that you need to be clear about,
+or about the part that you think
+you are not running correctly
+with the unit you are running in reality.
+However, if you want to change the course,
+you have to take a short time.
+I have trained a lot of units.
+What are your opinions about this?
+When we receive the document,
+we submit the document.
+After that, we submit the document
+to the secretary of the leader.
+Then the secretary of the leader
+submits it to the leader.
+Then the leader pays the secretary,
+then the secretary pays back the document.
+Then the document is transferred to the units.
+If that's the paper process, right?
+And if we do that with the electronic system,
+it will slow down the document
+and it will no longer transfer the number, right?
+We have to submit from the document
+to the leader
+and then to the secretary at the same time.
+And the secretary can visit the Miu.
+and the leader can also transfer
+and handle it right away.
+After transferring, it will come to the unit
+that is being implemented.
+It is not that the leader
+will transfer the document
+to select the units
+that the leader is directing.
+Instead, the leader says
+to hand over the teaching board to implement,
+then select the teaching board
+and transfer it.
+Those are the shortterm steps.
+Instead of having to take 6 steps
+to get to the seminary, there are only 3
+to 2 steps to get to the seminary.
+There are still many steps
+that you don't understand, you can ask.

@@ -38,26 +38,28 @@ Gửi Zalo text kèm link ảnh minh họa                 Gửi link tải /dow
 ### 🌐 Cổng Giao Tiếp API & Máy Chủ
 *   **[main.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/main.py)**:
     *   Khởi tạo ứng dụng FastAPI và tự động gọi `models.Base.metadata.create_all` để khởi tạo cấu trúc CSDL PostgreSQL/SQLite.
-    *   Phục vụ tệp tĩnh (`/static` cho CSS/JS giao diện và `/images` cho ảnh minh họa nghiệp vụ trích xuất từ tài liệu).
-    *   Endpoint `GET /download/{file_id}`: Tra cứu bảng `file_mappings` để lấy tên file thực tế và gửi về cho người dùng tải xuống một cách bảo mật.
-    *   Background Daemon Thread `file_cleaner_task()`: Chạy định kỳ mỗi 1 giờ để quét và xóa sạch các file Word kết quả cũ hơn 24 giờ trên ổ cứng, đồng thời giải phóng mapping trong DB.
+    *   Phục vụ tệp tĩnh (`/static` cho CSS/JS giao diện và `/images` cho ảnh minh họa).
 *   **[routers/webhook.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/routers/webhook.py)**:
     *   Endpoint Webhook Zalo OA (`POST /webhook/zalo`) nhận sự kiện từ Zalo Server. Trả về status `200 OK` ngay lập tức để tránh Zalo gửi lặp tin nhắn khi chờ AI phản hồi.
+    *   **Hỗ trợ Nhóm Chat Zalo:** Phân tách `chat_id` (lấy từ `message.chat.id` của nhóm hoặc cá nhân) và `sender_id` (User ID người gửi) để phản hồi trực tiếp vào nhóm chat. Kiểm tra quyền Admin bằng `sender_id`.
     *   Sử dụng FastAPI `BackgroundTasks` để chuyển tiếp payload xử lý bất đồng bộ ngầm:
-        *   `user_send_file`: Admin gửi file mới (`.pdf`, `.docx`, `.srt`) để nạp tri thức.
-        *   `user_send_image`: Gửi ảnh văn bản chỉ đạo cấp trên để chạy OCR sinh công văn giao việc.
+        *   `user_send_file`: Admin gửi file mới để nạp tri thức.
+        *   `user_send_image`: Gửi ảnh văn bản chỉ đạo để chạy OCR sinh công văn giao việc.
         *   `user_send_text`: Hỏi đáp nghiệp vụ (Q&A RAG).
 *   **[routers/admin.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/routers/admin.py)**:
     *   Chứa toàn bộ logic render HTML của **Admin Dashboard** sử dụng `Jinja2Templates` (tương thích hoàn toàn với Starlette 0.28+ bằng cách sử dụng tham số tường minh `request`, `name`, `context`).
+    *   **Sửa lỗi RAG sources hiển thị:** Tự động giải mã (deserialize) trường `rag_sources` bằng `json.loads` trong `chat_detail_page` trước khi đưa ra giao diện Jinja, tránh lỗi lặp ký tự đơn lẻ..
     *   Trang Dashboard (`/admin/dashboard`): Thống kê hệ thống, danh sách phiên chat và log hoạt động gần đây.
     *   Quản lý tài liệu (`/admin/documents`): CRUD tài liệu, upload tệp trực tiếp, xem chi tiết và lịch sử các phiên bản sửa đổi.
     *   Nhật ký giám sát (`/admin/audit`): Truy vết chi tiết các thao tác của quản trị viên và phiên chat.
+    *   Nhật ký hệ thống (`/admin/logs` & `/admin/logs/data`): Giao diện trực quan đọc log từ file `app.log` thời gian thực (được ghi song song thông qua `TeeLogger`).
 
 ### 🛠️ Lõi Dịch Vụ Hệ Thống (services/)
 *   **[services/rag_pipeline.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/services/rag_pipeline.py)**:
     *   `get_embedding(text)`: Sinh vector embeddings cho một đoạn văn bản.
-    *   `get_embeddings_batch(texts)`: Sinh vector cho danh sách văn bản theo lô (tối đa 50 phần tử) để chống rate limit 429 và tăng tốc nạp tri thức lên 50x.
-    *   `semantic_chunk(text)`: Phân đoạn văn bản ngữ nghĩa dựa vào heading Markdown (`#`, `##`, `###`) và dòng trống, cấu hình overlap 150 ký tự giữ ngữ cảnh.
+    *   `get_embeddings_batch(texts)`: Sinh vector cho danh sách văn bản theo lô (tối đa 50 phần tử) để tăng tốc nạp tri thức lên 50x. **Đã bọc chuỗi đầu vào bằng `types.Content`** để sửa lỗi SDK `google-genai` trả về vector rỗng. Hỗ trợ tự động thử lại 5 lần (Retry & Exponential Backoff) khi gặp lỗi Rate Limit 429.
+    *   `classify_question(query)`: Phân loại ý định câu hỏi bằng Gemini 2.5 Flash trước khi RAG để lọc bỏ chitchat/xã giao.
+    *   `semantic_chunk(text)`: Phân đoạn văn bản ngữ nghĩa cải tiến dựa vào heading Markdown (`#`, `##`, `###`). Tự động gom tiêu đề rỗng và đính kèm Context Path (tiêu đề cha H1/H2) lên đầu mỗi chunk con để tránh mất ngữ cảnh.
     *   `_prepare_tsquery(query)`: Tiền xử lý tiếng Việt cho Postgres FTS, tự động loại bỏ stop-words nghiệp vụ và nối bằng toán tử `OR` (`|`).
     *   `_postgres_hybrid_search(db, query)`: Tìm kiếm lai pgvector + FTS. Sắp xếp và xếp hạng kết quả bằng **Reciprocal Rank Fusion (RRF)**. Điểm số RRF được nhân với **1200** để đồng bộ với thang điểm cũ.
 *   **[services/ai_engine.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/services/ai_engine.py)**:
@@ -73,8 +75,12 @@ Gửi Zalo text kèm link ảnh minh họa                 Gửi link tải /dow
     *   Áp dụng các quy tắc hành chính Đảng: Quy tắc gộp nhiệm vụ đặc thù (Ban Xây dựng Đảng) và Quy tắc kính gửi tối giản (chỉ hiển thị các ban ngành thực sự được giao nhiệm vụ).
     *   Mở tệp mẫu `cong_van_giao_viec_mau.docx` và điền dữ liệu vào các thẻ biến `{{...}}` thông qua thư viện `python-docx`.
 *   **[services/zalo_api.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/services/zalo_api.py)**:
-    *   `clean_markdown_for_zalo(text)`: Zalo OA không hỗ trợ cú pháp Markdown thô. Hàm này loại bỏ dấu in đậm `**` và chuyển Markdown links `[Hình 1](url)` thành văn bản thuần kèm link thô để Zalo tự tạo liên kết click được (`Hình 1: url`).
-    *   `send_zalo_message(user_id, text)`: Tự động chia nhỏ tin nhắn và gửi làm nhiều phần nếu độ dài câu trả lời của AI vượt quá giới hạn **2000 ký tự** của Zalo.
+    *   `clean_markdown_for_zalo(text)`: Zalo OA không hỗ trợ cú pháp Markdown thô. Hàm này chuyển đổi liên kết Markdown `[Hình N](url)` thành text thuần và link dạng thô (`Hình N: url`) để Zalo tự tạo hyperlink click được, đồng thời chuẩn hóa emoji nghiệp vụ.
+    *   `send_message(chat_id, text)`: Tự động chuyển đổi Markdown và chia nhỏ tin nhắn thành nhiều phần nếu độ dài vượt quá giới hạn **2000 ký tự** của Zalo để gửi đi thành công.
+*   **[zalo_bot.py](file:///g:/My%20Drive/Chuyên%20viên%20ảo/zalo_bot.py)**:
+    *   Kịch bản chạy polling để test/development hoặc xử lý webhook độc lập cho Zalo Bot.
+    *   **Đồng bộ logic RAG mới**: Đã được refactor để import và sử dụng trực tiếp các dịch vụ chuẩn từ `services/rag_pipeline.py` và `services/knowledge_manager.py`, bỏ hẳn mã nguồn cũ ở thư mục gốc.
+    *   **Đồng bộ hỗ trợ nhóm chat:** Phân tách `chat_id` và `sender_id` tương tự như webhook router để tương tác trực tiếp trong nhóm chat.
 
 ---
 

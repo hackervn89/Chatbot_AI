@@ -446,6 +446,15 @@ async def chat_detail_page(request: Request, session_id: int):
             ChatMessage.session_id == session_id
         ).order_by(ChatMessage.created_at.asc()).all()
         
+        # Deserialize JSON string values for rag_sources
+        import json
+        for msg in messages:
+            if msg.rag_sources and isinstance(msg.rag_sources, str):
+                try:
+                    msg.rag_sources = json.loads(msg.rag_sources)
+                except Exception:
+                    msg.rag_sources = []
+                    
         return templates.TemplateResponse(request=request, name="chat_detail.html", context={
             "request": request, "admin": admin,
             "session": session, "messages": messages

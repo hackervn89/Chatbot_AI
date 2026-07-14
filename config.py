@@ -62,9 +62,9 @@ DEEPSEEK_TIMEOUT = int(os.environ.get('DEEPSEEK_TIMEOUT', '30'))
 
 # Gemini config — danh sách model theo thứ tự ưu tiên fallback
 GEMINI_MODELS = [
-    "gemini-2.5-flash",
     "gemini-2.0-flash",
     "gemini-1.5-pro",
+    "gemini-1.5-flash",
 ]
 
 # Embedding model
@@ -75,9 +75,6 @@ EMBEDDING_DIMENSION = 768  # Giảm từ 3072 → 768 để tương thích pgvec
 ZALO_API_TOKEN = os.environ.get('ZALO_API_TOKEN', '')
 ZALO_MODE = os.environ.get('ZALO_MODE', 'polling').lower()
 ZALO_WEBHOOK_SECRET = os.environ.get('ZALO_WEBHOOK_SECRET', '')
-
-# ==================== TELEGRAM BOT ====================
-TELEGRAM_API_TOKEN = os.environ.get('TELEGRAM_API_TOKEN', '')
 
 # ==================== SERVER ====================
 SERVER_DOMAIN = os.environ.get('SERVER_DOMAIN', 'http://localhost:8080')

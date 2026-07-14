@@ -1,8 +1,8 @@
 # Hướng dẫn sử dụng phân hệ Văn bản đi trên Hệ thống Điều hành tác nghiệp (ĐHTN)
 
-## I. Quy trình xử lý Dự thảo văn bản (Dành cho Chuyên viên và Lãnh đạo)
+## I. Quy trình xử lý Dự thảo văn bản đi (Dành cho Chuyên viên và Lãnh đạo)
 
-### Quy trình Tìm kiếm và Xem danh sách văn bản dự thảo
+### Quy trình Tìm kiếm và Xem danh sách văn bản đi dự thảo
 Mô tả: Hỗ trợ người dùng tra cứu nhanh hoặc lọc các văn bản dự thảo do mình tạo ra hoặc tham gia xử lý. Hệ thống hiển thị mặc định các dự thảo trong vòng 2 tuần từ ngày hiện tại trở về trước.
 Các bước thực hiện:
 1. Đăng nhập vào hệ thống Điều hành tác nghiệp (ĐHTN).
@@ -12,7 +12,7 @@ Các bước thực hiện:
    - **Tìm kiếm nâng cao**: Nhấp vào nút "Tìm kiếm nâng cao" ở góc trên bên phải để mở rộng các trường thông tin lọc (bao gồm Thể loại văn bản, Người soạn thảo, Khoảng thời gian ngày đến mặc định là 1 năm trước). Nhập tiêu chí lọc và nhấn nút "Tìm kiếm".
 4. Để mở rộng màn hình hiển thị danh sách, nhấn vào nút mũi tên thu gọn/mở rộng ở góc phải.
 
-### Quy trình Xem chi tiết thông tin văn bản dự thảo
+### Quy trình Xem chi tiết thông tin văn bản đi dự thảo 
 Mô tả: Cho phép người dùng xem toàn bộ thông tin thuộc tính của dự thảo, đọc file đính kèm và kiểm tra lịch sử luồng ký.
 Các bước thực hiện:
 1. Tại bảng lưới dữ liệu (grid) danh sách dự thảo, nhấn chuột trực tiếp vào dòng văn bản muốn xem để hệ thống tự động chuyển hướng (redirect) vào giao diện Xem chi tiết.
@@ -30,11 +30,11 @@ Các bước thực hiện:
 2. **Xem lịch sử sửa file**: Kéo xuống danh sách tài liệu đính kèm, nhấn nút "Xem lịch sử chỉnh sửa file" (biểu tượng icon hình quyển sổ kèm cây bút) bên cạnh tệp Word -> Hệ thống hiển thị danh sách các phiên bản đã sửa đổi trực tuyến hoặc tệp đã tải lên thay thế. Người dùng có thể nhấn vào từng phiên bản để đọc lại nội dung trước khi thay đổi.
 3. **Xem lịch sử thay người ký**: Tại màn hình chi tiết, nhấn vào nút "Lịch sử thay người ký" (biểu tượng icon chiếc đồng hồ có mũi tên quay ngược) -> Hệ thống hiển thị danh sách chi tiết gồm: Người bị thay thế, Người thay thế mới, Thời gian thực hiện, và Tài khoản thao tác.
 
-### Quy trình Thêm mới văn bản dự thảo
+### Quy trình Thêm mới văn bản đi dự thảo 
 Mô tả: Dành cho Chuyên viên hoặc Lãnh đạo thực hiện soạn thảo và tạo lập luồng trình ký mới cho văn bản đi của đơn vị.
 Các bước thực hiện:
 1. Tại menu "Văn bản đi" -> chọn thẻ trang lựa chọn (tab) "Dự thảo".
-2. Nhấn vào nút "Thêm mới" (nút màu xanh lá có biểu tượng icon dấu cộng) nằm ở phía trên bên phải màn hình danh sách.
+2. Nhấn vào nút "Thêm mới" (nút màu đỏ có biểu tượng icon dấu cộng màu trắng) nằm ở phía trên bên phải màn hình danh sách.
 3. Nhập đầy đủ các thông tin bắt buộc tại biểu mẫu (form) thêm mới (các trường có đánh dấu sao màu đỏ * bắt buộc phải nhập):
    - Chọn "Cơ quan ban hành", "Sổ văn bản", "Thể loại văn bản", "Trích yếu nội dung".
    - Nhấn nút "Chọn file" tại trường "File văn bản" để đăng tải (upload) file trình ký chính thức và các tài liệu đính kèm khác từ máy tính.
@@ -52,7 +52,7 @@ Các bước thực hiện:
    - Nhấn nút "Ghi lại và tạo phiếu trình": Tự động đính kèm dự thảo này vào một Phiếu trình xin ý kiến mới được tạo lập.
    - Nhấn nút "Quay lại": Hủy bỏ toàn bộ thông tin vừa nhập và quay về danh sách dự thảo bên ngoài.
 
-### Quy trình Chỉnh sửa văn bản dự thảo
+### Quy trình Chỉnh sửa văn bản đi dự thảo
 Mô tả: Cho phép người soạn thảo chỉnh sửa lại toàn bộ thông tin thuộc tính và tải lên tệp tin mới đối với các văn bản dự thảo đang ở trạng thái "Chưa trình ký".
 Các bước thực hiện:
 1. Tại menu "Văn bản đi" -> chọn thẻ trang lựa chọn (tab) "Dự thảo".
@@ -63,7 +63,7 @@ Các bước thực hiện:
    - Nhấn nút "Trình ký" để chính thức đẩy văn bản vào luồng phê duyệt, trạng thái chuyển thành "Đang xử lý".
    - Nhấn nút "Quay lại" để hủy bỏ các nội dung vừa chỉnh sửa và giữ nguyên phiên bản cũ.
 
-### Quy trình Trình ký dự thảo từ danh sách bên ngoài
+### Quy trình Trình ký dự thảo văn bản đi từ danh sách bên ngoài
 Mô tả: Hỗ trợ người dùng gửi nhanh văn bản đang ở trạng thái "Chưa trình ký" vào luồng phê duyệt ngay tại màn hình danh sách mà không cần vào giao diện chi tiết.
 Các bước thực hiện:
 1. Tại danh sách "Dự thảo", tìm bản ghi có trạng thái "Chưa trình ký" muốn gửi đi.
@@ -71,7 +71,7 @@ Các bước thực hiện:
 3. Hệ thống hiển thị hộp thoại nổi (popup) "Xác nhận trình ký" kèm nội dung thông báo.
 4. Nhấn chọn nút "Đồng ý" trên hộp thoại để hoàn thành thao tác -> Văn bản được gửi đi thành công và chuyển trạng thái sang "Đang xử lý". Nếu muốn dừng thao tác, nhấn chọn "Đóng" hoặc nút "Hủy bỏ".
 
-### Quy trình Hủy luồng ký dự thảo
+### Quy trình Hủy luồng ký dự thảo văn bản đi
 Mô tả: Cho phép người soạn thảo thu hồi lại văn bản dự thảo đã gửi đi trình ký nhưng chưa được phê duyệt xong (văn bản đang ở trạng thái "Đang xử lý").
 Các bước thực hiện:
 1. Tại danh sách "Dự thảo", tìm bản ghi đang ở trạng thái "Đang xử lý" cần thu hồi.
@@ -79,7 +79,7 @@ Các bước thực hiện:
 3. Hệ thống hiển thị hộp thoại nổi (popup) "Xác nhận hủy luồng".
 4. Nhấn chọn nút "Đồng ý" -> Luồng phê duyệt sẽ bị chấm dứt lập tức, văn bản tự động chuyển về trạng thái "Đã hủy luồng" và người soạn có thể sửa đổi để trình ký lại.
 
-### Quy trình Sao chép văn bản dự thảo
+### Quy trình Sao chép dự thảo văn bản đi
 Mô tả: Hỗ trợ người dùng sao chép nhanh toàn bộ các thông tin thuộc tính của một dự thảo sẵn có để tạo ra một dự thảo mới, giúp tiết kiệm thời gian nhập liệu.
 Các bước thực hiện:
 1. Tại danh sách "Dự thảo", tìm văn bản dự thảo muốn sao chép.
@@ -88,7 +88,7 @@ Các bước thực hiện:
 4. *Lưu ý*: Hệ thống không sao chép các tệp tin đính kèm và danh sách người ký duyệt của văn bản gốc. Người dùng bắt buộc phải đăng tải (upload) file đính kèm mới và thiết lập lại luồng ký duyệt cho dự thảo mới này.
 5. Nhập các thông tin bổ sung và nhấn nút "Ghi lại" hoặc "Trình ký" để hoàn tất.
 
-### Quy trình Chuyển cấp số dự thảo văn bản
+### Quy trình Chuyển cấp số dự thảo văn bản đi
 Mô tả: Cho phép người tạo lập dự thảo cấp số ban hành trực tiếp cho văn bản đi từ màn hình soạn thảo mà không cần chạy qua quy trình phê duyệt ký duyệt trên hệ thống (áp dụng cho các văn bản đã được phê duyệt bản giấy bên ngoài hoặc trường hợp đặc thù).
 Các bước thực hiện:
 1. Tại màn hình Thêm mới, Sửa, hoặc Sao chép văn bản dự thảo, sau khi điền đầy đủ các thông tin thuộc tính bắt buộc -> Nhấn vào nút "Chuyển cấp số" (nút có biểu tượng icon hình con dấu).
@@ -98,7 +98,7 @@ Các bước thực hiện:
 3. Nhấn nút "Đồng ý" -> Dự thảo văn bản sẽ được tự động chuyển thẳng sang cho bộ phận Văn thư của đơn vị đã chọn để thực hiện cấp số và ban hành trực tiếp tại chức năng "VB ban hành" -> chọn thẻ trang lựa chọn (tab) "Chờ cấp số".
 4. Trường hợp không muốn thực hiện nữa, nhấn nút "Đóng" để hủy bỏ thao tác.
 
-### Quy trình Trình ký lại văn bản bị từ chối hoặc đã hủy luồng
+### Quy trình Trình ký lại văn bản đi bị từ chối hoặc đã hủy luồng
 Mô tả: Hỗ trợ người dùng chỉnh sửa nhanh và gửi trình ký lại đối với các văn bản dự thảo bị lãnh đạo từ chối duyệt hoặc do chính người dùng chủ động hủy luồng trước đó.
 Các bước thực hiện:
 1. Tại danh sách "Dự thảo", tìm văn bản có trạng thái "Đã hủy luồng" hoặc "Bị từ chối".
@@ -108,7 +108,7 @@ Các bước thực hiện:
    - *Lưu ý*: Các tệp đính kèm đã đăng tải trước đó sẽ bị xóa sạch để đảm bảo người dùng cập nhật đúng phiên bản chỉnh sửa mới. Người soạn thảo bắt buộc phải thực hiện tải lên (upload) lại tệp văn bản mới tại bước này.
 4. Chỉnh sửa thông tin, tải lên file mới và nhấn nút "Trình ký" để gửi lại văn bản vào luồng phê duyệt. Trạng thái văn bản sẽ chuyển sang "Đang xử lý".
 
-### Quy trình Xóa văn bản dự thảo
+### Quy trình Xóa văn bản đi dự thảo
 Mô tả: Cho phép người soạn thảo xóa hoàn toàn bản ghi dự thảo ra khỏi hệ thống (chỉ áp dụng đối với các dự thảo đang ở trạng thái "Chưa trình ký").
 Các bước thực hiện:
 1. Tại danh sách "Dự thảo", tìm dòng văn bản có trạng thái "Chưa trình ký" cần xóa.
@@ -118,9 +118,9 @@ Các bước thực hiện:
 
 ---
 
-## II. Quy trình Phê duyệt và Ký duyệt văn bản (Dành cho Lãnh đạo, Trợ lý và Chuyên viên)
+## II. Quy trình Phê duyệt và Ký duyệt văn bản đi (Dành cho Lãnh đạo, Trợ lý và Chuyên viên)
 
-### Quy trình Tra cứu danh sách văn bản ký duyệt
+### Quy trình Tra cứu danh sách văn bản đi ký duyệt
 Mô tả: Hỗ trợ người dùng được phân quyền ký duyệt tra cứu, phân loại các văn bản đang chờ xử lý hoặc đã xử lý của mình theo từng trạng thái cụ thể.
 Các bước thực hiện:
 1. Chọn menu chính "Văn bản đi" -> Chọn mục "Văn bản ký duyệt".
@@ -132,7 +132,7 @@ Các bước thực hiện:
    - **Tất cả**: Tổng hợp toàn bộ văn bản thuộc quyền quản lý của tài khoản.
 3. Sử dụng thanh "Tìm kiếm nhanh" hoặc nhấp nút "Tìm kiếm nâng cao" để lọc văn bản theo các tiêu chí cụ thể (thời gian soạn thảo, loại văn bản, người trình...).
 
-### Quy trình Xem chi tiết và Đọc file văn bản trình ký
+### Quy trình Xem chi tiết và Đọc file văn bản đi trình ký
 Mô tả: Cho phép người ký duyệt kiểm tra toàn bộ nội dung văn bản, lịch sử trình ký và trực tiếp đọc file đính kèm trước khi đưa ra quyết định xử lý.
 Các bước thực hiện:
 1. Tại giao diện danh sách "Văn bản ký duyệt", nhấn chuột trực tiếp vào dòng văn bản muốn xử lý để mở màn hình Xem chi tiết.
@@ -142,8 +142,8 @@ Các bước thực hiện:
    - Nhấn nút "Tóm tắt văn bản": Hệ thống tự động gọi công cụ trí tuệ nhân tạo (AI) để phân tích và hiển thị nội dung tóm tắt ngắn gọn của văn bản ở khung bên phải.
    - Đối với tệp Word (.doc, .docx): Người dùng có thể chỉnh sửa nội dung trực tuyến hoặc nhấp nút "Tải file" (icon mũi tên tải xuống) để tải tệp về máy sửa đổi, sau đó tải lên (upload) tệp thay thế trực tiếp vào luồng ký duyệt.
 
-### Quy trình Ký duyệt và Phê duyệt văn bản thông thường
-Mô tả: Cho phép người xử lý phê duyệt văn bản và chuyển tiếp luồng ký cho nhân sự tiếp theo theo đúng quy trình cấu hình.
+### Quy trình Ký duyệt và Phê duyệt văn bản đi thông thường
+Mô tả: Cho phép người xử lý phê duyệt văn bản đi và chuyển tiếp luồng ký cho nhân sự tiếp theo theo đúng quy trình cấu hình.
 Các bước thực hiện:
 1. Đăng nhập hệ thống -> Vào menu "Văn bản ký duyệt" -> Chọn tab "Chờ xử lý".
 2. Thực hiện phê duyệt nhanh bằng cách nhấn chọn biểu tượng (icon) chiếc bút ký màu xanh dương nằm ở cột thao tác của dòng văn bản tương ứng ngay tại danh sách. Hoặc nhấn xem chi tiết văn bản -> Nhấn nút "Ký duyệt" (hoặc "Phê duyệt") trên thanh công cụ phía dưới.
@@ -152,7 +152,7 @@ Các bước thực hiện:
    - Nhập ý kiến xử lý vào ô nhập liệu (nếu có).
 4. Nhấn nút "Ký duyệt" (hoặc "Đồng ý"): Hệ thống thực hiện ký duyệt văn bản thành công, đồng thời chuyển tiếp hồ sơ sang tài khoản của người ký tiếp theo. Văn bản tự động biến mất khỏi tab "Chờ xử lý" và chuyển sang tab "Đang xử lý". Nếu người dùng là người ký cuối cùng trên luồng, văn bản sẽ chuyển thẳng sang tab "Đã phê duyệt".
 
-### Quy trình Ký duyệt văn bản bằng Chứng thư số (Ký số bằng SIM CA / Token)
+### Quy trình Ký duyệt văn bản đi bằng Chứng thư số (Ký số bằng SIM CA / Token)
 Mô tả: Thực hiện ký số điện tử chính thức lên tệp văn bản đi bằng chứng thư số cá nhân, đảm bảo tính pháp lý để ban hành văn bản.
 Các bước thực hiện:
 1. Vào menu "Văn bản ký duyệt" -> Chọn tab "Chờ xử lý" -> Nhấn vào xem chi tiết văn bản cần ký số -> Nhấn nút "Ký duyệt bằng CA" (hoặc nút "Ký số CA" có biểu tượng hình chứng thư màu đỏ).
@@ -160,7 +160,7 @@ Các bước thực hiện:
 3. Người dùng lựa chọn chứng thư số cá nhân phù hợp -> Nhập mã số PIN bảo mật của chứng thư số (mật khẩu) trên thiết bị hoặc xác nhận ký số thông qua ứng dụng di động (SIM CA) -> Nhấn nút "Đồng ý" để thực hiện ký số.
 4. Sau khi ký số thành công, tệp văn bản chính sẽ được gán chữ ký số điện tử của người dùng. Văn bản được chuyển tiếp cho người tiếp theo trên luồng hoặc chuyển sang trạng thái "Đã phê duyệt" (nếu người dùng là người ký cuối).
 
-### Quy trình Từ chối ký duyệt văn bản
+### Quy trình Từ chối ký duyệt văn bản đi
 Mô tả: Cho phép người xử lý từ chối phê duyệt văn bản dự thảo do nội dung không đạt yêu cầu và trả lại cho người trình ký sửa đổi.
 Các bước thực hiện:
 1. Tại màn hình danh sách tab "Chờ xử lý", nhấn chọn nút "Từ chối" (biểu tượng icon chiếc bút bị gạch chéo) tại dòng tương ứng. Hoặc tại màn hình Xem chi tiết văn bản, nhấn chọn nút "Từ chối ký" nằm ở thanh công cụ phía dưới.
@@ -169,7 +169,7 @@ Các bước thực hiện:
 4. Người dùng có thể nhấn nút "Chọn file" để đính kèm thêm tài liệu/hình ảnh minh họa nội dung cần sửa đổi (nếu có).
 5. Nhấn nút "Từ chối": Hệ thống lưu lại thao tác, văn bản chuyển sang trạng thái "Đã từ chối" và tự động chuyển về danh sách tab "Dự thảo" của người soạn thảo ban đầu để chỉnh sửa lại.
 
-### Quy trình Đổi người ký trên luồng phê duyệt
+### Quy trình Đổi người ký trên luồng phê duyệt văn bản đi
 Mô tả: Cho phép người ký hiện tại tự động chuyển quyền ký duyệt văn bản sang cho một nhân sự khác cùng cấp khi mình không thể thực hiện thao tác (chỉ áp dụng khi văn bản đang chờ xử lý tại node của mình và chưa ký).
 Các bước thực hiện:
 1. Tại giao diện Xem chi tiết văn bản đang chờ xử lý -> Tìm đến dòng tên của mình tại bảng luồng ký -> Nhấn chọn biểu tượng (icon) chiếc bút đổi người (nút "Đổi người ký") ở cột thao tác.
@@ -178,7 +178,7 @@ Các bước thực hiện:
 3. Nhấn nút "Đổi người ký" -> Hệ thống hiển thị hộp thoại nổi (popup) xác nhận -> Chọn "Đồng ý" để hoàn tất.
 4. Sau khi đổi thành công, văn bản sẽ tự động biến mất khỏi danh sách "Chờ xử lý" của người dùng và chuyển sang màn hình chờ xử lý của người ký mới được chỉ định.
 
-### Quy trình Bổ sung file đính kèm khi ký duyệt
+### Quy trình Bổ sung file đính kèm khi ký duyệt văn bản đi
 Mô tả: Cho phép người ký bổ sung thêm các tệp tin tài liệu tham chiếu vào văn bản trình duyệt trong quá trình xử lý mà không làm ảnh hưởng đến tệp trình ký chính.
 Các bước thực hiện:
 1. Tại màn hình Xem chi tiết văn bản đang chờ xử lý -> Nhấn chọn nút "Bổ sung file" (biểu tượng icon kẹp giấy) nằm ở thanh công cụ phía dưới.
@@ -187,7 +187,7 @@ Các bước thực hiện:
 3. Nhấn nút "Lưu lại" để ghi nhận các tệp đính kèm mới vào văn bản trình ký.
 4. Để xem lại lịch sử các tệp đã bổ sung: Nhấn nút "Lịch sử bổ sung file" (biểu tượng icon cuốn sổ) -> Hệ thống hiển thị chi tiết danh sách tệp đính kèm bổ sung, người thực hiện và thời gian tải lên. Nhấn nút "Đóng" để quay lại giao diện chi tiết.
 
-### Quy trình Cho ý kiến văn bản trình duyệt
+### Quy trình Cho ý kiến văn bản trình duyệt văn bản đi
 Mô tả: Áp dụng cho các nhân sự có vai trò cho ý kiến, góp ý trên luồng trình duyệt trước khi văn bản được ký chính thức.
 Các bước thực hiện:
 1. Tại danh sách tab "Chờ xử lý", nhấn chọn biểu tượng đóng góp ý kiến (icon hộp hội thoại) ở dòng tương ứng. Hoặc nhấn chọn nút "Cho ý kiến" tại màn hình Xem chi tiết văn bản.
@@ -195,7 +195,7 @@ Các bước thực hiện:
    - **Bắt buộc**: Nhập nội dung ý kiến đóng góp/góp ý của mình vào ô nhập liệu "Ý kiến" (trường bắt buộc nhập).
 3. Nhấn nút "Cho ý kiến": Ghi nhận ý kiến thành công, văn bản tự động chuyển sang tab "Đang xử lý" của người dùng để chuyển tiếp luồng ký cho người tiếp theo.
 
-### Quy trình Chuyển xin ý kiến văn bản
+### Quy trình Chuyển xin ý kiến văn bản đi
 Mô tả: Cho phép người ký duyệt chuyển văn bản sang cho các cá nhân khác ngoài luồng ký để xin thêm ý kiến tư vấn trước khi đưa ra quyết định ký duyệt chính thức.
 Các bước thực hiện:
 1. Tại màn hình Xem chi tiết văn bản trình ký, nhấn chọn nút "Chuyển xin ý kiến" (biểu tượng icon mũi tên vòng tròn) nằm ở thanh công cụ phía dưới.
@@ -208,7 +208,7 @@ Các bước thực hiện:
 
 ## III. Quy trình dành riêng cho Văn thư tại menu Văn bản trình duyệt
 
-### Quy trình Kiểm duyệt và Trình duyệt văn bản lên Lãnh đạo
+### Quy trình Kiểm duyệt và Trình duyệt văn bản đi lên Lãnh đạo
 Mô tả: Cho phép Văn thư đơn vị thực hiện kiểm tra thể thức, nội dung văn bản trình duyệt trước khi chính thức chuyển tiếp lên cho Lãnh đạo đơn vị ký phê duyệt.
 Các bước thực hiện:
 1. Vào mục "Văn bản đi" -> Chọn mục "Văn bản trình duyệt" -> Thẻ trang lựa chọn (tab) "Chờ xử lý".
@@ -218,7 +218,7 @@ Các bước thực hiện:
    - Nhập ý kiến ghi chú hoặc nhấp nút "Chọn file" để đính kèm thêm các tài liệu liên quan nếu cần.
 4. Nhấn nút "Trình duyệt" -> Hệ thống phê duyệt thành công, văn bản được chuyển tiếp lên tài khoản Lãnh đạo đơn vị để thực hiện ký duyệt chính thức. Bản ghi chuyển sang tab "Đã xử lý" của Văn thư.
 
-### Quy trình Từ chối trình duyệt văn bản
+### Quy trình Từ chối trình duyệt văn bản đi
 Mô tả: Áp dụng khi Văn thư kiểm tra phát hiện văn bản trình duyệt bị sai thể thức, sai thông tin hoặc thiếu hồ sơ và từ chối trình lên lãnh đạo.
 Các bước thực hiện:
 1. Tại màn hình danh sách tab "Chờ xử lý" của menu "Văn bản trình duyệt", nhấn chọn biểu tượng (icon) chiếc bút bị gạch chéo (nút "Từ chối"). Hoặc tại giao diện chi tiết văn bản, nhấn nút "Từ chối xét duyệt".
@@ -227,14 +227,14 @@ Các bước thực hiện:
    - Có thể đính kèm thêm file tài liệu chỉ rõ lỗi sai bằng cách nhấn nút "Chọn file".
 3. Nhấn nút "Từ chối" -> Dự thảo văn bản bị từ chối thành công, không được chuyển lên lãnh đạo nữa mà tự động chuyển trả lại cho Chuyên viên soạn thảo sửa đổi. Trạng thái bản ghi chuyển sang tab "Đã từ chối" của Văn thư.
 
-### Quy trình Thay thế file và Bổ sung file văn bản trình duyệt
+### Quy trình Thay thế file và Bổ sung file văn bản đi trình duyệt
 Mô tả: Cho phép Văn thư trực tiếp thay thế file dự thảo chính (chỉ áp dụng đối với file định dạng .doc, .docx) hoặc bổ sung file đính kèm trước khi trình lãnh đạo.
 Các bước thực hiện:
 1. Tại màn hình Xem chi tiết văn bản trình duyệt (thẻ "Chờ xử lý"):
 2. **Thay thế file chính**: Nhấn nút "Thay thế file" (biểu tượng icon chiếc bút kèm trang giấy hoặc icon thay thế) bên cạnh tên file Word -> Chọn tệp tin Word mới từ máy tính -> Nhấn nút mở (open) -> Hệ thống thông báo: "Đồng chí đã thay thế file thành công".
 3. **Bổ sung file**: Nhấn nút "Bổ sung file" -> Hệ thống hiển thị hộp thoại nổi (popup) -> Nhấn nút "Chọn file" để tải tệp đính kèm bổ sung -> Nhấn nút "Đồng ý" để lưu lại.
 
-### Quy trình Ký lại văn bản trình duyệt
+### Quy trình Ký lại văn bản đi trình duyệt
 Mô tả: Cho phép Văn thư đơn vị thực hiện ký lại/xét duyệt lại đối với các văn bản mình đã phê duyệt chuyển đi nhưng người tiếp theo trên luồng ký duyệt (Lãnh đạo) chưa thực hiện thao tác ký duyệt.
 Các bước thực hiện:
 1. Vào menu "Văn bản trình duyệt" -> chọn thẻ trang lựa chọn (tab) "Đã xử lý".
@@ -244,7 +244,7 @@ Các bước thực hiện:
 
 ---
 
-## IV. Quy trình Ban hành văn bản (Dành cho Văn thư đơn vị)
+## IV. Quy trình Ban hành văn bản đi (Dành cho Văn thư đơn vị)
 
 ### Quy trình Kiểm tra và Quản lý danh sách Văn bản ban hành
 Mô tả: Nơi Văn thư đơn vị thực hiện cấp số đăng ký, đóng dấu đỏ điện tử và phát hành chính thức các văn bản đi đã được Lãnh đạo phê duyệt xong.
@@ -268,7 +268,7 @@ Các bước thực hiện:
    - Chọn đơn vị, cá nhân hoặc nhóm đơn vị nhận tại mục "Nơi nhận văn bản".
 3. Nhấn nút "Ghi lại" để lưu trữ (văn bản lưu ở tab Đã cấp số) hoặc nhấn "Ghi lại và thêm mới" để tiếp tục đăng ký văn bản giấy tiếp theo. Nhấn nút "Quay lại" để hủy bỏ thao tác.
 
-### Quy trình Cấp số văn bản ban hành
+### Quy trình Cấp số văn bản ban hành văn bản đi
 Mô tả: Thực hiện ghi nhận số đăng ký chính thức vào sổ văn bản đối với các dự thảo đã được phê duyệt trực tuyến.
 Các bước thực hiện:
 1. Vào menu "Văn bản ban hành" -> Chọn tab "Chờ cấp số".
@@ -280,7 +280,7 @@ Các bước thực hiện:
    - Nhấn nút "Ký đóng dấu": Hệ thống hiển thị giao diện xem file đính kèm tích hợp công cụ Đóng dấu điện tử cá nhân/đơn vị. Thực hiện kéo con dấu vào vị trí ký trên văn bản -> Nhấn nút hoàn thành để cấp số và đóng dấu điện tử đồng thời.
    - Nhấn nút "Quay lại" hoặc "Đóng" để hủy bỏ thao tác.
 
-### Quy trình Chuyển xử lý phân phối văn bản ban hành
+### Quy trình Chuyển xử lý phân phối văn bản ban hành văn bản đi
 Mô tả: Thực hiện gửi văn bản đã cấp số đến các đơn vị, cá nhân nhận trong hệ thống hoặc các đơn vị ngoài thông qua mạng liên thông.
 Các bước thực hiện:
 1. Tại menu "Văn bản ban hành" -> Chọn tab "Đã cấp số" hoặc "Đã ban hành".

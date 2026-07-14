@@ -26,16 +26,27 @@ Chuyên viên ảo/
 │   │
 │   └── SKILL.md                     # Tài liệu mô tả kỹ năng và các quy tắc nghiệp vụ chi tiết
 │
+├── services/                        # Thư mục lõi chứa các mô-đun dịch vụ (RAG, AI, Knowledge, Document Creator, Zalo)
+├── routers/                         # FastAPI Router (Webhook Zalo OA, Admin Dashboard Web)
+├── templates/                       # Giao diện Jinja2 cho Admin Dashboard
+├── static/                          # CSS/JS phục vụ giao diện Admin
+├── scripts/                         # Các tập tin kịch bản và tiện ích hệ thống
+│   ├── migrate_data.py              # Script di trú dữ liệu cũ từ JSON vào CSDL khi khởi động
+│   ├── migrate_db_schema.py         # Script kiểm tra và cập nhật cấu trúc bảng CSDL
+│   ├── reindex_embeddings.py        # Script re-index lại vector embedding
+│   ├── seed_admin.py                # Script khởi tạo tài khoản quản trị ban đầu
+│   ├── seed_knowledge.py            # Script nạp tri thức mặc định ban đầu từ SRT/MD
+│   ├── reingest_manuals.py          # Script nạp lại toàn bộ file hướng dẫn markdown
+│   ├── reingest_single_file.py      # Script nạp lại một file hướng dẫn markdown cụ thể
+│   └── test_zalo_bot_qa.py          # Script kiểm thử chất lượng Q&A RAG cục bộ
+│
 ├── docker/
 │   └── init.sql                     # Script khởi tạo cơ sở dữ liệu PostgreSQL (pgvector, chỉ mục HNSW, GIN)
 │
 ├── database.py                      # Module kết nối cơ sở dữ liệu (PostgreSQL / SQLite local fallback)
 ├── models.py                        # Định nghĩa ORM Models (Documents, Chunks, Image Mappings, Chat History)
-├── rag_engine.py                    # Engine xử lý Hybrid Search (Dense Vector + Sparse Text Search)
-├── document_uploader.py             # Engine nạp tài liệu: tự động parse PDF/DOCX/SRT, bóc tách ảnh, sinh vector
-├── migrate_data.py                  # Script di trú dữ liệu cũ từ JSON vào Database khi khởi động
-├── zalo_bot.py                      # Bot Zalo: nhận ảnh/file/text, Q&A RAG, OCR Gemini, tạo file Word
-├── main.py                          # Ứng dụng FastAPI chính: Webhook Zalo OA, Static Image Server, Secure Downloader
+├── zalo_bot.py                      # Bot Zalo ở chế độ Polling (Development)
+├── main.py                          # Ứng dụng FastAPI chính (Webhook Zalo OA, Static Image Server, Secure Downloader)
 ├── requirements.txt                 # Danh sách thư viện Python cần thiết
 ├── Dockerfile                       # Tệp đóng gói ứng dụng chính
 ├── docker-compose.yml               # Định nghĩa Docker Compose (App FastAPI + PostgreSQL pgvector)
@@ -90,17 +101,22 @@ Docker sẽ tự động:
 Khác với các hệ thống RAG thô sơ chạy in-memory, hệ thống của chúng ta sử dụng kiến trúc RAG cấp độ Production:
 
 ### 1. Cơ sở dữ liệu: PostgreSQL + `pgvector`
-*   Lưu trữ tri thức văn bản kết hợp vector embeddings **3072 chiều** tạo sinh từ mô hình thế hệ mới **`gemini-embedding-2`**.
+*   Lưu trữ tri thức văn bản kết hợp vector embeddings **768 chiều** (tối ưu hóa hiệu năng và dung lượng trên VPS) tạo sinh từ mô hình thế hệ mới **`gemini-embedding-2`** thông qua cấu hình `output_dimensionality=768`.
 *   **Metadata Filtering**: Cho phép lọc chính xác nguồn tài liệu, phân loại văn bản trước khi thực hiện so khớp vector để loại bỏ nhiễu ngữ nghĩa.
 *   **Chỉ mục HNSW (Hierarchical Navigable Small World)**: Cấu hình với độ đo Cosine cho phép tìm kiếm tương đồng vector với độ trễ dưới 10ms trên hàng triệu bản ghi.
 
-### 2. Tìm kiếm lai (Hybrid Search)
-Bộ tìm kiếm kết hợp sức mạnh của hai phương thức:
+### 2. Tìm kiếm lai (Hybrid Search) & Bộ phân loại câu hỏi (LLM Classifier)
+*   **Bộ phân loại ý định (Gemini Classifier)**: Trước khi tìm kiếm RAG, hệ thống chạy phân loại nhanh câu hỏi bằng Gemini 2.5 Flash để tách biệt câu hỏi **nội bộ nghiệp vụ** và **ngoài lề/xã giao**. Các câu xã giao/ngoài lề sẽ bỏ qua hoàn toàn RAG search để tránh sinh kết quả nhiễu, tăng tốc độ phản hồi và phản xạ tự do tốt hơn.
 *   **Dense Search (So khớp vector ngữ nghĩa)**: Khớp các câu hỏi đồng nghĩa, diễn đạt khác nhau nhưng cùng bản chất thao tác phần mềm.
 *   **Sparse Search (PostgreSQL Full-Text Search)**: Khớp chính xác các ký hiệu kỹ thuật, tên nút bấm cụ thể trên giao diện (ví dụ: "Phê duyệt phiếu trình", "Giao việc").
-*   Công thức xếp hạng lai: `Combined Score = 0.7 * Cosine_Similarity + 0.3 * ts_rank_cd`.
+*   Công thức xếp hạng lai: `Combined Score = 0.7 * Cosine_Similarity + 0.3 * ts_rank_cd` (RRF score được scale nhân với **1200**).
 
-### 3. Fallback SQLite Thông Minh
+### 3. Thuật toán phân đoạn cải tiến (Hierarchical Semantic Chunking)
+*   Tách tài liệu theo cấu trúc heading Markdown (`#`, `##`, `###`).
+*   **Không tạo chunk mồ côi**: Tự động gom các tiêu đề cha (H1/H2) rỗng không chứa văn bản vào các quy trình H3 thực tế bên dưới.
+*   **Đính kèm Context Path**: Tự động chèn đường dẫn tiêu đề cha (Ví dụ: `# Hướng dẫn... ## I. Thao tác...`) lên đầu mỗi chunk con để đảm bảo LLM không bao giờ bị mất ngữ cảnh khi tìm kiếm RAG.
+
+### 4. Fallback SQLite Thông Minh
 Dự án tích hợp cơ chế tự phát hiện môi trường kết nối. Nếu không tìm thấy PostgreSQL (chạy offline/cục bộ trên máy cá nhân), hệ thống sẽ **tự động chuyển sang sử dụng SQLite cục bộ** (`chatbot_local.db`) làm database thay thế, giúp lập trình viên chạy test và phát triển cực kỳ thuận tiện mà không cần cài đặt hạ tầng phức tạp.
 
 ---
@@ -115,7 +131,7 @@ Dự án tích hợp cơ chế tự phát hiện môi trường kết nối. N�
     *   **Parser & OCR**: Module `document_uploader.py` tự động đọc file:
         *   Bóc tách hình ảnh minh họa đính kèm trong DOCX/PDF, lưu trữ trực tiếp vào thư mục ảnh tĩnh `/output/images/` để chatbot gửi kèm thao tác.
         *   Tẩy mốc thời gian và làm sạch cấu trúc đối với tệp video srt.
-    *   **Chunking & Embedding**: Cắt nhỏ văn bản thành các chunks giữ nguyên ngữ cảnh (nhãn ảnh, bảng biểu) và gọi Gemini API để tạo vector embeddings 3072 chiều.
+    *   **Chunking & Embedding**: Cắt nhỏ văn bản thành các chunks giữ nguyên ngữ cảnh (nhãn ảnh, bảng biểu) và gọi Gemini API để tạo vector embeddings 768 chiều.
     *   **Ghi nhận CSDL**: Tự động upsert dữ liệu vào bảng `knowledge_chunks` và lập bản đồ `image_mappings`.
 3.  **Thông báo kết quả**: Bot gửi tin nhắn Zalo báo cáo kết quả chi tiết (số chunk đã nạp, số hình ảnh bóc tách thành công) cho Admin.
 
@@ -129,9 +145,9 @@ pip install -r requirements.txt
 ```
 
 ### 2. Khởi tạo và Di trú dữ liệu ban đầu
-Chạy script di trú để tự động đọc tri thức JSON cũ, gọi Gemini API sinh vector 3072 chiều và tạo cơ sở dữ liệu SQLite cục bộ:
+Chạy script di trú để tự động đọc tri thức JSON cũ, gọi Gemini API sinh vector 768 chiều và tạo cơ sở dữ liệu SQLite cục bộ:
 ```bash
-python migrate_data.py
+python scripts/migrate_data.py
 ```
 
 ### 3. Chạy Server và Bot

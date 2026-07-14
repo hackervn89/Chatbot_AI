@@ -36,9 +36,11 @@ def _process_zalo_payload(payload: dict):
         event_name = payload.get("event_name", "")
         message_data = payload.get("message", payload)
         
-        # Nhận diện chat_id (sender_id) một cách linh hoạt
+        # Nhận diện chat_id (ID phòng chat - có thể là Group ID hoặc User ID 1-1)
         chat_id = None
-        if payload.get("sender", {}).get("id"):
+        if message_data.get("chat", {}).get("id"):
+            chat_id = message_data["chat"]["id"]
+        elif payload.get("sender", {}).get("id"):
             chat_id = payload["sender"]["id"]
         elif message_data.get("from", {}).get("id"):
             chat_id = message_data["from"]["id"]
@@ -46,6 +48,20 @@ def _process_zalo_payload(payload: dict):
             chat_id = payload["sender_id"]
         elif payload.get("user_id"):
             chat_id = payload["user_id"]
+            
+        # Nhận diện sender_id (ID của người gửi cụ thể) để phân quyền Admin
+        sender_id = None
+        if payload.get("sender", {}).get("id"):
+            sender_id = payload["sender"]["id"]
+        elif message_data.get("from", {}).get("id"):
+            sender_id = message_data["from"]["id"]
+        elif payload.get("sender_id"):
+            sender_id = payload["sender_id"]
+        elif payload.get("user_id"):
+            sender_id = payload["user_id"]
+            
+        if not sender_id:
+            sender_id = chat_id
             
         if not chat_id:
             print("[Webhook Warning] Không xác định được chat_id từ payload.")
@@ -66,8 +82,8 @@ def _process_zalo_payload(payload: dict):
                 file_url = file_payload.get("url")
                 file_name = file_payload.get("name")
                 
-                # Kiểm tra phân quyền Admin
-                if chat_id not in ADMIN_ZALO_IDS:
+                # Kiểm tra phân quyền Admin bằng sender_id (User ID) thay vì chat_id (Group ID)
+                if sender_id not in ADMIN_ZALO_IDS:
                     send_message(chat_id, "❌ Bạn không có quyền nạp tài liệu tri thức vào hệ thống.")
                     return
                     
@@ -83,7 +99,7 @@ def _process_zalo_payload(payload: dict):
                             file_path=temp_file_path,
                             title=os.path.splitext(file_name)[0].replace('_', ' '),
                             category="core",
-                            created_by=f"zalo_admin_{chat_id}"
+                            created_by=f"zalo_admin_{sender_id}"
                         )
                         
                         # Xóa file tạm
@@ -120,7 +136,7 @@ def _process_zalo_payload(payload: dict):
             send_message(chat_id, "📥 Đang nhận hình ảnh và tiến hành phân tích OCR...")
             send_typing_action(chat_id)
             
-            temp_img_name = f"ocr_{chat_id}_{int(time.time())}.png"
+            temp_img_name = f"ocr_{sender_id}_{int(time.time())}.png"
             temp_img_path = os.path.join(TEMP_DIR, temp_img_name)
             
             if download_file_from_url(photo_url, temp_img_path):

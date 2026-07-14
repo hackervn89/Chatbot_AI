@@ -2,6 +2,10 @@ import os
 import sys
 import json
 import time
+
+# Add parent directory to path to support database/models imports and load root config
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from sqlalchemy.orm import Session
 from google import genai
 from google.genai import types
@@ -10,9 +14,9 @@ import models
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-# Define custom dotenv loader to read .env file safely
+# Define custom dotenv loader to read .env file safely from root
 def load_dotenv():
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     dotenv_path = os.path.join(script_dir, '.env')
     if os.path.exists(dotenv_path):
         with open(dotenv_path, 'r', encoding='utf-8') as f:
@@ -32,7 +36,7 @@ if not GEMINI_API_KEY:
     print("[!] ERROR: Vui lòng cấu hình GEMINI_API_KEY trong môi trường hoặc file .env trước khi chạy di trú.")
     sys.exit(1)
 
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CHUNKS_PATH = os.path.join(PROJECT_ROOT, "taovanban_khoidang", "references", "hdsd_chunks.json")
 IMAGE_MAP_PATH = os.path.join(PROJECT_ROOT, "taovanban_khoidang", "output", "images", "image_map.json")
 

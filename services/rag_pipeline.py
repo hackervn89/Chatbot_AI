@@ -3,7 +3,9 @@ RAG Pipeline — Chunking, Embedding, Hybrid Search, Reranking.
 Pipeline 4 giai đoạn cho hệ thống RAG production.
 """
 import os
+import time
 import re
+import requests
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from google import genai
@@ -12,47 +14,71 @@ from google.genai import types
 from config import (
     GEMINI_API_KEY, IS_POSTGRES, EMBEDDING_MODEL, EMBEDDING_DIMENSION,
     CHUNK_SIZE, CHUNK_OVERLAP, HYBRID_SEARCH_DENSE_WEIGHT,
-    HYBRID_SEARCH_SPARSE_WEIGHT, SEARCH_TOP_K, RERANK_TOP_N
+    HYBRID_SEARCH_SPARSE_WEIGHT, SEARCH_TOP_K, RERANK_TOP_N,
+    DEEPSEEK_API_KEY, DEEPSEEK_API_URL, DEEPSEEK_MODEL, DEEPSEEK_TIMEOUT
 )
 
 # ==================== EMBEDDING ====================
 
 def get_embedding(text_content: str) -> list:
-    """Tạo vector embedding bằng Gemini Embedding 2 (3072 chiều)"""
+    """Tạo vector embedding bằng Gemini Embedding 2 (3072 chiều) với cơ chế tự động thử lại khi dính rate limit"""
     if not GEMINI_API_KEY:
         print("[RAG] Warning: GEMINI_API_KEY chưa cấu hình. Trả về vector rỗng.")
         return [0.0] * EMBEDDING_DIMENSION
-    try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
-        response = client.models.embed_content(
-            model=EMBEDDING_MODEL,
-            contents=text_content,
-            config=types.EmbedContentConfig(output_dimensionality=EMBEDDING_DIMENSION)
-        )
-        return response.embeddings[0].values
-    except Exception as e:
-        print(f"[RAG] Lỗi tạo embedding: {e}")
-        return [0.0] * EMBEDDING_DIMENSION
+    
+    retries = 5
+    delay = 15
+    for attempt in range(retries):
+        try:
+            client = genai.Client(api_key=GEMINI_API_KEY)
+            response = client.models.embed_content(
+                model=EMBEDDING_MODEL,
+                contents=text_content,
+                config=types.EmbedContentConfig(output_dimensionality=EMBEDDING_DIMENSION)
+            )
+            return response.embeddings[0].values
+        except Exception as e:
+            e_str = str(e).lower()
+            if "429" in e_str or "resource_exhausted" in e_str or "quota" in e_str:
+                print(f"[RAG] Rate limit (429) khi tạo embedding ở lần thử {attempt+1}/{retries}. Chờ {delay}s...")
+                time.sleep(delay)
+                delay *= 2
+            else:
+                print(f"[RAG] Lỗi tạo embedding: {e}")
+                break
+    return [0.0] * EMBEDDING_DIMENSION
 
 
 def get_embeddings_batch(texts: list) -> list:
-    """Tạo batch vector embeddings cho danh sách văn bản (tối đa 100 bản ghi)"""
+    """Tạo batch vector embeddings cho danh sách văn bản (tối đa 100 bản ghi) với tự động thử lại khi dính rate limit"""
     if not texts:
         return []
     if not GEMINI_API_KEY:
         print("[RAG] Warning: GEMINI_API_KEY chưa cấu hình. Trả về vector rỗng.")
         return [[0.0] * EMBEDDING_DIMENSION for _ in texts]
-    try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
-        response = client.models.embed_content(
-            model=EMBEDDING_MODEL,
-            contents=texts,
-            config=types.EmbedContentConfig(output_dimensionality=EMBEDDING_DIMENSION)
-        )
-        return [emb.values for emb in response.embeddings]
-    except Exception as e:
-        print(f"[RAG] Lỗi tạo batch embedding: {e}")
-        return [[0.0] * EMBEDDING_DIMENSION for _ in texts]
+    
+    retries = 5
+    delay = 15
+    for attempt in range(retries):
+        try:
+            client = genai.Client(api_key=GEMINI_API_KEY)
+            contents_wrapped = [types.Content(parts=[types.Part(text=s)]) for s in texts]
+            response = client.models.embed_content(
+                model=EMBEDDING_MODEL,
+                contents=contents_wrapped,
+                config=types.EmbedContentConfig(output_dimensionality=EMBEDDING_DIMENSION)
+            )
+            return [emb.values for emb in response.embeddings]
+        except Exception as e:
+            e_str = str(e).lower()
+            if "429" in e_str or "resource_exhausted" in e_str or "quota" in e_str:
+                print(f"[RAG] Rate limit (429) khi tạo batch embedding ở lần thử {attempt+1}/{retries}. Chờ {delay}s...")
+                time.sleep(delay)
+                delay *= 2
+            else:
+                print(f"[RAG] Lỗi tạo batch embedding: {e}")
+                break
+    return [[0.0] * EMBEDDING_DIMENSION for _ in texts]
 
 
 # ==================== CHUNKING ====================
@@ -236,16 +262,9 @@ def is_chitchat(query: str) -> bool:
 def classify_question(query: str) -> str:
     """
     Phân loại câu hỏi của người dùng để quyết định có sử dụng RAG hay không.
-    Trả về:
-    - 'nội_bộ': Nếu câu hỏi liên quan đến tài liệu, nghiệp vụ, thao tác phần mềm ĐHTN của cơ quan.
-    - 'ngoài_lề': Nếu câu hỏi là xã giao (chào hỏi, cảm ơn), kiến thức chung, hoặc kỹ năng/học thuật không liên quan đến ĐHTN.
+    Ưu tiên sử dụng DeepSeek, nếu lỗi hoặc không cấu hình thì fallback sang Gemini.
     """
-    if not GEMINI_API_KEY:
-        return "nội_bộ"
-        
-    try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
-        prompt = f"""Phân loại câu hỏi của người dùng dưới đây thành một trong hai nhãn sau:
+    prompt = f"""Phân loại câu hỏi của người dùng dưới đây thành một trong hai nhãn sau:
 - 'nội_bộ': Nếu câu hỏi là về thao tác, chức năng, lỗi, hướng dẫn sử dụng phần mềm Điều hành tác nghiệp (ĐHTN) của cơ quan (ví dụ: tạo phiếu trình, gửi văn bản đi, xử lý văn bản đến, quản lý nhiệm vụ, cấu hình hoặc quản trị hệ thống...).
 - 'ngoài_lề': Nếu câu hỏi chỉ là chào hỏi xã giao (xin chào, hello, hi, cảm ơn, chúc sức khỏe), hỏi về kiến thức chung, lập trình, toán học, thời tiết, kỹ năng văn phòng chung (như Excel, Word chung không liên quan ĐHTN), hoặc các chủ đề học thuật ngoài lề khác.
 
@@ -253,22 +272,51 @@ Bạn PHẢI trả về duy nhất một từ là 'nội_bộ' hoặc 'ngoài_l�
 
 Câu hỏi: "{query}"
 Nhãn phân loại:"""
-        
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                temperature=0.0,
-                max_output_tokens=10
+
+    # 1. Thử gọi DeepSeek trước
+    if DEEPSEEK_API_KEY:
+        try:
+            payload = {
+                "model": DEEPSEEK_MODEL,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.0,
+                "max_tokens": 10
+            }
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {DEEPSEEK_API_KEY}"
+            }
+            response = requests.post(DEEPSEEK_API_URL, json=payload, headers=headers, timeout=DEEPSEEK_TIMEOUT)
+            if response.status_code == 200:
+                result = response.json()["choices"][0]["message"]["content"].strip().lower()
+                if "nội_bộ" in result or "noi_bo" in result or "nội bộ" in result:
+                    return "nội_bộ"
+                return "ngoài_lề"
+            else:
+                print(f"[RAG Classifier] DeepSeek lỗi HTTP {response.status_code}: {response.text[:200]}")
+        except Exception as e:
+            print(f"[RAG Classifier] Lỗi gọi DeepSeek: {e}")
+
+    # 2. Fallback sang Gemini
+    if GEMINI_API_KEY:
+        try:
+            client = genai.Client(api_key=GEMINI_API_KEY)
+            response = client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.0,
+                    max_output_tokens=10
+                )
             )
-        )
-        result = response.text.strip().lower()
-        if "nội_bộ" in result or "noi_bo" in result or "nội bộ" in result:
-            return "nội_bộ"
-        return "ngoài_lề"
-    except Exception as e:
-        print(f"[RAG Classifier] Lỗi phân loại câu hỏi: {e}")
-        return "nội_bộ"
+            result = response.text.strip().lower()
+            if "nội_bộ" in result or "noi_bo" in result or "nội bộ" in result:
+                return "nội_bộ"
+            return "ngoài_lề"
+        except Exception as e:
+            print(f"[RAG Classifier] Lỗi gọi Gemini: {e}")
+
+    return "ngoài_lề"
 
 
 # ==================== HYBRID SEARCH ====================

@@ -338,5 +338,17 @@ docker compose up -d
 
 ### 3. Sự cố Gemini API bị Rate Limit (Lỗi 429)
 *   **Hiện tượng:** Log báo `429 RESOURCE_EXHAUSTED` khi tạo embedding hoặc Q&A.
-*   **Nguyên nhân:** Do sử dụng API Key Free Tier vượt quá giới hạn 1,000 requests/ngày.
-*   **Khắc phục:** Đổi key mới trong `.env` và chạy lại script `reindex_embeddings.py` để cập nhật các chunks bị lỗi. Hệ thống có cơ chế FTS fallback nên vẫn trả lời được bằng từ khóa trong thời gian key bị khóa.
+*   **Cơ chế tự động khắc phục:**
+    *   **Retry & Exponential Backoff:** Khi gặp lỗi 429, hệ thống tự động thử lại tối đa 5 lần với thời gian chờ tăng dần (15s, 30s, 60s, 120s, 240s) trước khi chuyển về chế độ dự phòng.
+    *   **Batch Embedding Wrapper:** Đóng gói thủ công danh sách chuỗi đầu vào thành các đối tượng `types.Content(parts=[types.Part(text=s)])` trước khi gọi SDK `google-genai` để tránh lỗi trả về vector toàn 0 từ API Google.
+    *   **Khoảng nghỉ an toàn khi Re-ingest:** Tiến trình nạp hàng loạt `reingest_manuals.py` được cấu hình nghỉ **35 giây** giữa mỗi tệp tin để đảm bảo không vượt quá giới hạn cuộc gọi trên phút (RPM) của tài khoản Free Tier.
+*   **Khắc phục thủ công:** Nếu hết hạn mức ngày (1,000 requests/ngày), hãy cập nhật `GEMINI_API_KEY` mới trong `.env` và khởi động lại container. Hệ thống vẫn duy trì tìm kiếm Full-Text Search (FTS) fallback bằng từ khóa trong thời gian chờ key reset.
+
+---
+
+## 👥 10. Hỗ Trợ Nhóm Chat Zalo (Group Chat)
+Hệ thống hỗ trợ toàn diện việc thêm Bot vào hoạt động trong các nhóm chat Zalo của cơ quan:
+*   **Tách biệt ID thông minh:** Webhook tự động phân biệt `chat_id` (ID phòng chat - có thể là Group ID hoặc User ID 1-1) và `sender_id` (User ID của cá nhân gửi tin nhắn).
+*   **Phản hồi đúng hướng:** Mọi câu trả lời từ Bot được gửi trực tiếp vào nhóm chat (`chat_id`), giúp toàn bộ thành viên trong nhóm đều theo dõi được.
+*   **Bảo mật phân quyền:** Quyền Admin (như tính năng tải file nạp tri thức) luôn được kiểm tra đối chiếu với `sender_id` (User ID thực tế của người gửi), đảm bảo an toàn tuyệt đối và tránh việc lạm dụng quyền hạn trong nhóm đông người.
+

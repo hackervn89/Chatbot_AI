@@ -46,9 +46,9 @@ DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY')
 ENABLE_WEB_SEARCH = os.environ.get('ENABLE_WEB_SEARCH', 'False') == 'True'
 
 GEMINI_MODELS = [
-    "gemini-2.5-flash",
     "gemini-2.0-flash",
     "gemini-1.5-pro",
+    "gemini-1.5-flash",
 ]
 
 TEMPLATE_PATH = os.path.join(PROJECT_ROOT, "references", "cong_van_giao_viec_mau.docx")
@@ -246,7 +246,7 @@ def ask_dhtn_qa(chat_id, question, db=None):
     relevant_results = []
     
     # Phân loại câu hỏi bằng LLM trước
-    from rag_engine import classify_question, hybrid_search
+    from services.rag_pipeline import classify_question, hybrid_search
     question_type = classify_question(question)
     print(f"[Zalo Bot] Phân loại câu hỏi: '{question}' -> {question_type}")
     
@@ -847,31 +847,46 @@ def process_zalo_webhook_payload(payload):
     print(f"[Zalo Webhook Log] Nhận payload: {json.dumps(payload, ensure_ascii=False)}")
     
     event_name = payload.get("event_name")
+    msg_data = payload.get("message", {})
     
-    # Nhận diện sender_id một cách linh hoạt theo nhiều phiên bản API của Zalo
+    # Nhận diện chat_id (ID phòng chat - có thể là Group ID hoặc User ID 1-1)
+    chat_id = None
+    if msg_data.get("chat", {}).get("id"):
+        chat_id = msg_data["chat"]["id"]
+    elif payload.get("sender", {}).get("id"):
+        chat_id = payload["sender"]["id"]
+    elif msg_data.get("message", {}).get("from", {}).get("id"):
+        chat_id = msg_data["from"]["id"]
+    elif payload.get("sender_id"):
+        chat_id = payload["sender_id"]
+    elif payload.get("user_id"):
+        chat_id = payload["user_id"]
+
+    # Nhận diện sender_id (ID của người gửi cụ thể) để phân quyền Admin
     sender_id = None
     if payload.get("sender", {}).get("id"):
         sender_id = payload["sender"]["id"]
-    elif payload.get("message", {}).get("from", {}).get("id"):
-        sender_id = payload["message"]["from"]["id"]
+    elif msg_data.get("from", {}).get("id"):
+        sender_id = msg_data["from"]["id"]
     elif payload.get("sender_id"):
         sender_id = payload["sender_id"]
     elif payload.get("user_id"):
         sender_id = payload["user_id"]
         
     if not sender_id:
-        print("[Zalo Webhook Warning] Không xác định được sender_id từ payload.")
+        sender_id = chat_id
+        
+    if not chat_id:
+        print("[Zalo Webhook Warning] Không xác định được chat_id từ payload.")
         return
         
     # Tạo cấu trúc tin nhắn chuẩn để tương thích với process_zalo_message
     message = {
-        "chat": {"id": sender_id},
-        "from": {"display_name": "Người dùng Zalo"},
+        "chat": {"id": chat_id},
+        "from": {"display_name": msg_data.get("from", {}).get("display_name", "Người dùng Zalo")},
         "text": "",
         "photo_url": ""
     }
-    
-    msg_data = payload.get("message", {})
     
     # 1. Xử lý trường hợp Admin gửi file tài liệu để nạp tri thức
     if event_name in ["user_send_file", "message.file.received"]:
@@ -884,19 +899,19 @@ def process_zalo_webhook_payload(payload):
             # Kiểm tra phân quyền Admin (đọc cấu hình từ môi trường)
             admin_ids = [i.strip() for i in os.environ.get('ADMIN_ZALO_IDS', '').split(',') if i.strip()]
             if sender_id not in admin_ids:
-                send_zalo_message(sender_id, "x Bạn không có quyền nạp tài liệu tri thức vào hệ thống.")
+                send_zalo_message(chat_id, "x Bạn không có quyền nạp tài liệu tri thức vào hệ thống.")
                 return
                 
             if file_url and file_name:
-                send_zalo_message(sender_id, f"📥 Đang tải tài liệu: {file_name}...")
+                send_zalo_message(chat_id, f"📥 Đang tải tài liệu: {file_name}...")
                 
                 # Tải file về thư mục tạm
                 temp_file_path = os.path.join(TEMP_DIR, file_name)
                 if download_file_from_url(file_url, temp_file_path):
-                    send_zalo_message(sender_id, "⚙️ Đang tiến hành phân tích văn bản và nạp tri thức RAG...")
+                    send_zalo_message(chat_id, "⚙️ Đang tiến hành phân tích văn bản và nạp tri thức RAG...")
                     
-                    from document_uploader import ingest_document_file
-                    result = ingest_document_file(temp_file_path)
+                    from services.knowledge_manager import ingest_document
+                    result = ingest_document(file_path=temp_file_path, category="core", created_by="zalo_bot_polling")
                     
                     # Xóa file tạm
                     if os.path.exists(temp_file_path):
@@ -905,16 +920,16 @@ def process_zalo_webhook_payload(payload):
                     if result.get("status") == "success":
                         details = result.get("details", {})
                         send_zalo_message(
-                            sender_id,
+                            chat_id,
                             f"✅ Nạp tri thức thành công!\n"
                             f"📄 Tài liệu: {details.get('title')}\n"
                             f"🧩 Số chunks tri thức: {details.get('chunks')}\n"
                             f"📸 Số ảnh minh họa: {details.get('images')}"
                         )
                     else:
-                        send_zalo_message(sender_id, f"x Nạp tri thức thất bại: {result.get('message')}")
+                        send_zalo_message(chat_id, f"x Nạp tri thức thất bại: {result.get('message')}")
                 else:
-                    send_zalo_message(sender_id, "x Không thể tải file tài liệu từ Zalo Server.")
+                    send_zalo_message(chat_id, "x Không thể tải file tài liệu từ Zalo Server.")
         return
  
     # 2. Chuẩn hóa các sự kiện text/image thông thường
