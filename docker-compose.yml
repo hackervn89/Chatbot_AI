@@ -27,9 +27,12 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "8080:8080"
+      # Chỉ bind localhost: Caddy giao tiếp với web qua mạng nội bộ Docker (web:8080),
+      # không cần lộ FastAPI trực tiếp ra Internet. Vẫn truy cập được qua SSH để test.
+      - "127.0.0.1:8080:8080"
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-chatbot_user}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-chatbot_db}
+
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
       - ZALO_API_TOKEN=${ZALO_API_TOKEN}
