@@ -18,25 +18,54 @@ from config import (
     DEEPSEEK_API_KEY, DEEPSEEK_API_URL, DEEPSEEK_MODEL, DEEPSEEK_TIMEOUT
 )
 
+# ==================== GEMINI CLIENT (SINGLETON) ====================
+
+# Tái sử dụng một genai.Client duy nhất ở cấp module thay vì tạo mới mỗi lần gọi,
+# giúp tối ưu kết nối và giảm overhead khởi tạo (đề xuất tối ưu hiệu suất #3).
+_GENAI_CLIENT = None
+
+def _get_genai_client():
+    """Trả về genai.Client dùng chung (khởi tạo lazy, chỉ 1 lần)."""
+    global _GENAI_CLIENT
+    if _GENAI_CLIENT is None and GEMINI_API_KEY:
+        _GENAI_CLIENT = genai.Client(api_key=GEMINI_API_KEY)
+    return _GENAI_CLIENT
+
+
 # ==================== EMBEDDING ====================
 
+# Cache embedding cho các query lặp lại (câu hỏi phổ biến, chào hỏi...) để
+# tiết kiệm chi phí gọi API và giảm latency về gần 0ms (đề xuất tối ưu #1).
+# Giới hạn kích thước để tránh phình bộ nhớ vô hạn.
+_EMBEDDING_CACHE = {}
+_EMBEDDING_CACHE_MAX = 500
+
 def get_embedding(text_content: str) -> list:
-    """Tạo vector embedding bằng Gemini Embedding 2 (3072 chiều) với cơ chế tự động thử lại khi dính rate limit"""
+    """Tạo vector embedding bằng Gemini Embedding 2 với cache + tự động thử lại khi dính rate limit"""
     if not GEMINI_API_KEY:
         print("[RAG] Warning: GEMINI_API_KEY chưa cấu hình. Trả về vector rỗng.")
         return [0.0] * EMBEDDING_DIMENSION
-    
+
+    # Kiểm tra cache trước (key chuẩn hóa để tăng tỉ lệ trúng)
+    cache_key = (text_content or "").strip().lower()
+    if cache_key in _EMBEDDING_CACHE:
+        return _EMBEDDING_CACHE[cache_key]
+
     retries = 5
     delay = 15
     for attempt in range(retries):
         try:
-            client = genai.Client(api_key=GEMINI_API_KEY)
+            client = _get_genai_client()
             response = client.models.embed_content(
                 model=EMBEDDING_MODEL,
                 contents=text_content,
                 config=types.EmbedContentConfig(output_dimensionality=EMBEDDING_DIMENSION)
             )
-            return response.embeddings[0].values
+            embedding = response.embeddings[0].values
+            # Lưu cache (chỉ lưu kết quả hợp lệ, giới hạn dung lượng)
+            if cache_key and len(_EMBEDDING_CACHE) < _EMBEDDING_CACHE_MAX:
+                _EMBEDDING_CACHE[cache_key] = embedding
+            return embedding
         except Exception as e:
             e_str = str(e).lower()
             if "429" in e_str or "resource_exhausted" in e_str or "quota" in e_str:
@@ -47,6 +76,7 @@ def get_embedding(text_content: str) -> list:
                 print(f"[RAG] Lỗi tạo embedding: {e}")
                 break
     return [0.0] * EMBEDDING_DIMENSION
+
 
 
 def get_embeddings_batch(texts: list) -> list:
@@ -61,8 +91,9 @@ def get_embeddings_batch(texts: list) -> list:
     delay = 15
     for attempt in range(retries):
         try:
-            client = genai.Client(api_key=GEMINI_API_KEY)
+            client = _get_genai_client()
             contents_wrapped = [types.Content(parts=[types.Part(text=s)]) for s in texts]
+
             response = client.models.embed_content(
                 model=EMBEDDING_MODEL,
                 contents=contents_wrapped,
@@ -300,9 +331,10 @@ Nhãn phân loại:"""
     # 2. Fallback sang Gemini
     if GEMINI_API_KEY:
         try:
-            client = genai.Client(api_key=GEMINI_API_KEY)
+            client = _get_genai_client()
             response = client.models.generate_content(
                 model="gemini-2.0-flash",
+
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     temperature=0.0,

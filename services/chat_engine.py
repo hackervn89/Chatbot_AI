@@ -166,16 +166,21 @@ def answer_question(
     question: str,
     platform: str = "zalo",
     display_name: str = "",
+    is_admin: bool = False,
     db: Session = None
 ) -> tuple:
     """
     Trả lời câu hỏi người dùng qua RAG + AI Engine.
     
+    Args:
+        is_admin: True nếu người gửi là quản trị viên (cho phép bot xưng hô/hỗ trợ riêng).
+
     Returns: (reply_text, model_name, relevant_results)
     """
     should_close = db is None
     if db is None:
         db = get_db_session()
+
 
     try:
         # 1. Get/create session
@@ -205,6 +210,12 @@ def answer_question(
                 print(f"[Chat] Lỗi RAG search: {e}")
         else:
             print("[Chat Engine] Bỏ qua RAG search vì câu hỏi xã giao/ngoài lề.")
+
+        # 2b. Phát hiện khoảng trống tri thức (Knowledge Gap): câu hỏi nghiệp vụ nội bộ
+        # nhưng RAG không tìm thấy tài liệu đủ liên quan -> ghi log để admin bổ sung tài liệu.
+        if question_type == "nội_bộ" and best_score < RAG_SCORE_MEDIUM:
+            print(f"[Knowledge Gap] ⚠️ Câu hỏi nội bộ không có tài liệu phù hợp (score={best_score:.1f}): '{question[:120]}'")
+
 
         # 3. Xây dựng context
         relevant_context = ""
@@ -250,6 +261,16 @@ def answer_question(
         kt = relevant_context if use_internal_kt else "Không có tài liệu nội bộ phù hợp."
         system_prompt = QA_SYSTEM_PROMPT.format(kienthuc_content=kt)
 
+        # Nếu người gửi là quản trị viên, bổ sung ghi chú vai trò để bot xưng hô phù hợp.
+        if is_admin:
+            admin_display = display_name or "Quản trị viên"
+            system_prompt += (
+                f"\n\n[GHI CHÚ NỘI BỘ] Người bạn đang trò chuyện là **{admin_display}** — "
+                f"QUẢN TRỊ VIÊN của hệ thống. Hãy xưng hô trân trọng và có thể nhắc rằng đồng chí "
+                f"có quyền nạp tài liệu tri thức mới bằng cách gửi tệp trực tiếp qua Zalo."
+            )
+
+
         # 5. Call AI
         reply, model_name, response_time = call_ai(
             system_prompt=system_prompt,
@@ -261,8 +282,21 @@ def answer_question(
             # Xóa bỏ câu cảnh báo cũ nếu AI tự sinh từ tri thức để tránh lặp lại
             reply = re.sub(r'\(?Bạn cần kiểm tra lại thông tin trước khi sử dụng\.?\)?', '', reply, flags=re.IGNORECASE).strip()
 
+            # Trích dẫn nguồn tài liệu khi câu trả lời dựa trên tri thức nội bộ (điểm RAG cao),
+            # giúp người dùng tin cậy và tra cứu lại. Chỉ hiển thị các nguồn duy nhất.
+            citation = ""
+            if best_score >= RAG_SCORE_HIGH and relevant_results:
+                unique_sources = []
+                for _s, _c in relevant_results:
+                    src = _c.get("source") or _c.get("doc_title")
+                    if src and src not in unique_sources:
+                        unique_sources.append(src)
+                if unique_sources:
+                    citation = "\n\n📚 Nguồn tham khảo: " + "; ".join(unique_sources[:3])
+
             footnote = f"\n\n🤖 Trợ lý ảo - Văn phòng Đảng ủy Công Hải"
-            final_reply = reply + footnote
+            final_reply = reply + citation + footnote
+
 
             # Save messages
             rag_sources_list = [

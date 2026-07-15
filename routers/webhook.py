@@ -163,13 +163,18 @@ def _process_zalo_payload(payload: dict):
 
         print(f"[Webhook] Nhận tin nhắn từ {display_name}: {text[:80]}...")
         send_typing_action(chat_id)
-        
+
+        # Xác định người gửi có phải quản trị viên không (dựa trên Zalo User ID)
+        is_admin = sender_id in ADMIN_ZALO_IDS
+
         reply, model_name, results = answer_question(
             chat_id=chat_id,
             question=text,
             platform="zalo",
-            display_name=display_name
+            display_name=display_name,
+            is_admin=is_admin
         )
+
         
         if reply:
             send_message(chat_id, reply)
