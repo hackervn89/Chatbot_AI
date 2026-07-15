@@ -14,7 +14,7 @@ from config import (
 )
 from database import get_db_session
 from models import ChatSession, ChatMessage
-from services.rag_pipeline import hybrid_search, classify_question
+from services.rag_pipeline import hybrid_search, classify_question, is_chitchat, normalize_abbreviations
 from services.ai_engine import call_ai, call_gemini_with_grounding
 from services.audit_logger import log_chat_action
 
@@ -182,9 +182,16 @@ def answer_question(
         session = get_or_create_session(platform, chat_id, display_name, db)
         history = get_chat_history(session.id, db)
 
-        # 2. Phân loại câu hỏi bằng LLM trước
-        question_type = classify_question(question)
-        print(f"[Chat Engine] Phân loại câu hỏi: '{question}' -> {question_type}")
+        # 2. Phân loại câu hỏi.
+        # Tối ưu: lọc chitchat bằng regex TRƯỚC để tránh gọi LLM classifier không cần thiết (tiết kiệm API).
+        # Chuẩn hóa viết tắt (ĐHTN -> điều hành tác nghiệp) trước khi phân loại để tăng độ chính xác.
+        if is_chitchat(question):
+            question_type = "ngoài_lề"
+            print(f"[Chat Engine] Regex nhận diện chitchat: '{question}' -> ngoài_lề (bỏ qua LLM classifier).")
+        else:
+            normalized_q = normalize_abbreviations(question)
+            question_type = classify_question(normalized_q)
+            print(f"[Chat Engine] LLM phân loại câu hỏi: '{question}' -> {question_type}")
         
         best_score = 0
         relevant_results = []

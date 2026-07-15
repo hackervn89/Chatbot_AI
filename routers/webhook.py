@@ -8,7 +8,7 @@ import requests
 from fastapi import APIRouter, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
 
-from config import ADMIN_ZALO_IDS, TEMP_DIR
+from config import ADMIN_ZALO_IDS, TEMP_DIR, ZALO_WEBHOOK_SECRET
 from services.chat_engine import answer_question
 from services.zalo_api import send_message, send_typing_action
 from services.knowledge_manager import ingest_document
@@ -187,6 +187,14 @@ def _process_zalo_payload(payload: dict):
 async def zalo_webhook(request: Request, background_tasks: BackgroundTasks):
     """Webhook endpoint tiếp nhận tin nhắn từ Zalo OA"""
     try:
+        # Xác thực Secret Token (nếu đã cấu hình ZALO_WEBHOOK_SECRET).
+        # Chỉ chặn khi secret được đặt để tránh làm gián đoạn bot khi env chưa cấu hình.
+        if ZALO_WEBHOOK_SECRET:
+            received_token = request.headers.get("X-Bot-Api-Secret-Token", "")
+            if received_token != ZALO_WEBHOOK_SECRET:
+                print("[Webhook Security] Từ chối request: Secret Token không hợp lệ.")
+                return JSONResponse(status_code=403, content={"status": "forbidden"})
+
         payload = await request.json()
         
         # Đẩy luồng xử lý tin nhắn vào Background Tasks

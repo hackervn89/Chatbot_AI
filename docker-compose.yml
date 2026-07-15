@@ -4,9 +4,9 @@ services:
     container_name: chatbot-db
     restart: always
     environment:
-      POSTGRES_DB: chatbot_db
-      POSTGRES_USER: chatbot_user
-      POSTGRES_PASSWORD: chatbot_password_secure_2026
+      POSTGRES_DB: ${POSTGRES_DB:-chatbot_db}
+      POSTGRES_USER: ${POSTGRES_USER:-chatbot_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD chua duoc cau hinh trong .env}
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
@@ -29,7 +29,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DATABASE_URL=postgresql://chatbot_user:chatbot_password_secure_2026@db:5432/chatbot_db
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-chatbot_user}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-chatbot_db}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
       - ZALO_API_TOKEN=${ZALO_API_TOKEN}
