@@ -195,7 +195,7 @@ def answer_question(
             print(f"[Chat Engine] Regex nhận diện chitchat: '{question}' -> ngoài_lề (bỏ qua LLM classifier).")
         else:
             normalized_q = normalize_abbreviations(question)
-            question_type = classify_question(normalized_q)
+            question_type = classify_question(normalized_q, history=history[-4:])
             print(f"[Chat Engine] LLM phân loại câu hỏi: '{question}' -> {question_type}")
         
         best_score = 0

@@ -290,18 +290,46 @@ def is_chitchat(query: str) -> bool:
     return False
 
 
-def classify_question(query: str) -> str:
+def _format_classifier_history(history: list = None, max_turns: int = 4, max_chars_per_turn: int = 300) -> str:
+    """Định dạng tối đa 4 lượt hội thoại gần nhất để bổ sung ngữ cảnh cho bộ phân loại."""
+    if not history:
+        return "Không có."
+
+    recent_turns = history[-max_turns:]
+    formatted = []
+    role_labels = {
+        "user": "Người dùng",
+        "assistant": "Trợ lý"
+    }
+
+    for item in recent_turns:
+        role = role_labels.get(item.get("role", ""), item.get("role", "Không rõ"))
+        content = (item.get("content") or "").strip().replace("\n", " ")
+        if len(content) > max_chars_per_turn:
+            content = content[:max_chars_per_turn].rstrip() + "..."
+        if content:
+            formatted.append(f"- {role}: {content}")
+
+    return "\n".join(formatted) if formatted else "Không có."
+
+
+def classify_question(query: str, history: list = None) -> str:
     """
     Phân loại câu hỏi của người dùng để quyết định có sử dụng RAG hay không.
     Ưu tiên sử dụng DeepSeek, nếu lỗi hoặc không cấu hình thì fallback sang Gemini.
+    Có truyền tối đa 4 lượt hội thoại gần nhất để phân loại đúng các câu hỏi tiếp nối.
     """
+    history_context = _format_classifier_history(history)
     prompt = f"""Phân loại câu hỏi của người dùng dưới đây thành một trong hai nhãn sau:
 - 'nội_bộ': Nếu câu hỏi là về thao tác, chức năng, lỗi, hướng dẫn sử dụng phần mềm Điều hành tác nghiệp (ĐHTN) của cơ quan (ví dụ: tạo phiếu trình, gửi văn bản đi, xử lý văn bản đến, quản lý nhiệm vụ, cấu hình hoặc quản trị hệ thống...).
 - 'ngoài_lề': Nếu câu hỏi chỉ là chào hỏi xã giao (xin chào, hello, hi, cảm ơn, chúc sức khỏe), hỏi về kiến thức chung, lập trình, toán học, thời tiết, kỹ năng văn phòng chung (như Excel, Word chung không liên quan ĐHTN), hoặc các chủ đề học thuật ngoài lề khác.
 
 Bạn PHẢI trả về duy nhất một từ là 'nội_bộ' hoặc 'ngoài_lề' (không kèm bất kỳ giải thích nào khác).
 
-Câu hỏi: "{query}"
+Lịch sử hội thoại gần nhất (tối đa 4 lượt, dùng để hiểu các câu hỏi tiếp nối như "cái này", "làm tiếp thế nào", "nó ở đâu"):
+{history_context}
+
+Câu hỏi hiện tại: "{query}"
 Nhãn phân loại:"""
 
     # 1. Thử gọi DeepSeek trước
