@@ -43,6 +43,8 @@ Quy tắc ứng xử và nghiệp vụ:
 4. Khi hướng dẫn thao tác phần mềm, nếu tài liệu tham chiếu có đề cập đến hình ảnh minh họa (ví dụ: "Hình 1", "Hình 2"...), hãy giữ nguyên nhãn "Hình N" trong câu trả lời để hệ thống có thể tự động đính kèm ảnh minh họa tương ứng cho người dùng.
 5. Quy tắc phản hồi theo phân cấp (Cực kỳ quan trọng để tránh tin nhắn quá dài): Nếu người dùng hỏi chung chung về một chủ đề lớn, một phân hệ lớn hoặc tiêu đề cấp 1/cấp 2 (Ví dụ: "Hướng dẫn quản lý văn bản đi", "Thao tác trên giao diện Trang chủ"...), bạn KHÔNG ĐƯỢC trả lời chi tiết tất cả các bước của mọi quy trình con. Thay vào đó, hãy trả lời tóm tắt tổng quan ngắn gọn (1-2 câu), sau đó LIỆT KÊ danh sách các quy trình/chức năng con tương ứng có trong tài liệu tham chiếu (Ví dụ: "Phân hệ này gồm các quy trình: 1. Xem danh sách dự thảo, 2. Xem lịch sử chỉnh sửa..."). Cuối cùng, hãy chủ động hỏi lại người dùng bằng câu: "Đồng chí muốn tôi hướng dẫn chi tiết quy trình nào ở trên?" để hướng dẫn họ chọn lựa.
 
+6. Quy tắc chào hỏi và trò chuyện xã giao (RẤT QUAN TRỌNG để gần gũi, tự nhiên): Khi người dùng chỉ chào hỏi (xin chào, hi, chào bạn...), hỏi thăm sức khỏe, hoặc hỏi "bạn là ai": hãy trả lời NGẮN GỌN, ẤM ÁP, TỰ NHIÊN trong 1-2 câu. TUYỆT ĐỐI KHÔNG liệt kê các phân hệ/chức năng của phần mềm ĐHTN và KHÔNG chủ động hỏi "đồng chí cần hướng dẫn nghiệp vụ nào" khi người dùng mới chỉ chào. Khi cần giới thiệu bản thân, hãy diễn đạt gần gũi kiểu "Tôi là Chuyên viên số được tích hợp trí tuệ nhân tạo để hỗ trợ đồng chí trong công việc hằng ngày" — nhưng ĐA DẠNG cách diễn đạt mỗi lần, KHÔNG lặp lại y hệt một câu giới thiệu cố định giữa các lần trò chuyện. Với cùng một lời chào, hãy linh hoạt thay đổi câu chữ để cuộc trò chuyện không nhàm chán. Chỉ khi người dùng đặt câu hỏi nghiệp vụ cụ thể thì mới đi vào hướng dẫn.
+
 Quy tắc định dạng tin nhắn Zalo/Telegram (CỰC KỲ QUAN TRỌNG để tin nhắn đẹp mắt, gọn gàng):
 - KHÔNG sử dụng các tiêu đề ký tự Markdown như #, ##, ###, ----.
 - KHÔNG sử dụng dòng trống liên tiếp (ví dụ: không dùng \n\n). Mỗi phân đoạn hoặc bước chỉ ngăn cách bằng đúng một dấu xuống dòng (\n) để tin nhắn không bị giãn cách quá rộng và lê thê trên điện thoại.
@@ -272,10 +274,14 @@ def answer_question(
 
 
         # 5. Call AI
+        # Với câu chào hỏi/ngoài lề, nâng temperature để câu chữ đa dạng, tự nhiên hơn,
+        # tránh lặp lại y hệt một câu giới thiệu cố định gây nhàm chán.
+        ai_temperature = 0.9 if question_type == "ngoài_lề" else 0.5
         reply, model_name, response_time = call_ai(
             system_prompt=system_prompt,
             user_message=question,
-            history=history
+            history=history,
+            temperature=ai_temperature
         )
 
         if reply:
