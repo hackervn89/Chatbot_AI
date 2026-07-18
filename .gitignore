@@ -20,3 +20,25 @@ app.log
 .agent_bridge/
 CLINE_INSTRUCTIONS.md
 scripts/agent_bridge.py
+scripts/remote_deploy.py
+scripts/remote_health_check.py
+scripts/remote_query_db.py
+scripts/remote_read_env.py
+scripts/remote_deploy_admin.py
+scripts/remote_cleanup_deploy.py
+scripts/remote_deploy_security.py
+scripts/remote_deploy_features.py
+scripts/remote_run_tests.py
+scripts/remote_analyze_rag.py
+scripts/remote_deploy_close_8080.py
+scripts/remote_deploy_history_prompt.py
+scripts/remote_deploy_chitchat_fix.py
+scripts/remote_cat_env.py
+scripts/_remote_cmd.sh
+
+# Converted/intermediate manual source files
+HDSD_dhtn_markdown/*.docx
+HDSD_dhtn_markdown/chuc-nang-lanh-dao.txt
+
+# Chứa thông tin nhạy cảm (mật khẩu VPS) - KHÔNG commit
+.clinerules

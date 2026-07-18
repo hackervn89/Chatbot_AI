@@ -1,0 +1,6 @@
+# UnderstandAnything intermediate artifacts (chỉ commit kết quả cuối)
+intermediate/
+tmp/
+fingerprints.json
+
+# Chỉ giữ lại: graph chính, skill, normalizer, config

@@ -1,0 +1,77 @@
+# .understandignore — patterns for files/dirs to exclude from analysis
+# Syntax: same as .gitignore (globs, # comments, ! negation, trailing / for dirs)
+# Lines below are suggestions — uncomment to activate.
+# Use ! prefix to force-include something excluded by defaults.
+#
+# Built-in defaults (always excluded unless negated):
+#   node_modules/, .git/, dist/, build/, obj/, *.lock, *.min.js, etc.
+#
+
+# --- From .gitignore (uncomment to exclude) ---
+
+# .env
+# *.pyc
+# taovanban_khoidang/output/
+# taovanban_khoidang/scripts/temp/
+temp_git/
+# taovanban_khoidang/references/HDSD DHTN/
+# taovanban_khoidang/references/TTHC/
+temp/
+# app.log
+.agent_bridge/
+# CLINE_INSTRUCTIONS.md
+# scripts/agent_bridge.py
+# scripts/remote_deploy.py
+# scripts/remote_health_check.py
+# scripts/remote_query_db.py
+# scripts/remote_read_env.py
+# scripts/remote_deploy_admin.py
+# scripts/remote_cleanup_deploy.py
+# scripts/remote_deploy_security.py
+# scripts/remote_deploy_features.py
+# scripts/remote_run_tests.py
+# scripts/remote_analyze_rag.py
+# scripts/remote_deploy_close_8080.py
+# scripts/remote_deploy_history_prompt.py
+# scripts/remote_deploy_chitchat_fix.py
+# scripts/remote_cat_env.py
+# .clinerules
+
+# --- Detected directories (uncomment to exclude) ---
+
+# scripts/
+
+# --- Test file patterns (uncomment to exclude) ---
+
+# JS / TS
+# *.test.*
+# *.spec.*
+# *.snap
+# C# / .NET
+# **/*Tests.cs
+# **/*Test.cs
+# **/*Fixture.cs
+# **/*.Tests.csproj
+# Java / Kotlin
+# **/src/test/**
+# **/*Test.java
+# **/*IT.java
+# **/*Spec.kt
+# Go
+# **/*_test.go
+# C++
+# **/*_test.cc
+# **/*_test.cpp
+# **/*_test.cxx
+# **/*Test.cc
+# **/*Test.cpp
+# **/*_unittest.cc
+# **/*_unittest.cpp
+# **/*_browsertest.cc
+# **/*_benchmark.cc
+# **/*Benchmark.cpp
+# Python
+# **/test_*.py
+# **/*_test.py
+# **/tests.py
+# **/conftest.py
