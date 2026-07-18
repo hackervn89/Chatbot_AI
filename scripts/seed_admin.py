@@ -4,20 +4,16 @@ Chạy một lần sau khi deploy: python scripts/seed_admin.py
 """
 import sys
 import os
-import hashlib
 
 # Thêm thư mục gốc vào path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from services.password_hash import hash_password_pbkdf2
 
 from config import ADMIN_DEFAULT_USERNAME, ADMIN_DEFAULT_PASSWORD, IS_POSTGRES
 from database import engine, get_db_session
 from models import Base, AdminUser
 from sqlalchemy import text
-
-
-def hash_password(password: str) -> str:
-    """Hash mật khẩu bằng SHA-256 (đơn giản, đủ cho single-admin)"""
-    return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
 
 def seed_admin():
@@ -35,7 +31,7 @@ def seed_admin():
         else:
             admin = AdminUser(
                 username=ADMIN_DEFAULT_USERNAME,
-                password_hash=hash_password(ADMIN_DEFAULT_PASSWORD),
+                password_hash=hash_password_pbkdf2(ADMIN_DEFAULT_PASSWORD),
                 display_name="Quản trị viên",
                 is_active=True
             )

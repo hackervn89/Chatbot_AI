@@ -192,7 +192,8 @@ def generate_and_send_word_doc(chat_id: str, metadata: dict, sender_name: str) -
 
     if os.path.exists(output_docx_path):
         # Lưu file mapping vào CSDL
-        file_id = f"f{int(time.time() * 1000) % 10000000}"
+        import uuid
+        file_id = str(uuid.uuid4())
         
         db = get_db_session()
         try:

@@ -75,6 +75,8 @@ EMBEDDING_DIMENSION = 768  # Giảm từ 3072 → 768 để tương thích pgvec
 ZALO_API_TOKEN = os.environ.get('ZALO_API_TOKEN', '')
 ZALO_MODE = os.environ.get('ZALO_MODE', 'polling').lower()
 ZALO_WEBHOOK_SECRET = os.environ.get('ZALO_WEBHOOK_SECRET', '')
+if ZALO_MODE == 'webhook' and not ZALO_WEBHOOK_SECRET:
+    print("[WARNING] ZALO_WEBHOOK_SECRET not configured in production webhook mode!")
 
 # ==================== SERVER ====================
 SERVER_DOMAIN = os.environ.get('SERVER_DOMAIN', 'http://localhost:8080')

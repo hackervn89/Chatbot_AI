@@ -5,6 +5,7 @@ Hỗ trợ: Hỏi đáp RAG, OCR ảnh soạn công văn Word, Admin gửi tệp
 import os
 import time
 import requests
+import asyncio
 from fastapi import APIRouter, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
 
@@ -13,6 +14,12 @@ from services.chat_engine import answer_question
 from services.zalo_api import send_message, send_typing_action
 from services.knowledge_manager import ingest_document
 from services.document_creator import analyze_image_with_gemini, generate_and_send_word_doc
+from routers.admin import sanitize_filename
+
+# Semaphores to limit concurrent heavy operations
+OCR_SEMAPHORE = asyncio.Semaphore(2)  # Max 2 concurrent OCR
+INGEST_SEMAPHORE = asyncio.Semaphore(3)  # Max 3 concurrent ingestions
+CHAT_SEMAPHORE = asyncio.Semaphore(10)  # Max 10 concurrent chats
 
 router = APIRouter()
 
@@ -30,7 +37,7 @@ def download_file_from_url(url: str, dest_path: str) -> bool:
         print(f"[Webhook Helper] Lỗi tải tệp: {e}")
     return False
 
-def _process_zalo_payload(payload: dict):
+async def _process_zalo_payload(payload: dict):
     """Xử lý payload webhook Zalo trong background"""
     try:
         event_name = payload.get("event_name", "")
@@ -90,14 +97,21 @@ def _process_zalo_payload(payload: dict):
                 if file_url and file_name:
                     send_message(chat_id, f"📥 Đang tải tài liệu: {file_name}...")
                     
-                    temp_file_path = os.path.join(TEMP_DIR, file_name)
+                    try:
+                        safe_filename = sanitize_filename(file_name)
+                    except ValueError as e:
+                        send_message(chat_id, f"❌ Lỗi tải tệp: {str(e)}")
+                        return
+                        
+                    temp_file_path = os.path.join(TEMP_DIR, safe_filename)
                     if download_file_from_url(file_url, temp_file_path):
                         send_message(chat_id, "⚙️ Đang tiến hành phân tích văn bản và nạp tri thức RAG...")
                         
                         # Ingest document
-                        result = ingest_document(
-                            file_path=temp_file_path,
-                            title=os.path.splitext(file_name)[0].replace('_', ' '),
+                        async with INGEST_SEMAPHORE:
+                            result = ingest_document(
+                                file_path=temp_file_path,
+                                title=os.path.splitext(safe_filename)[0].replace('_', ' '),
                             category="core",
                             created_by=f"zalo_admin_{sender_id}"
                         )
@@ -142,10 +156,11 @@ def _process_zalo_payload(payload: dict):
             if download_file_from_url(photo_url, temp_img_path):
                 try:
                     # Phân tích ảnh chụp văn bản chỉ đạo bằng Gemini Vision
-                    metadata = analyze_image_with_gemini(temp_img_path)
-                    
-                    # Soạn thảo và gửi văn bản Word
-                    response_msg = generate_and_send_word_doc(chat_id, metadata, display_name)
+                    async with OCR_SEMAPHORE:
+                        metadata = analyze_image_with_gemini(temp_img_path)
+                        
+                        # Soạn thảo và gửi văn bản Word
+                        response_msg = generate_and_send_word_doc(chat_id, metadata, display_name)
                     send_message(chat_id, response_msg)
                 except Exception as e:
                     send_message(chat_id, f"❌ Đã xảy ra lỗi khi phân tích ảnh: {str(e)}")
@@ -167,13 +182,14 @@ def _process_zalo_payload(payload: dict):
         # Xác định người gửi có phải quản trị viên không (dựa trên Zalo User ID)
         is_admin = sender_id in ADMIN_ZALO_IDS
 
-        reply, model_name, results = answer_question(
-            chat_id=chat_id,
-            question=text,
-            platform="zalo",
-            display_name=display_name,
-            is_admin=is_admin
-        )
+        async with CHAT_SEMAPHORE:
+            reply, model_name, results = answer_question(
+                chat_id=chat_id,
+                question=text,
+                platform="zalo",
+                display_name=display_name,
+                is_admin=is_admin
+            )
 
         
         if reply:
@@ -192,13 +208,15 @@ def _process_zalo_payload(payload: dict):
 async def zalo_webhook(request: Request, background_tasks: BackgroundTasks):
     """Webhook endpoint tiếp nhận tin nhắn từ Zalo OA"""
     try:
-        # Xác thực Secret Token (nếu đã cấu hình ZALO_WEBHOOK_SECRET).
-        # Chỉ chặn khi secret được đặt để tránh làm gián đoạn bot khi env chưa cấu hình.
-        if ZALO_WEBHOOK_SECRET:
-            received_token = request.headers.get("X-Bot-Api-Secret-Token", "")
-            if received_token != ZALO_WEBHOOK_SECRET:
-                print("[Webhook Security] Từ chối request: Secret Token không hợp lệ.")
-                return JSONResponse(status_code=403, content={"status": "forbidden"})
+        # Xác thực Secret Token bắt buộc trong production mode
+        if not ZALO_WEBHOOK_SECRET:
+            print("[Webhook Security] ZALO_WEBHOOK_SECRET không được cấu hình - từ chối webhook.")
+            return JSONResponse(status_code=500, content={"status": "misconfigured"})
+
+        received_token = request.headers.get("X-Bot-Api-Secret-Token", "")
+        if received_token != ZALO_WEBHOOK_SECRET:
+            print("[Webhook Security] Từ chối request: Secret Token không hợp lệ.")
+            return JSONResponse(status_code=403, content={"status": "forbidden"})
 
         payload = await request.json()
         

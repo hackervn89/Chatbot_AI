@@ -3,6 +3,8 @@ import sys
 import time
 import threading
 import subprocess
+import uuid
+from pathlib import Path
 from fastapi import FastAPI, Depends, HTTPException, Request, BackgroundTasks
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -100,26 +102,33 @@ def health_check():
 
 @app.get("/download/{file_id}")
 def download_file(file_id: str, db: Session = Depends(get_db)):
-    """Tải file Word kết quả thông qua file_id bảo mật lưu trong DB"""
+    """Tải file Word kết quả thông qua file_id bảo mật UUID"""
+    # Validate UUID format
+    try:
+        uuid.UUID(file_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid file ID format")
+    
     mapping = db.query(models.FileMapping).filter(models.FileMapping.file_id == file_id).first()
-    if mapping:
-        actual_filename = mapping.filename
-        file_path = os.path.join(OUTPUT_DIR, actual_filename)
-        if os.path.exists(file_path):
-            print(f"[File Server] Đang tải file (DB Mapping): {file_id} -> {actual_filename}")
-            return FileResponse(
-                file_path, 
-                media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
-                filename=actual_filename
-            )
-            
-    # Fallback: Thử tìm trực tiếp tên file trong thư mục output (tương thích ngược)
-    file_path = os.path.join(OUTPUT_DIR, file_id)
-    if os.path.exists(file_path):
-        print(f"[File Server] Đang tải file trực tiếp: {file_id}")
-        return FileResponse(file_path)
-        
-    raise HTTPException(status_code=404, detail="File không tồn tại hoặc đã hết hạn tải xuống.")
+    if not mapping:
+        raise HTTPException(status_code=404, detail="File not found or expired")
+    
+    actual_filename = mapping.filename
+    file_path = Path(OUTPUT_DIR) / actual_filename
+    
+    # Prevent path traversal
+    if not file_path.resolve().is_relative_to(Path(OUTPUT_DIR).resolve()):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="File not found on disk")
+    
+    print(f"[File Server] Tải file: {file_id} -> {actual_filename}")
+    return FileResponse(
+        str(file_path), 
+        media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+        filename=actual_filename
+    )
 
 def file_cleaner_task():
     """Background Daemon Thread dọn dẹp các tệp cũ > 24h và DB mapping hết hạn"""

@@ -84,7 +84,7 @@ def call_ai_json(
 
     # Fallback Gemini
     if GEMINI_API_KEY:
-        result = _call_gemini(system_prompt, user_message, [], temperature)
+        result = _call_gemini_json(system_prompt, user_message, temperature)
         if result:
             return result
 
@@ -238,3 +238,34 @@ def call_gemini_with_grounding(
         system_prompt, user_message, history or [],
         temperature, tools_config=[google_search_tool]
     )
+
+
+def _call_gemini_json(
+    system_prompt: str,
+    user_message: str,
+    temperature: float
+) -> tuple:
+    """Gọi Gemini với JSON response format"""
+    if not GEMINI_API_KEY:
+        return None
+    
+    client = genai.Client(api_key=GEMINI_API_KEY)
+    
+    for model_name in GEMINI_MODELS:
+        try:
+            print(f"[AI] Đang gọi Gemini JSON ({model_name})...")
+            response = client.models.generate_content(
+                model=model_name,
+                contents=user_message,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_prompt,
+                    response_mime_type="application/json",
+                    temperature=temperature
+                )
+            )
+            if response and response.text:
+                return response.text.strip(), model_name
+        except Exception as e:
+            print(f"[AI] Lỗi Gemini JSON ({model_name}): {e}")
+    
+    return None

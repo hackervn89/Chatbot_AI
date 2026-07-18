@@ -3,7 +3,7 @@ Admin Dashboard Router — Quản lý tri thức qua giao diện web.
 Session-based authentication, Jinja2 templates.
 """
 import os
-import hashlib
+import re
 import secrets
 import shutil
 from datetime import datetime
@@ -30,6 +30,7 @@ from services.knowledge_manager import (
     analyze_document_draft
 )
 from services.audit_logger import log_action
+from services.password_hash import verify_password, hash_password_pbkdf2
 
 router = APIRouter(prefix="/admin")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
@@ -37,9 +38,25 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 # In-memory sessions (đủ cho single-admin)
 _sessions = {}
 
+ALLOWED_EXTENSIONS = {'.pdf', '.docx', '.txt', '.md', '.srt'}
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 
-def hash_password(password: str) -> str:
-    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+def sanitize_filename(filename: str) -> str:
+    """Sanitize uploaded filename to prevent path traversal"""
+    # Get extension
+    name, ext = os.path.splitext(filename)
+    ext = ext.lower()
+    
+    # Validate extension
+    if ext not in ALLOWED_EXTENSIONS:
+        raise ValueError(f"File type {ext} not allowed")
+    
+    # Remove dangerous characters, keep only alphanumeric, dash, underscore
+    safe_name = re.sub(r'[^a-zA-Z0-9_-]', '_', name)[:100]
+    
+    # Add random suffix to avoid collisions
+    random_suffix = secrets.token_hex(4)
+    return f"{safe_name}_{random_suffix}{ext}"
 
 
 def _get_current_admin(request: Request) -> AdminUser:
@@ -87,14 +104,19 @@ async def login_submit(request: Request, username: str = Form(...), password: st
         if not admin and username == ADMIN_DEFAULT_USERNAME:
             admin = AdminUser(
                 username=ADMIN_DEFAULT_USERNAME,
-                password_hash=hash_password(ADMIN_DEFAULT_PASSWORD),
+                password_hash=hash_password_pbkdf2(ADMIN_DEFAULT_PASSWORD),
                 display_name="Quản trị viên"
             )
             db.add(admin)
             db.commit()
             db.refresh(admin)
         
-        if admin and admin.password_hash == hash_password(password) and admin.is_active:
+        if admin and verify_password(password, admin.password_hash) and admin.is_active:
+            # Auto-upgrade legacy hash
+            if len(admin.password_hash) == 64:  # SHA-256 length
+                admin.password_hash = hash_password_pbkdf2(password)
+                db.commit()
+                
             session_id = secrets.token_hex(32)
             _sessions[session_id] = admin.username
             admin.last_login = datetime.utcnow()
@@ -103,7 +125,14 @@ async def login_submit(request: Request, username: str = Form(...), password: st
             log_action("admin", "LOGIN", actor=username, db=db)
             
             response = RedirectResponse(url="/admin/dashboard", status_code=302)
-            response.set_cookie("admin_session", session_id, httponly=True, max_age=86400)
+            response.set_cookie(
+                "admin_session", 
+                session_id, 
+                httponly=True, 
+                secure=True,  # HTTPS only
+                samesite='lax',  # CSRF protection
+                max_age=28800  # 8 hours
+            )
             return response
         
         return templates.TemplateResponse(request=request, name="login.html", context={
@@ -243,7 +272,11 @@ async def upload_document(
         return RedirectResponse(url="/admin/login", status_code=302)
     
     # Lưu file tạm
-    temp_path = os.path.join(TEMP_DIR, file.filename)
+    try:
+        safe_filename = sanitize_filename(file.filename)
+    except ValueError as e:
+        return RedirectResponse(url=f"/admin/documents?msg=error&detail={str(e)}", status_code=302)
+    temp_path = os.path.join(TEMP_DIR, safe_filename)
     try:
         with open(temp_path, 'wb') as f:
             content = await file.read()

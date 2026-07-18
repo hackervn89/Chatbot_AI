@@ -37,8 +37,10 @@ if IS_POSTGRES:
     from pgvector.sqlalchemy import Vector
     from config import EMBEDDING_DIMENSION
     VectorColumnType = Vector(EMBEDDING_DIMENSION)
+    BigIntegerIDType = BigInteger
 else:
     VectorColumnType = SQLiteVector
+    BigIntegerIDType = Integer
 
 
 # ==================== MODELS ====================
@@ -134,7 +136,7 @@ class ChatMessage(Base):
     """Tin nhắn hội thoại — lưu chi tiết từng tin nhắn + metadata AI"""
     __tablename__ = 'chat_messages'
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    id = Column(BigIntegerIDType, primary_key=True, autoincrement=True)
     session_id = Column(Integer, ForeignKey('chat_sessions.id', ondelete='CASCADE'), nullable=False)
     role = Column(String(20), nullable=False)  # user, assistant
     content = Column(Text, nullable=False)
@@ -151,7 +153,7 @@ class AuditLog(Base):
     """Nhật ký giám sát — append-only, ghi lại mọi hoạt động"""
     __tablename__ = 'audit_logs'
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    id = Column(BigIntegerIDType, primary_key=True, autoincrement=True)
     entity_type = Column(String(50), nullable=False)  # document, chunk, chat, system
     entity_id = Column(Integer, default=0)
     action = Column(String(30), nullable=False)  # CREATE, UPDATE, DELETE, REINDEX, SEARCH, CHAT
