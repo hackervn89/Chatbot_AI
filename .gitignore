@@ -42,3 +42,7 @@ HDSD_dhtn_markdown/chuc-nang-lanh-dao.txt
 
 # Chứa thông tin nhạy cảm (mật khẩu VPS) - KHÔNG commit
 .clinerules
+
+# Thư mục tri thức thô
+Tri thức/
+Tri\ thức/

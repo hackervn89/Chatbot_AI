@@ -1,119 +1,5 @@
 {
-  "version": "1.0.0",
-  "project": {
-    "name": "Hệ Thống Chuyên Viên Ảo - Khối Đảng",
-    "languages": [
-      "python",
-      "markdown",
-      "sql",
-      "yaml",
-      "dockerfile"
-    ],
-    "frameworks": [
-      "FastAPI",
-      "PostgreSQL",
-      "pgvector",
-      "Docker",
-      "Docker Compose",
-      "Jinja2"
-    ],
-    "description": "Hệ thống tự động hóa phân tích văn bản chỉ đạo của Đảng ủy để soạn thảo Công văn giao việc và tích hợp chuyên viên ảo hỏi đáp nghiệp vụ RAG.",
-    "analyzedAt": "2026-07-17T21:53:01.898060Z",
-    "gitCommitHash": "52257828385e2f8ccdf43b12c30390c4fb170dd4",
-    "normalizedAt": "2026-07-18T02:06:21.790471+00:00",
-    "nodeCount": 290,
-    "edgeCount": 328
-  },
   "nodes": [
-    {
-      "id": "config:config.py",
-      "type": "config",
-      "label": "config.py",
-      "summary": "Quản lý cấu hình ứng dụng, tải các biến môi trường từ tệp .env.",
-      "tags": [
-        "configuration",
-        "environment",
-        "settings",
-        "python"
-      ],
-      "complexity": "simple",
-      "path": "config.py",
-      "name": "config.py"
-    },
-    {
-      "id": "function:config.py:_load_dotenv",
-      "type": "function",
-      "label": "_load_dotenv",
-      "summary": "Tải các biến môi trường từ tệp .env nằm trong thư mục gốc của dự án.",
-      "tags": [
-        "dotenv",
-        "environment_variables",
-        "file_io"
-      ],
-      "complexity": "simple",
-      "path": "config.py",
-      "name": "_load_dotenv"
-    },
-    {
-      "id": "service:routers/webhook.py",
-      "type": "service",
-      "label": "webhook.py",
-      "summary": "Định nghĩa các endpoint webhook cho Zalo, xử lý tin nhắn đến, tải tệp lên và tích hợp với các dịch vụ AI.",
-      "tags": [
-        "webhook",
-        "zalo",
-        "fastapi",
-        "ai",
-        "file_processing"
-      ],
-      "complexity": "complex",
-      "path": "routers/webhook.py",
-      "name": "webhook.py"
-    },
-    {
-      "id": "function:routers/webhook.py:download_file_from_url",
-      "type": "function",
-      "label": "download_file_from_url",
-      "summary": "Tải một tệp từ URL cho trước đến đường dẫn đích đã chỉ định.",
-      "tags": [
-        "download",
-        "file_io",
-        "http_request"
-      ],
-      "complexity": "simple",
-      "path": "routers/webhook.py",
-      "name": "download_file_from_url"
-    },
-    {
-      "id": "function:routers/webhook.py:_process_zalo_payload",
-      "type": "function",
-      "label": "_process_zalo_payload",
-      "summary": "Xử lý payload webhook Zalo đến, xử lý tin nhắn văn bản, tệp đính kèm và ủy quyền cho các dịch vụ AI và quản lý tài liệu.",
-      "tags": [
-        "zalo_api",
-        "payload_processing",
-        "ai_integration",
-        "document_ingestion"
-      ],
-      "complexity": "complex",
-      "path": "routers/webhook.py",
-      "name": "_process_zalo_payload"
-    },
-    {
-      "id": "function:routers/webhook.py:zalo_webhook",
-      "type": "function",
-      "label": "zalo_webhook",
-      "summary": "Endpoint FastAPI cho webhook Zalo, xác thực yêu cầu và gửi xử lý payload đến một tác vụ nền.",
-      "tags": [
-        "fastapi",
-        "webhook",
-        "background_task",
-        "request_handling"
-      ],
-      "complexity": "moderate",
-      "path": "routers/webhook.py",
-      "name": "zalo_webhook"
-    },
     {
       "id": "pipeline:scripts/reindex_embeddings.py",
       "type": "pipeline",
@@ -144,107 +30,6 @@
       "complexity": "complex",
       "path": "scripts/reindex_embeddings.py",
       "name": "reindex_all"
-    },
-    {
-      "id": "service:services/ai_engine.py",
-      "type": "service",
-      "label": "ai_engine.py",
-      "summary": "Cung cấp một tầng trừu tượng hóa để tương tác với các mô hình AI khác nhau (DeepSeek, Gemini) cho việc sinh văn bản và đầu ra JSON.",
-      "tags": [
-        "ai_service",
-        "llm",
-        "deepseek",
-        "gemini",
-        "api_integration"
-      ],
-      "complexity": "complex",
-      "path": "services/ai_engine.py",
-      "name": "ai_engine.py"
-    },
-    {
-      "id": "function:services/ai_engine.py:call_ai",
-      "type": "function",
-      "label": "call_ai",
-      "summary": "Hàm chung để gọi một mô hình AI dựa trên cấu hình, hỗ trợ prompt hệ thống, tin nhắn người dùng và lịch sử chat.",
-      "tags": [
-        "llm_api",
-        "text_generation",
-        "model_selection"
-      ],
-      "complexity": "moderate",
-      "path": "services/ai_engine.py",
-      "name": "call_ai"
-    },
-    {
-      "id": "function:services/ai_engine.py:call_ai_json",
-      "type": "function",
-      "label": "call_ai_json",
-      "summary": "Gọi một mô hình AI để tạo đầu ra JSON, phù hợp cho việc trích xuất dữ liệu có cấu trúc.",
-      "tags": [
-        "json_output",
-        "structured_data",
-        "llm_api"
-      ],
-      "complexity": "simple",
-      "path": "services/ai_engine.py",
-      "name": "call_ai_json"
-    },
-    {
-      "id": "function:services/ai_engine.py:_call_deepseek",
-      "type": "function",
-      "label": "_call_deepseek",
-      "summary": "Hàm nội bộ để tương tác với API DeepSeek cho việc sinh văn bản.",
-      "tags": [
-        "deepseek_api",
-        "http_request",
-        "llm_integration"
-      ],
-      "complexity": "moderate",
-      "path": "services/ai_engine.py",
-      "name": "_call_deepseek"
-    },
-    {
-      "id": "function:services/ai_engine.py:_call_deepseek_json",
-      "type": "function",
-      "label": "_call_deepseek_json",
-      "summary": "Hàm nội bộ để tương tác với API DeepSeek cho đầu ra JSON.",
-      "tags": [
-        "deepseek_api",
-        "json_output",
-        "llm_integration"
-      ],
-      "complexity": "moderate",
-      "path": "services/ai_engine.py",
-      "name": "_call_deepseek_json"
-    },
-    {
-      "id": "function:services/ai_engine.py:_call_gemini",
-      "type": "function",
-      "label": "_call_gemini",
-      "summary": "Hàm nội bộ để tương tác với API Google Gemini cho việc sinh văn bản, hỗ trợ lịch sử chat và công cụ.",
-      "tags": [
-        "gemini_api",
-        "google_ai",
-        "llm_integration"
-      ],
-      "complexity": "moderate",
-      "path": "services/ai_engine.py",
-      "name": "_call_gemini"
-    },
-    {
-      "id": "function:services/ai_engine.py:call_gemini_with_grounding",
-      "type": "function",
-      "label": "call_gemini_with_grounding",
-      "summary": "Gọi mô hình Gemini với khả năng grounding, cho phép tìm kiếm web để tăng cường phản hồi.",
-      "tags": [
-        "gemini_api",
-        "grounding",
-        "web_search",
-        "llm_integration"
-      ],
-      "complexity": "simple",
-      "path": "services/ai_engine.py",
-      "name": "call_gemini_with_grounding"
     },
     {
       "id": "service:services/chat_engine.py",
@@ -333,122 +118,6 @@
       "complexity": "simple",
       "path": "services/chat_engine.py",
       "name": "_search_web"
-    },
-    {
-      "id": "service:services/document_creator.py",
-      "type": "service",
-      "label": "document_creator.py",
-      "summary": "Cung cấp các tiện ích để phân tích hình ảnh, chuẩn hóa tên và tạo tài liệu Word dựa trên siêu dữ liệu.",
-      "tags": [
-        "document_generation",
-        "image_analysis",
-        "gemini_vision",
-        "file_io",
-        "word_document"
-      ],
-      "complexity": "complex",
-      "path": "services/document_creator.py",
-      "name": "document_creator.py"
-    },
-    {
-      "id": "function:services/document_creator.py:analyze_image_with_gemini",
-      "type": "function",
-      "label": "analyze_image_with_gemini",
-      "summary": "Phân tích một hình ảnh bằng Google Gemini Vision Pro để trích xuất siêu dữ liệu có cấu trúc.",
-      "tags": [
-        "image_analysis",
-        "gemini_vision",
-        "ocr",
-        "metadata_extraction"
-      ],
-      "complexity": "moderate",
-      "path": "services/document_creator.py",
-      "name": "analyze_image_with_gemini"
-    },
-    {
-      "id": "function:services/document_creator.py:normalize_agency_name",
-      "type": "function",
-      "label": "normalize_agency_name",
-      "summary": "Chuẩn hóa tên cơ quan bằng cách chuyển đổi thành chữ thường và thay thế các ký tự tiếng Việt phổ biến.",
-      "tags": [
-        "text_normalization",
-        "string_processing",
-        "vietnamese_text"
-      ],
-      "complexity": "simple",
-      "path": "services/document_creator.py",
-      "name": "normalize_agency_name"
-    },
-    {
-      "id": "function:services/document_creator.py:determine_agency_2",
-      "type": "function",
-      "label": "determine_agency_2",
-      "summary": "Xác định cơ quan dựa trên tiêu đề tài liệu và văn bản trang đầu tiên bằng cách sử dụng so khớp từ khóa.",
-      "tags": [
-        "agency_detection",
-        "keyword_matching",
-        "document_classification"
-      ],
-      "complexity": "moderate",
-      "path": "services/document_creator.py",
-      "name": "determine_agency_2"
-    },
-    {
-      "id": "function:services/document_creator.py:get_short_type",
-      "type": "function",
-      "label": "get_short_type",
-      "summary": "Ánh xạ một loại tài liệu thành một chữ viết tắt ngắn hơn, chuẩn hóa.",
-      "tags": [
-        "document_type",
-        "abbreviation",
-        "mapping"
-      ],
-      "complexity": "simple",
-      "path": "services/document_creator.py",
-      "name": "get_short_type"
-    },
-    {
-      "id": "function:services/document_creator.py:get_short_title",
-      "type": "function",
-      "label": "get_short_title",
-      "summary": "Trích xuất một tiêu đề ngắn gọn từ một tiêu đề tài liệu dài hơn.",
-      "tags": [
-        "title_extraction",
-        "text_processing",
-        "regex"
-      ],
-      "complexity": "simple",
-      "path": "services/document_creator.py",
-      "name": "get_short_title"
-    },
-    {
-      "id": "function:services/document_creator.py:upload_to_file_io",
-      "type": "function",
-      "label": "upload_to_file_io",
-      "summary": "Tải một tệp lên file.io và trả về liên kết tải xuống.",
-      "tags": [
-        "file_upload",
-        "external_service",
-        "file_sharing"
-      ],
-      "complexity": "simple",
-      "path": "services/document_creator.py",
-      "name": "upload_to_file_io"
-    },
-    {
-      "id": "function:services/document_creator.py:generate_and_send_word_doc",
-      "type": "function",
-      "label": "generate_and_send_word_doc",
-      "summary": "Tạo một tài liệu Word từ siêu dữ liệu, lưu nó, ánh xạ nó trong cơ sở dữ liệu và gửi liên kết tải xuống qua Zalo.",
-      "tags": [
-        "word_document_generation",
-        "file_mapping",
-        "zalo_integration",
-        "database_crud"
-      ],
-      "complexity": "complex",
-      "path": "services/document_creator.py",
-      "name": "generate_and_send_word_doc"
     },
     {
       "id": "pipeline:services/rag_pipeline.py",
@@ -918,486 +587,6 @@
       "name": "run_tests"
     },
     {
-      "id": "service:services/knowledge_manager.py",
-      "label": "knowledge_manager.py",
-      "type": "service",
-      "summary": "Cung cấp một bộ dịch vụ toàn diện để quản lý tài liệu và chunk tri thức, bao gồm phân tích, nhập liệu, bật/tắt, xóa, truy xuất, xuất bản và phân tích dựa trên AI.",
-      "tags": [
-        "knowledge-base",
-        "document-management",
-        "ingestion",
-        "parsing",
-        "ai",
-        "service"
-      ],
-      "complexity": "complex",
-      "path": "services/knowledge_manager.py",
-      "name": "knowledge_manager.py"
-    },
-    {
-      "id": "function:services/knowledge_manager.py:parse_pdf",
-      "label": "parse_pdf",
-      "type": "function",
-      "summary": "Trích xuất nội dung văn bản từ một tệp PDF.",
-      "tags": [
-        "pdf",
-        "parsing",
-        "document-processing"
-      ],
-      "complexity": "simple",
-      "path": "services/knowledge_manager.py",
-      "name": "parse_pdf"
-    },
-    {
-      "id": "function:services/knowledge_manager.py:parse_docx",
-      "label": "parse_docx",
-      "type": "function",
-      "summary": "Trích xuất nội dung văn bản từ một tệp DOCX.",
-      "tags": [
-        "docx",
-        "parsing",
-        "document-processing"
-      ],
-      "complexity": "simple",
-      "path": "services/knowledge_manager.py",
-      "name": "parse_docx"
-    },
-    {
-      "id": "function:services/knowledge_manager.py:_extract_docx_images",
-      "label": "_extract_docx_images",
-      "type": "function",
-      "summary": "Trích xuất các hình ảnh được nhúng trong một tệp DOCX và lưu chúng vào một thư mục tạm thời.",
-      "tags": [
-        "docx",
-        "image-extraction",
-        "file-processing",
-        "utility"
-      ],
-      "complexity": "moderate",
-      "path": "services/knowledge_manager.py",
-      "name": "_extract_docx_images"
-    },
-    {
-      "id": "function:services/knowledge_manager.py:parse_srt",
-      "label": "parse_srt",
-      "type": "function",
-      "summary": "Trích xuất nội dung văn bản từ một tệp SRT (phụ đề).",
-      "tags": [
-        "srt",
-        "parsing",
-        "subtitle"
-      ],
-      "complexity": "simple",
-      "path": "services/knowledge_manager.py",
-      "name": "parse_srt"
-    },
-    {
-      "id": "function:services/knowledge_manager.py:parse_text",
-      "label": "parse_text",
-      "type": "function",
-      "summary": "Đọc và trả về nội dung của một tệp văn bản thuần.",
-      "tags": [
-        "text",
-        "parsing",
-        "file-io"
-      ],
-      "complexity": "simple",
-      "path": "services/knowledge_manager.py",
-      "name": "parse_text"
-    },
-    {
-      "id": "function:services/knowledge_manager.py:ingest_document",
-      "label": "ingest_document",
-      "type": "function",
-      "summary": "Xử lý toàn bộ quá trình nhập một tài liệu, bao gồm phân tích, chia chunk, tạo embedding và lưu trữ siêu dữ liệu cũng như các chunk trong cơ sở dữ liệu.",
-      "tags": [
-        "document-ingestion",
-        "embedding",
-        "knowledge-chunking",
-        "database",
-        "ai"
-      ],
-      "complexity": "complex",
-      "path": "services/knowledge_manager.py",
-      "name": "ingest_document"
-    },
-    {
-      "id": "function:services/knowledge_manager.py:toggle_document",
-      "label": "toggle_document",
-      "type": "function",
-      "summary": "Kích hoạt hoặc hủy kích hoạt một tài liệu trong cơ sở tri thức.",
-      "tags": [
-        "document-status",
-        "database",
-        "admin"
-      ],
-      "complexity": "simple",
-      "path": "services/knowledge_manager.py",
-      "name": "toggle_document"
-    },
-    {
-      "id": "function:services/knowledge_manager.py:delete_document",
-      "label": "delete_document",
-      "type": "function",
-      "summary": "Xóa vĩnh viễn một tài liệu và các chunk liên quan khỏi cơ sở tri thức.",
-      "tags": [
-        "document-deletion",
-        "database",
-        "admin"
-      ],
-      "complexity": "simple",
-      "path": "services/knowledge_manager.py",
-      "name": "delete_document"
-    },
-    {
-      "id": "function:services/knowledge_manager.py:get_all_documents",
-      "label": "get_all_documents",
-      "type": "function",
-      "summary": "Lấy danh sách tất cả tài liệu, có thể lọc theo danh mục và trạng thái hoạt động.",
-      "tags": [
-        "document-retrieval",
-        "database",
-        "query"
-      ],
-      "complexity": "simple",
-      "path": "services/knowledge_manager.py",
-      "name": "get_all_documents"
-    },
-    {
-      "id": "function:services/knowledge_manager.py:get_document_detail",
-      "label": "get_document_detail",
-      "type": "function",
-      "summary": "Lấy thông tin chi tiết của một tài liệu cụ thể, bao gồm các phiên bản và chunk tri thức.",
-      "tags": [
-        "document-detail",
-        "database",
-        "metadata"
-      ],
-      "complexity": "simple",
-      "path": "services/knowledge_manager.py",
-      "name": "get_document_detail"
-    },
-    {
-      "id": "function:services/knowledge_manager.py:publish_document",
-      "label": "publish_document",
-      "type": "function",
-      "summary": "Xuất bản một tài liệu, bao gồm việc tái chunk, tái embedding và cập nhật trạng thái thành hoạt động.",
-      "tags": [
-        "document-publishing",
-        "embedding",
-        "knowledge-chunking",
-        "database",
-        "workflow"
-      ],
-      "complexity": "complex",
-      "path": "services/knowledge_manager.py",
-      "name": "publish_document"
-    },
-    {
-      "id": "function:services/knowledge_manager.py:analyze_document_draft",
-      "label": "analyze_document_draft",
-      "type": "function",
-      "summary": "Phân tích bản nháp tài liệu bằng AI để đề xuất cải tiến hoặc trích xuất thông tin chính.",
-      "tags": [
-        "document-analysis",
-        "ai",
-        "draft",
-        "recommendation"
-      ],
-      "complexity": "moderate",
-      "path": "services/knowledge_manager.py",
-      "name": "analyze_document_draft"
-    },
-    {
-      "id": "file:main.py",
-      "type": "service",
-      "path": "main.py",
-      "language": "python",
-      "fileCategory": "code",
-      "summary": "Điểm vào chính của ứng dụng, thiết lập các route FastAPI, tác vụ nền và ghi log tùy chỉnh.",
-      "tags": [
-        "fastapi",
-        "entrypoint",
-        "logging",
-        "background-tasks",
-        "file-management"
-      ],
-      "complexity": "complex",
-      "name": "main.py",
-      "label": "main.py"
-    },
-    {
-      "id": "class:main.py:TeeLogger",
-      "type": "class",
-      "path": "main.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "TeeLogger",
-      "summary": "Logger tùy chỉnh ghi đầu ra ra cả stdout/stderr và một file log được chỉ định.",
-      "tags": [
-        "logging",
-        "utility",
-        "file-io"
-      ],
-      "complexity": "moderate",
-      "label": "TeeLogger"
-    },
-    {
-      "id": "function:main.py:home",
-      "type": "function",
-      "path": "main.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "home",
-      "summary": "Endpoint gốc trả về thông điệp chào mừng đơn giản.",
-      "tags": [
-        "fastapi",
-        "endpoint",
-        "health-check"
-      ],
-      "complexity": "simple",
-      "label": "home"
-    },
-    {
-      "id": "function:main.py:health_check",
-      "type": "function",
-      "path": "main.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "health_check",
-      "summary": "Endpoint để kiểm tra sức khỏe ứng dụng và kết nối cơ sở dữ liệu.",
-      "tags": [
-        "fastapi",
-        "health-check",
-        "database"
-      ],
-      "complexity": "moderate",
-      "label": "health_check"
-    },
-    {
-      "id": "function:main.py:download_file",
-      "type": "function",
-      "path": "main.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "download_file",
-      "summary": "Endpoint để tải file dựa trên ID file, phục vụ từ thư mục tạm thời.",
-      "tags": [
-        "fastapi",
-        "file-download",
-        "file-management"
-      ],
-      "complexity": "moderate",
-      "label": "download_file"
-    },
-    {
-      "id": "function:main.py:file_cleaner_task",
-      "type": "function",
-      "path": "main.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "file_cleaner_task",
-      "summary": "Tác vụ nền dọn dẹp định kỳ các file tạm thời cũ và ánh xạ cơ sở dữ liệu của chúng.",
-      "tags": [
-        "background-task",
-        "file-management",
-        "database-cleanup",
-        "scheduling"
-      ],
-      "complexity": "complex",
-      "label": "file_cleaner_task"
-    },
-    {
-      "id": "function:main.py:run_zalo_polling",
-      "type": "function",
-      "path": "main.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "run_zalo_polling",
-      "summary": "Tác vụ nền chạy script polling Zalo như một tiến trình con.",
-      "tags": [
-        "background-task",
-        "zalo",
-        "subprocess"
-      ],
-      "complexity": "simple",
-      "label": "run_zalo_polling"
-    },
-    {
-      "id": "file:models.py",
-      "type": "schema",
-      "path": "models.py",
-      "language": "python",
-      "fileCategory": "code",
-      "summary": "Định nghĩa tất cả các model ORM SQLAlchemy cho cơ sở dữ liệu ứng dụng, bao gồm tài liệu, phiên chat, log kiểm toán và người dùng quản trị.",
-      "tags": [
-        "sqlalchemy",
-        "orm",
-        "database-schema",
-        "data-models"
-      ],
-      "complexity": "complex",
-      "name": "models.py",
-      "label": "models.py"
-    },
-    {
-      "id": "class:models.py:SQLiteVector",
-      "type": "class",
-      "path": "models.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "SQLiteVector",
-      "summary": "Kiểu SQLAlchemy tùy chỉnh để lưu trữ vector embeddings dưới dạng JSON trong SQLite.",
-      "tags": [
-        "sqlalchemy",
-        "vector-embedding",
-        "sqlite",
-        "json"
-      ],
-      "complexity": "moderate",
-      "label": "SQLiteVector"
-    },
-    {
-      "id": "table:models.py:Document",
-      "type": "table",
-      "path": "models.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "Document",
-      "summary": "Model SQLAlchemy đại diện cho một tài liệu tri thức, lưu trữ metadata và trạng thái.",
-      "tags": [
-        "document-management",
-        "knowledge-base",
-        "metadata"
-      ],
-      "complexity": "moderate",
-      "label": "Document"
-    },
-    {
-      "id": "table:models.py:DocumentVersion",
-      "type": "table",
-      "path": "models.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "DocumentVersion",
-      "summary": "Model SQLAlchemy để theo dõi các phiên bản khác nhau của nội dung tài liệu.",
-      "tags": [
-        "document-management",
-        "version-control",
-        "history"
-      ],
-      "complexity": "simple",
-      "label": "DocumentVersion"
-    },
-    {
-      "id": "table:models.py:KnowledgeChunk",
-      "type": "table",
-      "path": "models.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "KnowledgeChunk",
-      "summary": "Model SQLAlchemy để lưu trữ các chunk tri thức từ tài liệu, bao gồm cả vector embeddings.",
-      "tags": [
-        "knowledge-base",
-        "vector-embedding",
-        "document-chunking"
-      ],
-      "complexity": "moderate",
-      "label": "KnowledgeChunk"
-    },
-    {
-      "id": "table:models.py:ChatSession",
-      "type": "table",
-      "path": "models.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "ChatSession",
-      "summary": "Model SQLAlchemy đại diện cho một phiên chat người dùng, theo dõi ID và hoạt động cuối.",
-      "tags": [
-        "chat-engine",
-        "session-management"
-      ],
-      "complexity": "simple",
-      "label": "ChatSession"
-    },
-    {
-      "id": "table:models.py:ChatMessage",
-      "type": "table",
-      "path": "models.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "ChatMessage",
-      "summary": "Model SQLAlchemy cho các tin nhắn riêng lẻ trong một phiên chat.",
-      "tags": [
-        "chat-engine",
-        "message-storage"
-      ],
-      "complexity": "simple",
-      "label": "ChatMessage"
-    },
-    {
-      "id": "table:models.py:AuditLog",
-      "type": "table",
-      "path": "models.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "AuditLog",
-      "summary": "Model SQLAlchemy để ghi log các hành động quản trị và hệ thống.",
-      "tags": [
-        "audit-trail",
-        "logging",
-        "security"
-      ],
-      "complexity": "simple",
-      "label": "AuditLog"
-    },
-    {
-      "id": "table:models.py:AdminUser",
-      "type": "table",
-      "path": "models.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "AdminUser",
-      "summary": "Model SQLAlchemy cho tài khoản người dùng quản trị.",
-      "tags": [
-        "admin-panel",
-        "user-management",
-        "authentication"
-      ],
-      "complexity": "simple",
-      "label": "AdminUser"
-    },
-    {
-      "id": "table:models.py:ImageMapping",
-      "type": "table",
-      "path": "models.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "ImageMapping",
-      "summary": "Model SQLAlchemy để ánh xạ hình ảnh với tài liệu.",
-      "tags": [
-        "image-management",
-        "document-relations"
-      ],
-      "complexity": "simple",
-      "label": "ImageMapping"
-    },
-    {
-      "id": "table:models.py:FileMapping",
-      "type": "table",
-      "path": "models.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "FileMapping",
-      "summary": "Model SQLAlchemy để ánh xạ các file tạm thời với ID tài liệu gốc.",
-      "tags": [
-        "file-management",
-        "temporary-files"
-      ],
-      "complexity": "simple",
-      "label": "FileMapping"
-    },
-    {
       "id": "file:routers/__init__.py",
       "type": "code",
       "path": "routers/__init__.py",
@@ -1411,381 +600,6 @@
       "complexity": "simple",
       "name": "routers/__init__.py",
       "label": "routers/__init__.py"
-    },
-    {
-      "id": "file:routers/admin.py",
-      "type": "service",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "summary": "FastAPI router cho các chức năng quản trị, bao gồm xác thực người dùng, quản lý tài liệu, xem phiên chat và ghi log kiểm toán.",
-      "tags": [
-        "fastapi",
-        "admin-panel",
-        "authentication",
-        "document-management",
-        "chat-management",
-        "audit-logs"
-      ],
-      "complexity": "complex",
-      "name": "routers/admin.py",
-      "label": "routers/admin.py"
-    },
-    {
-      "id": "function:routers/admin.py:hash_password",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "hash_password",
-      "summary": "Băm mật khẩu đã cho bằng SHA256.",
-      "tags": [
-        "security",
-        "hashing",
-        "password-management"
-      ],
-      "complexity": "simple",
-      "label": "hash_password"
-    },
-    {
-      "id": "function:routers/admin.py:_get_current_admin",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "_get_current_admin",
-      "summary": "Lấy người dùng quản trị đã xác thực hiện tại từ cookies và cơ sở dữ liệu.",
-      "tags": [
-        "authentication",
-        "admin-user",
-        "session-management"
-      ],
-      "complexity": "moderate",
-      "label": "_get_current_admin"
-    },
-    {
-      "id": "function:routers/admin.py:_require_login",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "_require_login",
-      "summary": "Dependency để đảm bảo người dùng đã đăng nhập trước khi truy cập các route quản trị.",
-      "tags": [
-        "authentication",
-        "authorization",
-        "dependency"
-      ],
-      "complexity": "simple",
-      "label": "_require_login"
-    },
-    {
-      "id": "function:routers/admin.py:login_page",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "login_page",
-      "summary": "Hiển thị trang đăng nhập quản trị, chuyển hướng nếu đã đăng nhập.",
-      "tags": [
-        "admin-panel",
-        "authentication",
-        "ui-rendering"
-      ],
-      "complexity": "simple",
-      "label": "login_page"
-    },
-    {
-      "id": "function:routers/admin.py:login_submit",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "login_submit",
-      "summary": "Xử lý gửi biểu mẫu đăng nhập quản trị, xác thực người dùng và thiết lập session cookies.",
-      "tags": [
-        "authentication",
-        "admin-panel",
-        "form-submission",
-        "session-management"
-      ],
-      "complexity": "complex",
-      "label": "login_submit"
-    },
-    {
-      "id": "function:routers/admin.py:logout",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "logout",
-      "summary": "Đăng xuất người dùng quản trị bằng cách xóa session cookie.",
-      "tags": [
-        "authentication",
-        "session-management"
-      ],
-      "complexity": "simple",
-      "label": "logout"
-    },
-    {
-      "id": "function:routers/admin.py:dashboard",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "dashboard",
-      "summary": "Hiển thị bảng điều khiển quản trị với các thống kê chính và hoạt động gần đây.",
-      "tags": [
-        "admin-panel",
-        "dashboard",
-        "statistics",
-        "reporting"
-      ],
-      "complexity": "complex",
-      "label": "dashboard"
-    },
-    {
-      "id": "function:routers/admin.py:documents_page",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "documents_page",
-      "summary": "Hiển thị danh sách tất cả tài liệu, với các tùy chọn lọc.",
-      "tags": [
-        "admin-panel",
-        "document-management",
-        "ui-rendering"
-      ],
-      "complexity": "moderate",
-      "label": "documents_page"
-    },
-    {
-      "id": "function:routers/admin.py:document_detail_page",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "document_detail_page",
-      "summary": "Hiển thị thông tin chi tiết cho một tài liệu cụ thể, bao gồm các phiên bản.",
-      "tags": [
-        "admin-panel",
-        "document-management",
-        "ui-rendering"
-      ],
-      "complexity": "moderate",
-      "label": "document_detail_page"
-    },
-    {
-      "id": "function:routers/admin.py:upload_document",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "upload_document",
-      "summary": "Xử lý tải lên tài liệu, lưu file và nhập nội dung vào cơ sở tri thức.",
-      "tags": [
-        "admin-panel",
-        "document-upload",
-        "knowledge-ingestion",
-        "file-management"
-      ],
-      "complexity": "complex",
-      "label": "upload_document"
-    },
-    {
-      "id": "function:routers/admin.py:toggle_doc",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "toggle_doc",
-      "summary": "Chuyển đổi trạng thái hoạt động của một tài liệu.",
-      "tags": [
-        "admin-panel",
-        "document-management",
-        "status-update"
-      ],
-      "complexity": "moderate",
-      "label": "toggle_doc"
-    },
-    {
-      "id": "function:routers/admin.py:delete_doc",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "delete_doc",
-      "summary": "Xóa một tài liệu và các chunk tri thức liên quan.",
-      "tags": [
-        "admin-panel",
-        "document-management",
-        "data-deletion"
-      ],
-      "complexity": "simple",
-      "label": "delete_doc"
-    },
-    {
-      "id": "function:routers/admin.py:publish_doc",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "publish_doc",
-      "summary": "Xuất bản một tài liệu, làm cho nội dung của nó có sẵn cho chat engine.",
-      "tags": [
-        "admin-panel",
-        "document-management",
-        "publishing"
-      ],
-      "complexity": "moderate",
-      "label": "publish_doc"
-    },
-    {
-      "id": "function:routers/admin.py:analyze_doc",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "analyze_doc",
-      "summary": "Phân tích bản nháp tài liệu bằng AI để đề xuất cải tiến hoặc trích xuất metadata.",
-      "tags": [
-        "admin-panel",
-        "document-analysis",
-        "ai-integration"
-      ],
-      "complexity": "simple",
-      "label": "analyze_doc"
-    },
-    {
-      "id": "function:routers/admin.py:edit_doc",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "edit_doc",
-      "summary": "Xử lý chỉnh sửa metadata và nội dung tài liệu, tạo phiên bản mới và tái xuất bản nếu cần.",
-      "tags": [
-        "admin-panel",
-        "document-management",
-        "content-editing",
-        "version-control"
-      ],
-      "complexity": "complex",
-      "label": "edit_doc"
-    },
-    {
-      "id": "function:routers/admin.py:chat_sessions_page",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "chat_sessions_page",
-      "summary": "Hiển thị danh sách tất cả các phiên chat để xem xét quản trị.",
-      "tags": [
-        "admin-panel",
-        "chat-management",
-        "ui-rendering"
-      ],
-      "complexity": "moderate",
-      "label": "chat_sessions_page"
-    },
-    {
-      "id": "function:routers/admin.py:chat_detail_page",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "chat_detail_page",
-      "summary": "Hiển thị lịch sử tin nhắn chi tiết của một phiên chat cụ thể.",
-      "tags": [
-        "admin-panel",
-        "chat-management",
-        "ui-rendering"
-      ],
-      "complexity": "moderate",
-      "label": "chat_detail_page"
-    },
-    {
-      "id": "function:routers/admin.py:audit_logs_page",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "audit_logs_page",
-      "summary": "Hiển thị danh sách phân trang các log kiểm toán, với các tùy chọn lọc.",
-      "tags": [
-        "admin-panel",
-        "audit-logs",
-        "logging",
-        "ui-rendering"
-      ],
-      "complexity": "moderate",
-      "label": "audit_logs_page"
-    },
-    {
-      "id": "function:routers/admin.py:settings_page",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "settings_page",
-      "summary": "Hiển thị trang cài đặt quản trị.",
-      "tags": [
-        "admin-panel",
-        "settings",
-        "ui-rendering"
-      ],
-      "complexity": "moderate",
-      "label": "settings_page"
-    },
-    {
-      "id": "function:routers/admin.py:change_password",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "change_password",
-      "summary": "Xử lý thay đổi mật khẩu của người dùng quản trị.",
-      "tags": [
-        "admin-panel",
-        "security",
-        "password-management"
-      ],
-      "complexity": "moderate",
-      "label": "change_password"
-    },
-    {
-      "id": "function:routers/admin.py:show_logs_page",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "show_logs_page",
-      "summary": "Hiển thị trang xem log ứng dụng.",
-      "tags": [
-        "admin-panel",
-        "logging",
-        "ui-rendering"
-      ],
-      "complexity": "simple",
-      "label": "show_logs_page"
-    },
-    {
-      "id": "function:routers/admin.py:get_logs_data",
-      "type": "function",
-      "path": "routers/admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "get_logs_data",
-      "summary": "Lấy một số dòng được chỉ định từ file log ứng dụng.",
-      "tags": [
-        "admin-panel",
-        "logging",
-        "file-io"
-      ],
-      "complexity": "moderate",
-      "label": "get_logs_data"
     },
     {
       "id": "file:scripts/migrate_data.py",
@@ -1882,54 +696,6 @@
       ],
       "complexity": "simple",
       "label": "unique_sources_in_batch"
-    },
-    {
-      "id": "file:scripts/seed_admin.py",
-      "type": "pipeline",
-      "path": "scripts/seed_admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "summary": "Script để seed cơ sở dữ liệu với một người dùng quản trị mặc định nếu chưa tồn tại.",
-      "tags": [
-        "database-seeding",
-        "admin-setup",
-        "script"
-      ],
-      "complexity": "moderate",
-      "name": "scripts/seed_admin.py",
-      "label": "scripts/seed_admin.py"
-    },
-    {
-      "id": "function:scripts/seed_admin.py:hash_password",
-      "type": "function",
-      "path": "scripts/seed_admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "hash_password",
-      "summary": "Băm mật khẩu đã cho bằng SHA256.",
-      "tags": [
-        "security",
-        "hashing",
-        "password-management"
-      ],
-      "complexity": "simple",
-      "label": "hash_password"
-    },
-    {
-      "id": "function:scripts/seed_admin.py:seed_admin",
-      "type": "function",
-      "path": "scripts/seed_admin.py",
-      "language": "python",
-      "fileCategory": "code",
-      "name": "seed_admin",
-      "summary": "Seed cơ sở dữ liệu với một người dùng quản trị mặc định nếu chưa có người dùng quản trị nào, đảm bảo truy cập ban đầu.",
-      "tags": [
-        "database-seeding",
-        "admin-user",
-        "initialization"
-      ],
-      "complexity": "complex",
-      "label": "seed_admin"
     },
     {
       "id": "file:services/audit_logger.py",
@@ -4444,99 +3210,285 @@
       "complexity": "moderate",
       "name": "main",
       "label": "main"
+    },
+    {
+      "id": "config:config.py",
+      "type": "config",
+      "name": "config.py",
+      "path": "config.py",
+      "summary": "Cấu hình hệ thống, nạp các biến môi trường cho cơ sở dữ liệu, API Zalo OA, DeepSeek và Gemini.",
+      "tags": [
+        "configuration",
+        "environment",
+        "zalo-bot"
+      ],
+      "complexity": "moderate",
+      "label": "config.py"
+    },
+    {
+      "id": "file:main.py",
+      "type": "file",
+      "name": "main.py",
+      "path": "main.py",
+      "summary": "Ứng dụng FastAPI chính cấu hình các middleware, static files và đăng ký các routers. Có endpoint tải file an toàn và tác vụ dọn dẹp nền.",
+      "tags": [
+        "entry-point",
+        "api",
+        "routing"
+      ],
+      "complexity": "moderate",
+      "label": "main.py"
+    },
+    {
+      "id": "function:main.py:download_file",
+      "type": "function",
+      "name": "download_file",
+      "path": "main.py",
+      "summary": "Endpoint tải tệp tin Word kết quả an toàn bằng cách kiểm tra UUID và ngăn chặn tấn công Path Traversal.",
+      "tags": [
+        "api-handler",
+        "security",
+        "file-download"
+      ],
+      "complexity": "moderate",
+      "label": "download_file"
+    },
+    {
+      "id": "file:models.py",
+      "type": "file",
+      "name": "models.py",
+      "path": "models.py",
+      "summary": "Định nghĩa các bảng cơ sở dữ liệu SQLAlchemy (AdminUser, Document, ChatSession, ChatMessage, AuditLog, FileMapping, ImageMapping).",
+      "tags": [
+        "data-model",
+        "database",
+        "orm"
+      ],
+      "complexity": "moderate",
+      "label": "models.py"
+    },
+    {
+      "id": "file:routers/admin.py",
+      "type": "file",
+      "name": "admin.py",
+      "path": "routers/admin.py",
+      "summary": "Router quản trị (Admin Dashboard) quản lý tài liệu, tri thức RAG, phiên chat, audit logs và cài đặt hệ thống.",
+      "tags": [
+        "api-handler",
+        "admin-dashboard",
+        "routing"
+      ],
+      "complexity": "complex",
+      "label": "admin.py"
+    },
+    {
+      "id": "function:routers/admin.py:sanitize_filename",
+      "type": "function",
+      "name": "sanitize_filename",
+      "path": "routers/admin.py",
+      "summary": "Hàm làm sạch tên file tải lên để tránh tấn công Path Traversal, sinh hậu tố ngẫu nhiên để tránh đè tệp tin.",
+      "tags": [
+        "utility",
+        "security",
+        "validation"
+      ],
+      "complexity": "simple",
+      "label": "sanitize_filename"
+    },
+    {
+      "id": "function:routers/admin.py:login_submit",
+      "type": "function",
+      "name": "login_submit",
+      "path": "routers/admin.py",
+      "summary": "Xử lý đăng nhập của quản trị viên, tự động nâng cấp hash mật khẩu cũ từ SHA-256 sang PBKDF2 và thiết lập secure session cookie.",
+      "tags": [
+        "auth",
+        "security",
+        "session"
+      ],
+      "complexity": "moderate",
+      "label": "login_submit"
+    },
+    {
+      "id": "file:routers/webhook.py",
+      "type": "file",
+      "name": "webhook.py",
+      "path": "routers/webhook.py",
+      "summary": "Router webhook tiếp nhận tin nhắn từ Zalo OA, điều phối hỏi đáp RAG, xử lý file tri thức và OCR ảnh chỉ đạo bằng semaphores.",
+      "tags": [
+        "api-handler",
+        "webhook",
+        "zalo-bot"
+      ],
+      "complexity": "complex",
+      "label": "webhook.py"
+    },
+    {
+      "id": "function:routers/webhook.py:_process_zalo_payload",
+      "type": "function",
+      "name": "_process_zalo_payload",
+      "path": "routers/webhook.py",
+      "summary": "Xử lý bất đồng bộ payload tin nhắn Zalo OA, bọc các tác vụ nặng (OCR, RAG, nạp tri thức) bằng asyncio.Semaphore.",
+      "tags": [
+        "concurrency",
+        "async",
+        "zalo-bot"
+      ],
+      "complexity": "complex",
+      "label": "_process_zalo_payload"
+    },
+    {
+      "id": "file:scripts/prod_migration.py",
+      "type": "file",
+      "name": "prod_migration.py",
+      "path": "scripts/prod_migration.py",
+      "summary": "Script di trú cơ sở dữ liệu trên môi trường production, tạo chỉ mục GIN Full-Text Search, chỉ mục HNSW vector và các chỉ mục B-tree.",
+      "tags": [
+        "database",
+        "migration",
+        "deployment"
+      ],
+      "complexity": "simple",
+      "label": "prod_migration.py"
+    },
+    {
+      "id": "file:scripts/seed_admin.py",
+      "type": "file",
+      "name": "seed_admin.py",
+      "path": "scripts/seed_admin.py",
+      "summary": "Script khởi tạo tài khoản quản trị mặc định sử dụng hashing PBKDF2 và tạo chỉ mục cơ bản.",
+      "tags": [
+        "database",
+        "setup",
+        "auth"
+      ],
+      "complexity": "simple",
+      "label": "seed_admin.py"
+    },
+    {
+      "id": "file:services/ai_engine.py",
+      "type": "file",
+      "name": "ai_engine.py",
+      "path": "services/ai_engine.py",
+      "summary": "Module dịch vụ giao tiếp với DeepSeek và Gemini API, hỗ trợ gọi kết quả JSON và tìm kiếm có grounding từ Google Search.",
+      "tags": [
+        "ai-service",
+        "gemini",
+        "deepseek"
+      ],
+      "complexity": "moderate",
+      "label": "ai_engine.py"
+    },
+    {
+      "id": "function:services/ai_engine.py:call_ai_json",
+      "type": "function",
+      "name": "call_ai_json",
+      "path": "services/ai_engine.py",
+      "summary": "Gọi AI yêu cầu kết quả đầu ra dạng JSON, hỗ trợ cơ chế fallback từ DeepSeek sang Gemini JSON Mode.",
+      "tags": [
+        "ai-service",
+        "json-mode"
+      ],
+      "complexity": "simple",
+      "label": "call_ai_json"
+    },
+    {
+      "id": "function:services/ai_engine.py:_call_gemini_json",
+      "type": "function",
+      "name": "_call_gemini_json",
+      "path": "services/ai_engine.py",
+      "summary": "Gọi Gemini API sử dụng cấu hình response_mime_type='application/json'.",
+      "tags": [
+        "ai-service",
+        "gemini"
+      ],
+      "complexity": "simple",
+      "label": "_call_gemini_json"
+    },
+    {
+      "id": "file:services/document_creator.py",
+      "type": "file",
+      "name": "document_creator.py",
+      "path": "services/document_creator.py",
+      "summary": "Dịch vụ bóc tách ảnh bằng Gemini Vision và tự động sinh văn bản Word (DOCX) dựa trên biểu mẫu và gửi link tải UUID cho admin.",
+      "tags": [
+        "document-generation",
+        "docx",
+        "gemini-vision"
+      ],
+      "complexity": "complex",
+      "label": "document_creator.py"
+    },
+    {
+      "id": "file:services/knowledge_manager.py",
+      "type": "file",
+      "name": "knowledge_manager.py",
+      "path": "services/knowledge_manager.py",
+      "summary": "Dịch vụ quản lý tài liệu tri thức RAG, hỗ trợ phân tích PDF, DOCX (bao gồm bóc tách ảnh tự động), SRT, TXT và nạp vector.",
+      "tags": [
+        "rag",
+        "document-parsing",
+        "vector-db"
+      ],
+      "complexity": "complex",
+      "label": "knowledge_manager.py"
+    },
+    {
+      "id": "function:services/knowledge_manager.py:parse_docx",
+      "type": "function",
+      "name": "parse_docx",
+      "path": "services/knowledge_manager.py",
+      "summary": "Trích xuất văn bản và tự động bóc tách các hình ảnh trong file DOCX để tạo ánh xạ tri thức.",
+      "tags": [
+        "document-parsing",
+        "docx",
+        "image-extraction"
+      ],
+      "complexity": "simple",
+      "label": "parse_docx"
+    },
+    {
+      "id": "file:services/password_hash.py",
+      "type": "file",
+      "name": "password_hash.py",
+      "path": "services/password_hash.py",
+      "summary": "Module tiện ích cung cấp cơ chế băm mật khẩu bảo mật sử dụng PBKDF2-HMAC-SHA256 với salt ngẫu nhiên và hỗ trợ đối sánh mật khẩu cũ.",
+      "tags": [
+        "auth",
+        "security",
+        "cryptography"
+      ],
+      "complexity": "simple",
+      "label": "password_hash.py"
+    },
+    {
+      "id": "function:services/password_hash.py:hash_password_pbkdf2",
+      "type": "function",
+      "name": "hash_password_pbkdf2",
+      "path": "services/password_hash.py",
+      "summary": "Băm mật khẩu bằng PBKDF2 với salt 32-bytes ngẫu nhiên và 100,000 vòng lặp.",
+      "tags": [
+        "security",
+        "cryptography"
+      ],
+      "complexity": "simple",
+      "label": "hash_password_pbkdf2"
+    },
+    {
+      "id": "function:services/password_hash.py:verify_password",
+      "type": "function",
+      "name": "verify_password",
+      "path": "services/password_hash.py",
+      "summary": "Xác minh mật khẩu đối sánh với hash PBKDF2 hoặc hash SHA-256 cũ để hỗ trợ tương thích ngược.",
+      "tags": [
+        "auth",
+        "security"
+      ],
+      "complexity": "simple",
+      "label": "verify_password"
     }
   ],
   "edges": [
-    {
-      "source": "config:config.py",
-      "target": "function:config.py:_load_dotenv",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "function:config.py:_load_dotenv",
-      "target": "config:config.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:routers/webhook.py",
-      "target": "function:routers/webhook.py:download_file_from_url",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:routers/webhook.py",
-      "target": "function:routers/webhook.py:_process_zalo_payload",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:routers/webhook.py",
-      "target": "function:routers/webhook.py:zalo_webhook",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "function:routers/webhook.py:download_file_from_url",
-      "target": "service:routers/webhook.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:routers/webhook.py:_process_zalo_payload",
-      "target": "service:routers/webhook.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:routers/webhook.py:zalo_webhook",
-      "target": "service:routers/webhook.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:routers/webhook.py:_process_zalo_payload",
-      "target": "function:routers/webhook.py:download_file_from_url",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:routers/webhook.py:_process_zalo_payload",
-      "target": "function:services/zalo_api.py:send_message",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:routers/webhook.py:_process_zalo_payload",
-      "target": "function:services/document_creator.py:analyze_image_with_gemini",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:routers/webhook.py:_process_zalo_payload",
-      "target": "function:services/document_creator.py:generate_and_send_word_doc",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:routers/webhook.py:_process_zalo_payload",
-      "target": "function:services/zalo_api.py:send_typing_action",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:routers/webhook.py:_process_zalo_payload",
-      "target": "function:services/chat_engine.py:answer_question",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:routers/webhook.py:zalo_webhook",
-      "target": "function:routers/webhook.py:_process_zalo_payload",
-      "type": "calls",
-      "direction": "forward"
-    },
     {
       "source": "pipeline:scripts/reindex_embeddings.py",
       "target": "function:scripts/reindex_embeddings.py:reindex_all",
@@ -4558,108 +3510,6 @@
     {
       "source": "function:scripts/reindex_embeddings.py:reindex_all",
       "target": "function:services/rag_pipeline.py:get_embeddings_batch",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/ai_engine.py",
-      "target": "function:services/ai_engine.py:call_ai",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/ai_engine.py",
-      "target": "function:services/ai_engine.py:call_ai_json",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/ai_engine.py",
-      "target": "function:services/ai_engine.py:_call_deepseek",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/ai_engine.py",
-      "target": "function:services/ai_engine.py:_call_deepseek_json",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/ai_engine.py",
-      "target": "function:services/ai_engine.py:_call_gemini",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/ai_engine.py",
-      "target": "function:services/ai_engine.py:call_gemini_with_grounding",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/ai_engine.py:call_ai",
-      "target": "service:services/ai_engine.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/ai_engine.py:call_ai_json",
-      "target": "service:services/ai_engine.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/ai_engine.py:_call_deepseek",
-      "target": "service:services/ai_engine.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/ai_engine.py:_call_deepseek_json",
-      "target": "service:services/ai_engine.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/ai_engine.py:_call_gemini",
-      "target": "service:services/ai_engine.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/ai_engine.py:call_gemini_with_grounding",
-      "target": "service:services/ai_engine.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/ai_engine.py:call_ai",
-      "target": "function:services/ai_engine.py:_call_deepseek",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/ai_engine.py:call_ai",
-      "target": "function:services/ai_engine.py:_call_gemini",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/ai_engine.py:call_ai_json",
-      "target": "function:services/ai_engine.py:_call_deepseek_json",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/ai_engine.py:call_ai_json",
-      "target": "function:services/ai_engine.py:_call_gemini",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/ai_engine.py:call_gemini_with_grounding",
-      "target": "function:services/ai_engine.py:_call_gemini",
       "type": "calls",
       "direction": "forward"
     },
@@ -4767,115 +3617,7 @@
     },
     {
       "source": "function:services/chat_engine.py:answer_question",
-      "target": "function:services/ai_engine.py:call_ai",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/chat_engine.py:answer_question",
       "target": "function:services/chat_engine.py:add_message",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/document_creator.py",
-      "target": "function:services/document_creator.py:analyze_image_with_gemini",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/document_creator.py",
-      "target": "function:services/document_creator.py:normalize_agency_name",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/document_creator.py",
-      "target": "function:services/document_creator.py:determine_agency_2",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/document_creator.py",
-      "target": "function:services/document_creator.py:get_short_type",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/document_creator.py",
-      "target": "function:services/document_creator.py:get_short_title",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/document_creator.py",
-      "target": "function:services/document_creator.py:upload_to_file_io",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/document_creator.py",
-      "target": "function:services/document_creator.py:generate_and_send_word_doc",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/document_creator.py:analyze_image_with_gemini",
-      "target": "service:services/document_creator.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/document_creator.py:normalize_agency_name",
-      "target": "service:services/document_creator.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/document_creator.py:determine_agency_2",
-      "target": "service:services/document_creator.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/document_creator.py:get_short_type",
-      "target": "service:services/document_creator.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/document_creator.py:get_short_title",
-      "target": "service:services/document_creator.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/document_creator.py:upload_to_file_io",
-      "target": "service:services/document_creator.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/document_creator.py:generate_and_send_word_doc",
-      "target": "service:services/document_creator.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/document_creator.py:generate_and_send_word_doc",
-      "target": "function:services/document_creator.py:get_short_type",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/document_creator.py:generate_and_send_word_doc",
-      "target": "function:services/document_creator.py:get_short_title",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/document_creator.py:generate_and_send_word_doc",
-      "target": "function:services/document_creator.py:upload_to_file_io",
       "type": "calls",
       "direction": "forward"
     },
@@ -5186,12 +3928,6 @@
       "direction": "forward"
     },
     {
-      "source": "service:database.py",
-      "target": "file:models.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
       "source": "pipeline:scripts/migrate_db_schema.py",
       "target": "function:scripts/migrate_db_schema.py:migrate_schema",
       "type": "contains",
@@ -5234,30 +3970,6 @@
       "direction": "forward"
     },
     {
-      "source": "function:scripts/reingest_manuals.py:reingest_all",
-      "target": "function:services/knowledge_manager.py:ingest_document",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "pipeline:scripts/reingest_manuals.py",
-      "target": "file:models.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "pipeline:scripts/reingest_manuals.py",
-      "target": "service:services/knowledge_manager.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "pipeline:scripts/reingest_manuals.py",
-      "target": "function:services/knowledge_manager.py:ingest_document",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
       "source": "pipeline:scripts/reingest_single_file.py",
       "target": "function:scripts/reingest_single_file.py:reingest_single",
       "type": "contains",
@@ -5267,30 +3979,6 @@
       "source": "function:scripts/reingest_single_file.py:reingest_single",
       "target": "pipeline:scripts/reingest_single_file.py",
       "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:scripts/reingest_single_file.py:reingest_single",
-      "target": "function:services/knowledge_manager.py:ingest_document",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "pipeline:scripts/reingest_single_file.py",
-      "target": "file:models.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "pipeline:scripts/reingest_single_file.py",
-      "target": "service:services/knowledge_manager.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "pipeline:scripts/reingest_single_file.py",
-      "target": "function:services/knowledge_manager.py:ingest_document",
-      "type": "imports",
       "direction": "forward"
     },
     {
@@ -5312,12 +4000,6 @@
       "direction": "forward"
     },
     {
-      "source": "function:scripts/seed_knowledge.py:seed_kb",
-      "target": "function:services/knowledge_manager.py:ingest_document",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
       "source": "pipeline:scripts/seed_knowledge.py",
       "target": "service:database.py",
       "type": "imports",
@@ -5326,18 +4008,6 @@
     {
       "source": "pipeline:scripts/seed_knowledge.py",
       "target": "function:database.py:get_db_session",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "pipeline:scripts/seed_knowledge.py",
-      "target": "service:services/knowledge_manager.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "pipeline:scripts/seed_knowledge.py",
-      "target": "function:services/knowledge_manager.py:ingest_document",
       "type": "imports",
       "direction": "forward"
     },
@@ -5351,276 +4021,6 @@
       "source": "function:scripts/test_zalo_bot_qa.py:run_tests",
       "target": "pipeline:scripts/test_zalo_bot_qa.py",
       "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "pipeline:scripts/test_zalo_bot_qa.py",
-      "target": "file:models.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/knowledge_manager.py:parse_pdf",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/knowledge_manager.py:parse_docx",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/knowledge_manager.py:_extract_docx_images",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/knowledge_manager.py:parse_srt",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/knowledge_manager.py:parse_text",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/knowledge_manager.py:ingest_document",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/knowledge_manager.py:toggle_document",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/knowledge_manager.py:delete_document",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/knowledge_manager.py:get_all_documents",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/knowledge_manager.py:get_document_detail",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/knowledge_manager.py:publish_document",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/knowledge_manager.py:analyze_document_draft",
-      "type": "contains",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:parse_pdf",
-      "target": "service:services/knowledge_manager.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:parse_docx",
-      "target": "service:services/knowledge_manager.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:_extract_docx_images",
-      "target": "service:services/knowledge_manager.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:parse_srt",
-      "target": "service:services/knowledge_manager.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:parse_text",
-      "target": "service:services/knowledge_manager.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:ingest_document",
-      "target": "service:services/knowledge_manager.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:toggle_document",
-      "target": "service:services/knowledge_manager.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:delete_document",
-      "target": "service:services/knowledge_manager.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:get_all_documents",
-      "target": "service:services/knowledge_manager.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:get_document_detail",
-      "target": "service:services/knowledge_manager.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:publish_document",
-      "target": "service:services/knowledge_manager.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:analyze_document_draft",
-      "target": "service:services/knowledge_manager.py",
-      "type": "exports",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:ingest_document",
-      "target": "function:services/knowledge_manager.py:parse_pdf",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:ingest_document",
-      "target": "function:services/knowledge_manager.py:parse_docx",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:ingest_document",
-      "target": "function:services/knowledge_manager.py:parse_srt",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:ingest_document",
-      "target": "function:services/knowledge_manager.py:parse_text",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:ingest_document",
-      "target": "function:database.py:get_db_session",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:ingest_document",
-      "target": "function:services/audit_logger.py:log_document_action",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:toggle_document",
-      "target": "function:database.py:get_db_session",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:toggle_document",
-      "target": "function:services/audit_logger.py:log_document_action",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:delete_document",
-      "target": "function:database.py:get_db_session",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:delete_document",
-      "target": "function:services/audit_logger.py:log_document_action",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:publish_document",
-      "target": "function:database.py:get_db_session",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:publish_document",
-      "target": "function:services/audit_logger.py:log_document_action",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "function:services/knowledge_manager.py:analyze_document_draft",
-      "target": "function:database.py:get_db_session",
-      "type": "calls",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "file:models.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "class:models.py:SQLiteVector",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/audit_logger.py:log_action",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/audit_logger.py:log_document_action",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/audit_logger.py:log_chat_action",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/audit_logger.py:log_system_action",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/knowledge_manager.py",
-      "target": "function:services/audit_logger.py:get_audit_logs",
-      "type": "imports",
       "direction": "forward"
     },
     {
@@ -6414,146 +4814,14 @@
       "direction": "forward"
     },
     {
-      "source": "service:database.py",
-      "target": "config:config.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:main.py",
-      "target": "config:config.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:main.py",
-      "target": "service:database.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:main.py",
-      "target": "file:models.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:main.py",
-      "target": "file:routers/__init__.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:main.py",
-      "target": "file:routers/admin.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:main.py",
-      "target": "service:routers/webhook.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:models.py",
-      "target": "config:config.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:models.py",
-      "target": "service:database.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:routers/admin.py",
-      "target": "config:config.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:routers/admin.py",
-      "target": "service:database.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:routers/admin.py",
-      "target": "file:models.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:routers/admin.py",
-      "target": "file:services/audit_logger.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:routers/admin.py",
-      "target": "service:services/knowledge_manager.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:routers/webhook.py",
-      "target": "config:config.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:routers/webhook.py",
-      "target": "service:services/chat_engine.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:routers/webhook.py",
-      "target": "service:services/document_creator.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:routers/webhook.py",
-      "target": "service:services/knowledge_manager.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:routers/webhook.py",
-      "target": "service:services/zalo_api.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
       "source": "file:scripts/migrate_data.py",
       "target": "service:database.py",
       "type": "imports",
       "direction": "forward"
     },
     {
-      "source": "file:scripts/migrate_data.py",
-      "target": "file:models.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "pipeline:scripts/reindex_embeddings.py",
-      "target": "config:config.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
       "source": "pipeline:scripts/reindex_embeddings.py",
       "target": "service:database.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "pipeline:scripts/reindex_embeddings.py",
-      "target": "file:models.py",
       "type": "imports",
       "direction": "forward"
     },
@@ -6576,24 +4844,6 @@
       "direction": "forward"
     },
     {
-      "source": "file:scripts/seed_admin.py",
-      "target": "config:config.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:scripts/seed_admin.py",
-      "target": "service:database.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "file:scripts/seed_admin.py",
-      "target": "file:models.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
       "source": "pipeline:scripts/test_zalo_bot_qa.py",
       "target": "service:database.py",
       "type": "imports",
@@ -6606,44 +4856,14 @@
       "direction": "forward"
     },
     {
-      "source": "service:services/ai_engine.py",
-      "target": "config:config.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
       "source": "file:services/audit_logger.py",
       "target": "service:database.py",
       "type": "imports",
       "direction": "forward"
     },
     {
-      "source": "file:services/audit_logger.py",
-      "target": "file:models.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/chat_engine.py",
-      "target": "config:config.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
       "source": "service:services/chat_engine.py",
       "target": "service:database.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/chat_engine.py",
-      "target": "file:models.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/chat_engine.py",
-      "target": "service:services/ai_engine.py",
       "type": "imports",
       "direction": "forward"
     },
@@ -6660,297 +4880,165 @@
       "direction": "forward"
     },
     {
-      "source": "service:services/document_creator.py",
+      "source": "file:main.py",
+      "target": "function:main.py:download_file",
+      "type": "contains",
+      "direction": "forward"
+    },
+    {
+      "source": "file:main.py",
       "target": "config:config.py",
       "type": "imports",
       "direction": "forward"
     },
     {
-      "source": "service:services/document_creator.py",
-      "target": "service:database.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "service:services/document_creator.py",
+      "source": "file:main.py",
       "target": "file:models.py",
       "type": "imports",
       "direction": "forward"
     },
     {
-      "source": "service:services/document_creator.py",
-      "target": "service:services/ai_engine.py",
+      "source": "file:main.py",
+      "target": "file:routers/admin.py",
       "type": "imports",
       "direction": "forward"
     },
     {
-      "source": "service:services/knowledge_manager.py",
+      "source": "file:main.py",
+      "target": "file:routers/webhook.py",
+      "type": "imports",
+      "direction": "forward"
+    },
+    {
+      "source": "file:models.py",
       "target": "config:config.py",
       "type": "imports",
       "direction": "forward"
     },
     {
-      "source": "service:services/knowledge_manager.py",
-      "target": "service:database.py",
-      "type": "imports",
+      "source": "file:routers/admin.py",
+      "target": "function:routers/admin.py:sanitize_filename",
+      "type": "contains",
       "direction": "forward"
     },
     {
-      "source": "service:services/knowledge_manager.py",
-      "target": "file:services/audit_logger.py",
-      "type": "imports",
+      "source": "file:routers/admin.py",
+      "target": "function:routers/admin.py:login_submit",
+      "type": "contains",
       "direction": "forward"
     },
     {
-      "source": "service:services/knowledge_manager.py",
-      "target": "pipeline:services/rag_pipeline.py",
-      "type": "imports",
-      "direction": "forward"
-    },
-    {
-      "source": "pipeline:services/rag_pipeline.py",
+      "source": "file:routers/admin.py",
       "target": "config:config.py",
       "type": "imports",
       "direction": "forward"
     },
     {
-      "source": "service:services/zalo_api.py",
+      "source": "file:routers/admin.py",
+      "target": "file:models.py",
+      "type": "imports",
+      "direction": "forward"
+    },
+    {
+      "source": "file:routers/webhook.py",
+      "target": "function:routers/webhook.py:_process_zalo_payload",
+      "type": "contains",
+      "direction": "forward"
+    },
+    {
+      "source": "file:routers/webhook.py",
       "target": "config:config.py",
       "type": "imports",
+      "direction": "forward"
+    },
+    {
+      "source": "file:routers/webhook.py",
+      "target": "file:routers/admin.py",
+      "type": "imports",
+      "direction": "forward"
+    },
+    {
+      "source": "file:scripts/prod_migration.py",
+      "target": "config:config.py",
+      "type": "imports",
+      "direction": "forward"
+    },
+    {
+      "source": "file:scripts/seed_admin.py",
+      "target": "config:config.py",
+      "type": "imports",
+      "direction": "forward"
+    },
+    {
+      "source": "file:scripts/seed_admin.py",
+      "target": "file:models.py",
+      "type": "imports",
+      "direction": "forward"
+    },
+    {
+      "source": "file:services/ai_engine.py",
+      "target": "function:services/ai_engine.py:call_ai_json",
+      "type": "contains",
+      "direction": "forward"
+    },
+    {
+      "source": "file:services/ai_engine.py",
+      "target": "function:services/ai_engine.py:_call_gemini_json",
+      "type": "contains",
+      "direction": "forward"
+    },
+    {
+      "source": "file:services/ai_engine.py",
+      "target": "config:config.py",
+      "type": "imports",
+      "direction": "forward"
+    },
+    {
+      "source": "file:services/document_creator.py",
+      "target": "config:config.py",
+      "type": "imports",
+      "direction": "forward"
+    },
+    {
+      "source": "file:services/document_creator.py",
+      "target": "file:models.py",
+      "type": "imports",
+      "direction": "forward"
+    },
+    {
+      "source": "file:services/knowledge_manager.py",
+      "target": "function:services/knowledge_manager.py:parse_docx",
+      "type": "contains",
+      "direction": "forward"
+    },
+    {
+      "source": "file:services/knowledge_manager.py",
+      "target": "config:config.py",
+      "type": "imports",
+      "direction": "forward"
+    },
+    {
+      "source": "file:services/knowledge_manager.py",
+      "target": "file:models.py",
+      "type": "imports",
+      "direction": "forward"
+    },
+    {
+      "source": "file:services/password_hash.py",
+      "target": "function:services/password_hash.py:hash_password_pbkdf2",
+      "type": "contains",
+      "direction": "forward"
+    },
+    {
+      "source": "file:services/password_hash.py",
+      "target": "function:services/password_hash.py:verify_password",
+      "type": "contains",
       "direction": "forward"
     }
   ],
-  "layers": [
-    {
-      "id": "layer:infrastructure-configuration",
-      "name": "Hạ tầng & Cấu hình",
-      "description": "Tầng này bao gồm các tệp liên quan đến thiết lập môi trường, điều phối Docker, quản lý phụ thuộc và cấu hình chung của ứng dụng. Nó xác định cách ứng dụng được xây dựng, triển khai và cấu hình.",
-      "nodeIds": [
-        "config:config.py",
-        "config:docker-compose.yml",
-        "service:Dockerfile",
-        "config:requirements.txt",
-        "file:.clineignore",
-        "file:.ua/.understandignore",
-        "file:Caddyfile"
-      ]
-    },
-    {
-      "id": "layer:data-access-models",
-      "name": "Truy cập Dữ liệu & Mô hình",
-      "description": "Tầng này chịu trách nhiệm định nghĩa cấu trúc dữ liệu của ứng dụng (các mô hình ORM) và quản lý kết nối cũng như phiên làm việc với cơ sở dữ liệu. Nó hoạt động như giao diện giữa logic nghiệp vụ của ứng dụng và bộ lưu trữ bền vững.",
-      "nodeIds": [
-        "file:models.py",
-        "service:database.py",
-        "file:docker/init.sql",
-        "table:models.py:Document",
-        "table:models.py:DocumentVersion",
-        "table:models.py:KnowledgeChunk",
-        "table:models.py:ChatSession",
-        "table:models.py:ChatMessage",
-        "table:models.py:AuditLog",
-        "table:models.py:AdminUser",
-        "table:models.py:ImageMapping",
-        "table:models.py:FileMapping",
-        "schema:docker/init.sql:idx_chunks_text_fts",
-        "schema:docker/init.sql:idx_chunks_document_id",
-        "schema:docker/init.sql:idx_documents_is_active"
-      ]
-    },
-    {
-      "id": "layer:core-services-ai-engine",
-      "name": "Dịch vụ Lõi & Công cụ AI",
-      "description": "Tầng này chứa logic nghiệp vụ chính, bao gồm các trừu tượng hóa mô hình AI, công cụ chat, tiện ích tạo tài liệu, pipeline Truy xuất Tăng cường Sinh (RAG) và quản lý cơ sở tri thức. Nó tạo thành lõi thông minh của ứng dụng.",
-      "nodeIds": [
-        "service:services/ai_engine.py",
-        "service:services/chat_engine.py",
-        "service:services/document_creator.py",
-        "pipeline:services/rag_pipeline.py",
-        "service:services/knowledge_manager.py",
-        "file:services/__init__.py",
-        "file:services/audit_logger.py"
-      ]
-    },
-    {
-      "id": "layer:api-user-interface",
-      "name": "API & Giao diện Người dùng",
-      "description": "Tầng này xử lý các tương tác bên ngoài, bao gồm định nghĩa các endpoint API (webhook, route quản trị) và hiển thị giao diện web cho người dùng. Nó quản lý định tuyến yêu cầu, trình bày dữ liệu và tương tác người dùng.",
-      "nodeIds": [
-        "service:routers/webhook.py",
-        "file:main.py",
-        "file:routers/admin.py",
-        "file:templates/audit_logs.html",
-        "file:templates/base.html",
-        "file:templates/chat_detail.html",
-        "file:templates/chat_sessions.html",
-        "file:templates/dashboard.html",
-        "file:templates/document_detail.html",
-        "file:templates/documents.html",
-        "file:templates/login.html",
-        "file:templates/logs.html",
-        "file:templates/settings.html",
-        "file:static/css/admin.css"
-      ]
-    },
-    {
-      "id": "layer:external-integrations",
-      "name": "Tích hợp Bên ngoài",
-      "description": "Tầng này tập trung vào các tích hợp cụ thể với các nền tảng bên ngoài, chẳng hạn như API nhắn tin Zalo. Nó cung cấp các hàm và logic bot cần thiết để giao tiếp và phản hồi với các dịch vụ bên ngoài.",
-      "nodeIds": [
-        "service:services/zalo_api.py",
-        "file:zalo_bot.py"
-      ]
-    },
-    {
-      "id": "layer:batch-jobs-utilities",
-      "name": "Tác vụ Hàng loạt & Tiện ích",
-      "description": "Tầng này chứa các script độc lập và tiện ích cho các tác vụ vận hành khác nhau, bao gồm di chuyển cơ sở dữ liệu, tạo dữ liệu mẫu, lập chỉ mục lại và nhập liệu cơ sở tri thức, tạo tài liệu và kiểm thử tự động.",
-      "nodeIds": [
-        "pipeline:scripts/reindex_embeddings.py",
-        "pipeline:scripts/migrate_db_schema.py",
-        "pipeline:scripts/reingest_manuals.py",
-        "pipeline:scripts/reingest_single_file.py",
-        "pipeline:scripts/seed_knowledge.py",
-        "pipeline:scripts/test_zalo_bot_qa.py",
-        "file:scripts/migrate_data.py",
-        "file:scripts/seed_admin.py",
-        "file:taovanban_khoidang/scripts/extract_manual_images.py",
-        "file:taovanban_khoidang/scripts/generate_docx.py",
-        "file:taovanban_khoidang/scripts/run_generation.py"
-      ]
-    },
-    {
-      "id": "layer:documentation-static-assets",
-      "name": "Tài liệu & Tài sản Tĩnh",
-      "description": "Tầng này bao gồm tất cả các tệp phi mã nguồn cung cấp thông tin về dự án, hướng dẫn sử dụng, tổng quan kiến trúc và các tài nguyên tĩnh như mẫu tài liệu hoặc tệp dữ liệu được ứng dụng sử dụng.",
-      "nodeIds": [
-        "document:HDSD_dhtn_markdown/01_hdsd_trang_chu_va_ho_so_ca_nhan.md",
-        "document:HDSD_dhtn_markdown/02_hdsd_lich_hop_nguoi_dung.md",
-        "document:HDSD_dhtn_markdown/03_hdsd_quan_ly_lich_hop.md",
-        "document:HDSD_dhtn_markdown/04_hdsd_lap_va_duyet_phieu_trinh.md",
-        "document:HDSD_dhtn_markdown/05_hdsd_quan_ly_nhiem_vu_cong_viec.md",
-        "document:HDSD_dhtn_markdown/06_hdsd_theo_doi_kpi_tien_do.md",
-        "document:HDSD_dhtn_markdown/07_hdsd_quan_ly_ho_so_cong_viec.md",
-        "document:HDSD_dhtn_markdown/08_hdsd_quan_ly_tai_lieu_ca_nhan.md",
-        "document:HDSD_dhtn_markdown/09_hdsd_quan_ly_van_ban_den.md",
-        "document:HDSD_dhtn_markdown/10_hdsd_quan_ly_van_ban_di.md",
-        "document:HDSD_dhtn_markdown/11_hdsd_quan_tri_he_thong.md",
-        "document:HDSD_dhtn_markdown/12_hdsd_chuc_nang_lanh_dao.md",
-        "document:HDSD_dhtn_markdown/chuc-nang-lanh-dao.txt",
-        "document:HDSD_dhtn_markdown/hdsd-tichhop-tri-thuc-rag.md",
-        "document:Hội nghị triển khai phần mềm Điều hành tác nghiệp của các cơ quan đảng_part1_clean.txt",
-        "document:MAPCODE.md",
-        "document:NOTEBOOKLM_GUIDE.md",
-        "document:PROJECT_OVERVIEW.md",
-        "document:README.md",
-        "document:implementation_plan.md",
-        "file:HDSD_dhtn_markdown/Chức năng của Lãnh đạo trên hệ thống Điều hành tác nghiệp.docx",
-        "file:HDSD_dhtn_markdown/ĐIỀU HÀNH TÁC NGHIỆP_CÂU HỎI THƯỜNG GẶP.docx",
-        "file:Hội nghị triển khai phần mềm Điều hành tác nghiệp của các cơ quan đảng_part1.srt",
-        "file:taovanban_khoidang/references/cong_van_giao_viec_mau.docx",
-        "file:taovanban_khoidang/references/hdsd_chunks.json",
-        "file:taovanban_khoidang/references/kienthuc_dhtn.md",
-        "file:taovanban_khoidang/scripts/input_84.json",
-        "file:taovanban_khoidang/SKILL.md"
-      ]
-    }
-  ],
-  "tour": [
-    {
-      "order": 1,
-      "title": "Thiết lập Dự án và Cấu hình Ban đầu",
-      "description": "Bắt đầu bằng cách hiểu cách dự án được thiết lập và cấu hình. Điều này bao gồm các biến môi trường, điều phối Docker để triển khai và điểm vào chính của ứng dụng FastAPI. Bước này đề cập đến cách ứng dụng được xây dựng và khởi chạy.",
-      "nodeIds": [
-        "config:config.py",
-        "config:docker-compose.yml",
-        "service:Dockerfile",
-        "config:requirements.txt",
-        "file:Caddyfile",
-        "file:main.py"
-      ]
-    },
-    {
-      "order": 2,
-      "title": "Mô hình Dữ liệu và Tầng Lưu trữ",
-      "description": "Tiếp theo, khám phá cấu trúc dữ liệu của ứng dụng và cách thông tin được lưu trữ và quản lý. Điều này liên quan đến việc xem xét các mô hình ORM của SQLAlchemy, các tiện ích kết nối cơ sở dữ liệu và lược đồ SQL ban đầu để thiết lập cơ sở dữ liệu.",
-      "nodeIds": [
-        "file:models.py",
-        "service:database.py",
-        "file:docker/init.sql",
-        "table:models.py:Document",
-        "table:models.py:KnowledgeChunk",
-        "table:models.py:ChatSession",
-        "table:models.py:ChatMessage",
-        "schema:docker/init.sql:idx_chunks_text_fts"
-      ]
-    },
-    {
-      "order": 3,
-      "title": "Tích hợp Bên ngoài: Bot Zalo",
-      "description": "Hiểu cách ứng dụng tương tác với các nền tảng nhắn tin bên ngoài, cụ thể là Zalo. Bước này tập trung vào các endpoint webhook nhận tin nhắn và tệp, cũng như dịch vụ API Zalo chịu trách nhiệm gửi phản hồi.",
-      "nodeIds": [
-        "service:routers/webhook.py",
-        "service:services/zalo_api.py",
-        "file:zalo_bot.py"
-      ]
-    },
-    {
-      "order": 4,
-      "title": "AI Lõi: Pipeline RAG và Công cụ AI",
-      "description": "Đi sâu vào trí thông minh của hệ thống. Bước này đề cập đến pipeline Truy xuất Tăng cường Sinh (RAG), bao gồm tạo embedding, tìm kiếm ngữ nghĩa và phân loại câu hỏi. Nó cũng giới thiệu công cụ AI trừu tượng hóa các tương tác với các LLM khác nhau.",
-      "nodeIds": [
-        "pipeline:services/rag_pipeline.py",
-        "service:services/ai_engine.py"
-      ]
-    },
-    {
-      "order": 5,
-      "title": "Quản lý Chat và Tri thức",
-      "description": "Tìm hiểu cách các phiên chat của người dùng được quản lý, từ việc tạo phiên mới đến truy xuất lịch sử chat. Bước này cũng khám phá trình quản lý tri thức, xử lý việc phân tích tài liệu, nhập liệu vào cơ sở tri thức và toàn bộ vòng đời tài liệu.",
-      "nodeIds": [
-        "service:services/chat_engine.py",
-        "service:services/knowledge_manager.py",
-        "file:services/__init__.py"
-      ]
-    },
-    {
-      "order": 6,
-      "title": "Tạo và Sinh Tài liệu",
-      "description": "Xem xét chức năng tạo tài liệu mới. Điều này bao gồm các dịch vụ phân tích hình ảnh, chuẩn hóa tên và tạo tài liệu Word theo chương trình dựa trên các mẫu và siêu dữ liệu trích xuất.",
-      "nodeIds": [
-        "service:services/document_creator.py",
-        "file:taovanban_khoidang/references/cong_van_giao_viec_mau.docx",
-        "file:taovanban_khoidang/scripts/generate_docx.py"
-      ]
-    },
-    {
-      "order": 7,
-      "title": "Giao diện Quản trị và Giám sát",
-      "description": "Hiểu cách quản trị viên tương tác và giám sát hệ thống. Điều này bao gồm các route API quản trị, các mẫu web cho bảng điều khiển, quản lý tài liệu, phiên chat và cơ chế ghi nhật ký kiểm toán để theo dõi các hành động của hệ thống.",
-      "nodeIds": [
-        "file:routers/admin.py",
-        "file:templates/dashboard.html",
-        "file:templates/documents.html",
-        "file:templates/chat_sessions.html",
-        "file:templates/audit_logs.html",
-        "file:templates/login.html",
-        "file:services/audit_logger.py",
-        "file:static/css/admin.css"
-      ]
-    },
-    {
-      "order": 8,
-      "title": "Tác vụ Hàng loạt và Script Tiện ích",
-      "description": "Cuối cùng, xem xét bộ sưu tập các script độc lập được sử dụng cho các tác vụ vận hành khác nhau. Chúng bao gồm di chuyển lược đồ cơ sở dữ liệu, lập chỉ mục lại embedding, nhập tài liệu, tạo dữ liệu mẫu ban đầu và kiểm thử tự động.",
-      "nodeIds": [
-        "pipeline:scripts/reindex_embeddings.py",
-        "pipeline:scripts/migrate_db_schema.py",
-        "pipeline:scripts/reingest_manuals.py",
-        "pipeline:scripts/seed_knowledge.py",
-        "file:scripts/migrate_data.py",
-        "file:scripts/seed_admin.py",
-        "pipeline:scripts/test_zalo_bot_qa.py"
-      ]
-    }
-  ]
+  "project": {
+    "normalizedAt": "2026-07-18T08:55:42.156714+00:00",
+    "nodeCount": 232,
+    "edgeCount": 207
+  }
 }
