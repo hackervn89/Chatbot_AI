@@ -16,4 +16,3 @@ temp/
 *.zip
 *.log
 checkpoint/
-.agent_bridge/

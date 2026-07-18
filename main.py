@@ -46,6 +46,13 @@ class TeeLogger:
             except Exception:
                 pass
 
+    def isatty(self):
+        return hasattr(self.stream, 'isatty') and self.stream.isatty()
+
+    def reconfigure(self, *args, **kwargs):
+        if hasattr(self.stream, 'reconfigure'):
+            return self.stream.reconfigure(*args, **kwargs)
+
 LOG_FILE_PATH = "app.log"
 sys.stdout = TeeLogger(LOG_FILE_PATH, sys.stdout)
 sys.stderr = TeeLogger(LOG_FILE_PATH, sys.stderr)
