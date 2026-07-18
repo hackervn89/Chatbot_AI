@@ -21,7 +21,7 @@ def call_ai(
     max_tokens: int = 2048
 ) -> tuple:
     """
-    Gọi AI Engine theo thứ tự ưu tiên.
+    Gọi AI Engine theo thứ tự ưu tiên với fallback chain rõ ràng.
     
     Args:
         system_prompt: System prompt (instruction)
@@ -35,23 +35,30 @@ def call_ai(
     history = history or []
     start_time = time.time()
     
-    # Thử DeepSeek trước nếu là primary
+    # Xác định thứ tự gọi dựa trên AI_PRIMARY_ENGINE
+    call_order = []
     if AI_PRIMARY_ENGINE == 'deepseek' and DEEPSEEK_API_KEY:
-        result = _call_deepseek(system_prompt, user_message, history, temperature, max_tokens)
-        if result:
-            elapsed = int((time.time() - start_time) * 1000)
-            return result[0], result[1], elapsed
-
-    # Fallback sang Gemini
-    if GEMINI_API_KEY:
-        result = _call_gemini(system_prompt, user_message, history, temperature)
-        if result:
-            elapsed = int((time.time() - start_time) * 1000)
-            return result[0], result[1], elapsed
+        call_order.append(('deepseek', _call_deepseek))
+        if GEMINI_API_KEY:
+            call_order.append(('gemini', _call_gemini))
+    elif AI_PRIMARY_ENGINE == 'gemini' and GEMINI_API_KEY:
+        call_order.append(('gemini', _call_gemini))
+        if DEEPSEEK_API_KEY:
+            call_order.append(('deepseek', _call_deepseek))
+    else:
+        # Fallback: thử cả hai theo thứ tự mặc định
+        if DEEPSEEK_API_KEY:
+            call_order.append(('deepseek', _call_deepseek))
+        if GEMINI_API_KEY:
+            call_order.append(('gemini', _call_gemini))
     
-    # Nếu Gemini là primary
-    if AI_PRIMARY_ENGINE == 'gemini' and GEMINI_API_KEY:
-        result = _call_gemini(system_prompt, user_message, history, temperature)
+    # Thử gọi theo thứ tự
+    for engine_name, call_func in call_order:
+        if engine_name == 'deepseek':
+            result = call_func(system_prompt, user_message, history, temperature, max_tokens)
+        else:  # gemini
+            result = call_func(system_prompt, user_message, history, temperature)
+        
         if result:
             elapsed = int((time.time() - start_time) * 1000)
             return result[0], result[1], elapsed
